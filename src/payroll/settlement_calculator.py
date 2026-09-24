@@ -33,6 +33,18 @@ class SettlementCalculator:
         self._load_datasets()
 
     def _load_datasets(self):
+        df = None
+        try:
+            from src.database.azure_data_service import azure_data_service
+            if azure_data_service.is_connected():
+                df = azure_data_service.get_gold_nomina(self.year, self.month)
+        except Exception:
+            df = None
+
+        if df is not None and not df.empty:
+            self.df_employees = df
+            return
+
         gold_file = GOLD_DIR / f"fact_nomina_{self.year}_{self.month:02d}.parquet"
         if gold_file.exists():
             self.df_employees = pd.read_parquet(gold_file)

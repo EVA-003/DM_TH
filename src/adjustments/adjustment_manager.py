@@ -127,11 +127,22 @@ class AdjustmentManager:
         return all_aj
 
     def simulate_adjustment(self, documento: str, tipo_novedad: str, valor_propuesto: float = 0.0, year: int = 2026, month: int = 7, fecha_efectiva: str = None) -> dict:
-        gold_path = GOLD_DIR / f"fact_nomina_{year}_{month:02d}.parquet"
-        if not gold_path.exists():
-            raise FileNotFoundError("No se encontro fact_nomina")
+        df = None
+        try:
+            from src.database.azure_data_service import azure_data_service
+            if azure_data_service.is_connected():
+                df = azure_data_service.get_gold_nomina(year, month)
+        except Exception:
+            df = None
 
-        df = pd.read_parquet(gold_path)
+        if df is None or df.empty:
+            gold_path = GOLD_DIR / f"fact_nomina_{year}_{month:02d}.parquet"
+            if gold_path.exists():
+                df = pd.read_parquet(gold_path)
+            else:
+                from src.datamart.gold_fact_nomina import GoldNominaDatamart
+                df = GoldNominaDatamart().generate_monthly_fact(year, month)
+
         row = df[df["documento"].astype(str) == str(documento)]
         if row.empty:
             raise ValueError(f"Colaborador con documento {documento} no encontrado en la nomina activa.")
@@ -366,6 +377,12 @@ class AdjustmentManager:
                         df.at[i, "area_nombre"] = new_area
 
                 df.to_parquet(gold_path, index=False)
+                try:
+                    from src.database.azure_data_service import azure_data_service
+                    if azure_data_service.is_connected():
+                        azure_data_service.save_gold_nomina(df, year, month)
+                except Exception:
+                    pass
 
         # 2. Sincronizar Silver Employees
         emp_path = SILVER_DIR / "silver_employees.parquet"
