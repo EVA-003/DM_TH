@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="x-ua-compatible" content="IE=edge">
+  <title>API BUK</title>
+  <link rel="icon" type="image/png" href="images/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="images/favicon-16x16.png" sizes="16x16" />
+  <link href='apidocs/css/typography.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='apidocs/css/reset.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='apidocs/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='apidocs/css/reset.css' media='print' rel='stylesheet' type='text/css'/>
+  <link href='apidocs/css/print.css' media='print' rel='stylesheet' type='text/css'/>
+  <link href='apidocs/css/tabs.css' rel='stylesheet' type='text/css'/>
+  <link href='apidocs/css/custom.css' rel='stylesheet' type='text/css'/>
+
+
+  <script src='apidocs/lib/object-assign-pollyfill.js' type='text/javascript'></script>
+  <script src='apidocs/lib/jquery-1.8.0.min.js' type='text/javascript'></script>
+  <script src='apidocs/lib/jquery.slideto.min.js' type='text/javascript'></script>
+  <script src='apidocs/lib/jquery.wiggle.min.js' type='text/javascript'></script>
+  <script src='apidocs/lib/jquery.ba-bbq.min.js' type='text/javascript'></script>
+  <script src='apidocs/lib/handlebars-4.0.5.js' type='text/javascript'></script>
+  <script src='apidocs/lib/lodash.min.js' type='text/javascript'></script>
+  <script src='apidocs/lib/backbone-min.js' type='text/javascript'></script>
+  <script src='apidocs/swagger-ui.js' type='text/javascript'></script>
+  <script src='apidocs/lib/highlight.9.1.0.pack.js' type='text/javascript'></script>
+  <script src='apidocs/lib/highlight.9.1.0.pack_extended.js' type='text/javascript'></script>
+  <script src='apidocs/lib/jsoneditor.min.js' type='text/javascript'></script>
+  <script src='apidocs/lib/marked.js' type='text/javascript'></script>
+  <script src='apidocs/lib/swagger-oauth.js' type='text/javascript'></script>
+
+  <!-- Some basic translations -->
+  <script src='apidocs/lang/translator.js' type='text/javascript'></script>
+  <script src='apidocs/lang/es.js' type='text/javascript'></script>
+  <style>
+  </style>
+
+  <script>
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+  </script>
+
+  <script type="text/javascript">
+
+    $(function() {
+
+      // Si el lenguaje viene por la url, tomamos dicho valor y actualizamos el selector de lenguaje
+      // Si el lenguaje no viene por la url entonces tomamos el valor actual del selector de lenguaje
+      let language = getAttributeFromQueryParams('language');
+      if (language)
+        $('#language_selector').val(language);
+      else
+        language = $('#language_selector').val();
+
+      /*
+        Actualizar apidocs cuando se elige un lenguaje desde el selector.
+      */
+      $('#language_selector').change(function(event) {
+        openTab(event, 'DocumentaciÃ³n');
+        const selectedLanguage = $(event.currentTarget).val();
+        window.swaggerUi.updateSwaggerUi({url: `/api/${country}/${selectedLanguage}/api_docs`});
+        updateUrlQueryParams(country, selectedLanguage);
+      });
+
+      // Si el nombre del paÃ­s viene por la url, tomamos dicho valor y actualizamos el selector de paÃ­s
+      // Si el nombre del paÃ­s no viene por la url entonces tomamos el valor actual del selector de paÃ­s
+      let country = getAttributeFromQueryParams('country');
+      if (country)
+        $('#country_selector').val(country);
+      else
+        country = $('#country_selector').val();
+
+      /*
+        Actualizar apidocs cuando se elige un pais desde el selector.
+      */
+      $('#country_selector').change(function(event) {
+        openTab(event, 'DocumentaciÃ³n');
+        const selectedCountry = $(event.currentTarget).val();
+        window.swaggerUi.updateSwaggerUi({url: `/api/${selectedCountry}/${language}/api_docs`});
+        updateUrlQueryParams(selectedCountry, language);
+      });
+
+      hljs.configure({
+        highlightSizeThreshold: 5000
+      });
+
+      // Pre load translate...
+      if(window.SwaggerTranslator) {
+        window.SwaggerTranslator.translate();
+      }
+      window.swaggerUi = new SwaggerUi({
+        url: `/api/${country}/${language}/api_docs`,
+        dom_id: `swagger-ui-container`,
+        supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+        onComplete: function(swaggerApi, swaggerUi){
+          if(window.SwaggerTranslator) {
+            window.SwaggerTranslator.translate();
+          }
+        },
+        onFailure: function(data) {
+          log("Unable to Load SwaggerUI");
+        },
+        docExpansion: "none",
+        jsonEditor: false,
+        defaultModelRendering: 'schema',
+        showRequestHeaders: false,
+        showOperationIds: false
+      });
+
+      window.swaggerUi.load();
+      document.getElementById('DocumentaciÃ³n').style.display = "block";
+
+
+      /*
+        FunciÃ³n que extrae el atributo desde los query params de la URL.
+        Retorna null en caso de que no se pase el atributo por la URL.
+       */
+       function getAttributeFromQueryParams(attribute) {
+        const queryParams = new URLSearchParams(window.location.search);
+        return queryParams.get(attribute);
+      };
+
+      /*
+        FunciÃ³n que actualiza el URL query param correspondiente al nombre del paÃ­s y lenguage cuando algÃºn selector es modificado.
+       */
+      function updateUrlQueryParams(country, language) {
+        if (history.pushState) {
+            let searchParams = new URLSearchParams(window.location.search);
+            searchParams.set('country', country);
+            searchParams.set('language', language);
+            let newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + searchParams.toString();
+            window.history.pushState({path: newurl}, '', newurl);
+        }
+      }
+
+      function log() {
+        if ('console' in window) {
+          console.log.apply(console, arguments);
+        }
+      }
+    });
+  </script>
+  <script>
+      $(function(){
+        document.querySelectorAll('.tenant').forEach(tenant_span => {
+          tenant_span.innerHTML = window.location.hostname;
+        });
+      });
+  </script>
+</head>
+
+<body class="swagger-section">
+<div id='header'>
+  <div class="swagger-ui-wrap">
+    <a id="logo" href="https://www.buk.cl"><img class="logo__img" alt="swagger" height="50" width="50" src="apidocs/images/buk_logo.svg" /><span class="logo__title">API</span></a>
+    <form id='api_selector'>
+
+      <div id='auth_container'></div>
+    </form>
+    <select id="country_selector">
+      <option value='chile' selected>Chile</option>
+      <option value='colombia'>Colombia</option>
+      <option value='peru'>PerÃº</option>
+      <option value='mexico'>MÃ©xico</option>
+      <option value='brasil'>Brasil</option>
+    </select>
+    <select id="language_selector">
+      <option value='es' selected>EspaÃ±ol</option>
+      <option value='en'>English</option>
+      <option value='pt'>PortuguÃªs</option>
+    </select>
+  </div>
+</div>
+
+<div class="tab">
+  <button class="tablinks active" id="defaultOpen" onclick="openTab(event, 'DocumentaciÃ³n')">API</button>
+  <button class="tablinks" onclick="openTab(event, 'Webhooks')">Webhooks</button>
+</div>
+<div id="DocumentaciÃ³n" class="tabcontent active">
+  <div id="message-bar" class="swagger-ui-wrap" data-sw-translate>&nbsp;</div>
+  <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+</div>
+<div id="Webhooks" class="tabcontent">
+  <div class="swagger-ui-wrap">
+    <div class="info_description markdown"><h1 id="webhooks">Webhooks</h1>
+      <p>
+        Los webhooks son un tipo de comunicaciÃ³n entre sistemas que funciona a travÃ©s de endpoints configurados
+        especialmente para enviar/recibir datos, los cuales son gatillados por algÃºn evento.
+        Es el mÃ©todo mÃ¡s sencillo para enviar notificaciones. A travÃ©s del servicio de webhook,
+        es posible configurar Buk para enviar notificaciones a otro sistema cuando se produce algÃºn cambio de interÃ©s
+        en la plataforma. Por el momento, estÃ¡ disponible para los siguientes eventos:
+      </p>
+      <ul>
+        <li>Alta/modificaciÃ³n/baja de un trabajador.</li>
+        <li>CreaciÃ³n/modificaciÃ³n de un Ã¡rea/sub-Ã¡rea.</li>
+        <li>CreaciÃ³n/modificaciÃ³n/eliminaciÃ³n de una licencia/permiso/ausencia</li>
+        <li>CreaciÃ³n de documentos que requieren firma.</li>
+      </ul>
+      <h2 id="configuraci-n">ConfiguraciÃ³n</h2>
+      <p>Para poder utilizar el servicio de webhooks, primero se debe proveer de un URL a la aplicaciÃ³n para recibir las notificaciones. Para ello, seguir los siguientes pasos:</p>
+      <ol>
+      <li>Iniciar sesiÃ³n con perfil de <strong>administrador</strong> o <strong>superadministrador</strong>.</li>
+      <li>En la barra superior, pinchar en: <strong>ConfiguraciÃ³n -&gt; Acceso API -&gt; <a href="/api/api_auth_tokens#webhooks">Urls Webhooks.</a></strong></li>
+      <li>Para los casos de  <strong>Empleados, Ãreas, Vacaciones y Licencias/Ausencias/Permisos</strong>, ingresar la URL en el campo <strong>Webhook Url</strong>. Debe ser una URL pÃºblica y debe incluir el esquema https en ella (p.ej: <a href="https://example.com/job_notifications">https://example.com/job_notifications</a>)</li>
+      <li>Para el caso de  <strong>Documentos</strong>, ingresar la URL en el campo <strong>Webhook Documentos Url</strong>. Debe ser una URL pÃºblica y debe incluir el esquema https en ella (p.ej: <a href="https://example.com/job_notifications">https://example.com/job_notifications</a>)</li>
+      <li>Guardar.</li>
+      </ol>
+      <h2 id="datos-enviados">Datos enviados</h2>
+      <p>Una vez configurado la URL de webhook, cada vez que se gatille un evento,
+      BUK realizarÃ¡ una solicitud <a href="https://developer.mozilla.org/es/docs/Web/HTTP/Methods/POST">POST</a> a la URL configurada, enviando un objeto <a href="https://www.json.org/json-en.html">JSON</a> con los siguientes datos:</p>
+      <h3 id="-para-el-caso-de-los-empleados-">- Para el caso de los empleados:</h3>
+      <ul>
+      <li><strong><code>employee_id:</code></strong> ID del trabajador (employee)</li>
+      <li><strong><code>date:</code></strong> timestamp en el cual se registrÃ³ el cambio, formato <a href="https://es.wikipedia.org/wiki/ISO_8601">ISO8601</a></li>
+      <li><strong><code>event_type:</code></strong> Tipo de evento que gatillÃ³ la notificaciÃ³n. Puede ser alguno de los siguientes:<ul>
+        <li><strong><code>employee_create:</code></strong> Empleado Creado. Este tipo de evento se envÃ­a cuando se crea una nueva ficha de empleado.</li>
+        <li><strong><code>employee_update:</code></strong> Empleado Modificado. Este tipo de evento se envÃ­a cuando se modifica la informaciÃ³n en la ficha del empleado.</li>
+        <li><strong><code>employee_plan_update:</code></strong> Datos previsionales del empleado modificados. Este tipo de evento se envÃ­a cuando se modifica la informaciÃ³n previsional de la ficha del empleado.</li>
+        <li><strong><code>employee_responsibility_update:</code></strong> Grupo familiar del empleado modificado. Este tipo de evento se envÃ­a cuando se modifica la informaciÃ³n del grupo familiar de un empleado.</li>
+        <li><strong><code>job_hire:</code></strong> Nuevo trabajo. Este tipo de evento se envÃ­a solo cuando se crea desde la ficha del empleado.</li>
+        <li><strong><code>job_termination:</code></strong> Representa el finiquito, ya sea gatillado de forma masiva o individual.</li>
+        <li><strong><code>job_movement:</code></strong> Representa un cambio en el trabajo del empleado, deshacer/anular/renovar trabajo/modificaciÃ³n masiva de trabajos/anular tÃ©rmino de trabajo. Los campos que gatillarÃ¡n este tipo de notificaciÃ³n, son los que se encuentran en el formulario al momento de crear el trabajo.</li>
+      </ul>
+      </li>
+      <li><strong><code>tenant_url:</code></strong> DirecciÃ³n de la instancia del cliente.</li>
+      <li><strong><code>employment_status:</code></strong> Estado de empleo del empleado. Puede ser alguno de los siguientes: <code>activo</code>, <code>pendiente</code>o <code>terminado</code></li>
+      <li><strong><code>metadata:</code></strong> Metadatos adicionales para eventos especÃ­ficos. Contiene:<ul>
+        <li><strong><code>relevant_for_bukas:</code></strong> Indica si es relevante para Buk Asistencia (booleano)</li>
+        <li><strong><code>plan_id:</code></strong> ID del plan modificado (solo para <code>employee_plan_update</code>)</li>
+        <li><strong><code>responsibility_id:</code></strong> ID del grupo familiar modificado (solo para <code>employee_responsibility_update</code>)</li>
+      </ul>
+      </li>
+      </ul>
+      <p><strong>Nota importante:</strong> Los webhooks en Buk funcionan como notificaciones de eventos, no como transmisiÃ³n de datos completos. Para obtener la informaciÃ³n completa de los registros modificados, utilice el API.</p>
+      <p>Finalmente, considerar que cualquier acciÃ³n que se realice sobre el trabajo de algÃºn empleado,
+      se gatillarÃ¡ una notificaciÃ³n; aÃºn cuando no hayan cambios visibles. Por ejemplo, si pinchamos en editar trabajo, no realizamos ningÃºn cambio y presionamos "Guardar"(y es exitoso), entonces se enviarÃ¡ la notificaciÃ³n de <code>job_movement</code> (funciona como un <em>touch</em> al empleado.)</p>
+      <p>Un ejemplo puede ser:</p>
+      <pre><code class="lang-json">"data":
+      {
+        "employee_id": 1,
+        "date": "2020-01-07T17:59:18Z",
+        "event_type": "job_hire",
+        "tenant_url": "<span class="tenant"></span>",
+        "employment_status": "activo"
+      }</code></pre>
+      <p>Para los eventos con metadata, el ejemplo serÃ­a:</p>
+      <pre><code class="lang-json">"data":
+      {
+        "employee_id": 123,
+        "date": "2025-11-14T10:05:53-03:00",
+        "event_type": "employee_plan_update",
+        "tenant_url": "<span class="tenant"></span>",
+        "employment_status": "activo",
+        "metadata": {
+          "plan_id": 123
+        }
+      }</code></pre>
+      <h3 id="-para-el-caso-de-las-reas-">- Para el caso de las Ã¡reas:</h3>
+      <ul>
+      <li><strong><code>area_id:</code></strong> ID del Ã¡rea.</li>
+      <li><strong><code>date:</code></strong> timestamp en el cual se registrÃ³ el cambio, formato <a href="https://es.wikipedia.org/wiki/ISO_8601">ISO8601</a></li>
+      <li><strong><code>event_type:</code></strong> Tipo de evento que gatillÃ³ la notificaciÃ³n. Puede ser alguno de los siguientes:<ul>
+      <li><strong><code>area_create:</code></strong> Nueva Ã¡rea/sub-Ã¡rea.</li>
+      <li><strong><code>area_update:</code></strong> Cualquier modificaciÃ³n que se realice sobre el Ã¡rea/sub-Ã¡rea.</li>
+      </ul>
+      </li>
+      <li><strong><code>tenant_url:</code></strong> DirecciÃ³n de la instancia del cliente.</li>
+      </ul>
+      <p>Un ejemplo puede ser:</p>
+      <pre><code class="lang-json">"data":
+      {
+        "area_id": 1,
+        "date": "2020-01-07T17:59:18Z",
+        "event_type": "area_create",
+        "tenant_url": "<span class="tenant"></span>"
+      }</code></pre>
+      <h3 id="-para-el-caso-de-las-vacaciones-">- Para el caso de las vacaciones:</h3>
+      <ul>
+        <li><strong><code>vacation_id:</code></strong> ID de la vacaciÃ³n.</li>
+        <li><strong><code>date:</code></strong> timestamp en el cual se registrÃ³ el cambio, formato <a
+            href="https://es.wikipedia.org/wiki/ISO_8601">ISO8601</a></li>
+        <li><strong><code>event_type:</code></strong> Tipo de evento que gatillÃ³ la notificaciÃ³n. Puede ser alguno de
+          los siguientes:<ul>
+            <li><strong><code>vacation_create:</code></strong> Nueva vacaciÃ³n.</li>
+            <li><strong><code>vacation_update:</code></strong> Cualquier modificaciÃ³n que se realice sobre la vacaciÃ³n.
+            </li>
+            <li><strong><code>vacation_destroy:</code></strong> VacaciÃ³n eliminada.</li>
+          </ul>
+        </li>
+        <li><strong><code>tenant_url:</code></strong> DirecciÃ³n de la instancia del cliente.</li>
+        <li><strong><code>metadata:</code></strong> Metadatos adicionales, contiene:<br>
+          <ul>
+            <li><strong><code>vacation_status:</code></strong> Estado de la vacaciÃ³n en inglÃ©s (ej: "approved", "submitted", "rejected", etc.)</li>
+          </ul>
+        </li>
+      </ul>
+      <p>Un ejemplo puede ser:</p>
+      <pre><code class="lang-json">"data":
+      {
+        "vacation_id": 1,
+        "date": "2020-01-07T17:59:18Z",
+        "event_type": "vacation_create",
+        "tenant_url": "<span class="tenant"></span>",
+        "metadata": {
+          "vacation_status": "approved"
+        }
+      }</code></pre>
+      <h3 id="-para-el-caso-de-las-licencias-">- Para el caso de las licencias/ausencias/permisos:</h3>
+      <ul>
+      <li><strong><code>{tipo}_id:</code></strong> ID de la licencia/ausencia/permiso.</li>
+      <li><strong><code>date:</code></strong> timestamp en el cual se registrÃ³ el cambio, formato <a href="https://es.wikipedia.org/wiki/ISO_8601">ISO8601</a></li>
+      <li><strong><code>event_type:</code></strong> Tipo de evento que gatillÃ³ la notificaciÃ³n. Puede ser alguno de los siguientes:<ul>
+      <li><strong><code>{tipo}_create:</code></strong> Nueva licencia/ausencia/permiso.</li>
+      <li><strong><code>{tipo}_update:</code></strong> Cualquier modificaciÃ³n que se realice sobre las licencias/ausencias/permisos</li>
+      <li><strong><code>{tipo}_destroy:</code></strong> Cualquier modificaciÃ³n que se realice sobre las licencias/ausencias/permisos</li>
+      </ul>
+      </li>
+      <p><b>{tipo}</b> puede ser licence/absence/permission</p>
+      <li><strong><code>tenant_url:</code></strong> DirecciÃ³n de la instancia del cliente.</li>
+      </ul>
+      <p>Un ejemplo puede ser:</p>
+      <pre><code class="lang-json">"data":
+      {
+        "permission_id": 1,
+        "date": "2020-01-07T17:59:18Z",
+        "event_type": "permission_create",
+        "tenant_url": "<span class="tenant"></span>"
+      }</code></pre>
+      <h3 id="-para-el-caso-de-documentos-">- Para el caso de los documentos:</h3>
+      <ul>
+      <li><strong><code>document_id:</code></strong> ID del documento.</li>
+      <li><strong><code>date:</code></strong> timestamp en el cual se registrÃ³ el cambio, formato <a href="https://es.wikipedia.org/wiki/ISO_8601">ISO8601</a></li>
+      <li><strong><code>event_type:</code></strong> Tipo de evento que gatillÃ³ la notificaciÃ³n. Puede ser alguno de los siguientes:<ul>
+      <li><strong><code>document_create:</code></strong> Se creÃ³ un nuevo documento que requiere firma.</li>
+      </ul>
+      </li>
+      <li><strong><code>tenant_url:</code></strong> DirecciÃ³n de la instancia del cliente.</li>
+      </ul>
+      <p>Un ejemplo puede ser:</p>
+      <pre><code class="lang-json">"data":
+      {
+        "document_id": 1,
+        "date": "2020-01-07T17:59:18Z",
+        "event_type": "document_create",
+        "tenant_url": "<span class="tenant"></span>"
+      }</code></pre>
+  </div>
+  </div>
+</div>
+</body>
+</html>
