@@ -15,7 +15,7 @@ import json
 from datetime import datetime
 import pandas as pd
 from fastapi import FastAPI, Query, HTTPException, UploadFile, File, Body
-from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
+from fastapi.responses import HTMLResponse, FileResponse, JSONResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 from pydantic import BaseModel
@@ -333,11 +333,10 @@ async def get_nomina(search: str = "", year: int = 2026, month: int = 7):
 @app.get("/api/vacaciones/leaders")
 async def get_vacations_leaders():
     df = load_vacations_data()
-    emp_parquet = SILVER_DIR / "silver_employees.parquet"
+    df_emp = load_employees_data()
     name_to_pic = {}
-    if emp_parquet.exists():
-        df_emp = pd.read_parquet(emp_parquet)
-        name_to_pic = dict(zip(df_emp["nombre_completo"], df_emp.get("picture_url", "")))
+    if df_emp is not None and not df_emp.empty and "picture_url" in df_emp.columns:
+        name_to_pic = dict(zip(df_emp["nombre_completo"], df_emp["picture_url"].fillna("")))
         
     leaders = df.groupby("supervisor_nombre").agg(
         total_team=("documento", "count"),
@@ -1583,6 +1582,7 @@ async def generate_custom_report(payload: CustomReportPayload):
 
 @app.get("/api/download/nomina")
 async def download_nomina(year: int = 2026, month: int = 7):
+    OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     excel_path = NominaReportGenerator().generate_excel_report(year, month)
     return FileResponse(
         excel_path,
@@ -1593,6 +1593,7 @@ async def download_nomina(year: int = 2026, month: int = 7):
 
 @app.get("/api/download/ti")
 async def download_ti(year: int = 2026, month: int = 7):
+    OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     excel_path = OUTPUTS_DIR / f"TI_Novedades_Estructura_Creacion_Emplea_{year}_{month:02d}.xlsx"
     if not excel_path.exists():
         SilverTINovedadesProcessor().generate_ti_template(year, month)
@@ -1601,6 +1602,38 @@ async def download_ti(year: int = 2026, month: int = 7):
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         filename=f"TI_Novedades_Estructura_Creacion_Emplea_{year}_{month:02d}.xlsx"
     )
+
+
+@app.get("/api/avatar/proxy")
+async def avatar_proxy(url: str = Query(...)):
+    """
+    Proxy seguro para servir fotos de perfil de colaboradores (AWS S3 / Buk).
+    Evita bloqueos de CORS, referer y mixed-content en el navegador del usuario.
+    """
+    import urllib.request
+    from urllib.parse import unquote
+    clean_url = unquote(url).strip()
+    if not clean_url.startswith("http://") and not clean_url.startswith("https://"):
+        raise HTTPException(status_code=400, detail="URL inválida")
+
+    try:
+        req = urllib.request.Request(
+            clean_url,
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+                "Accept": "image/*"
+            }
+        )
+        with urllib.request.urlopen(req, timeout=5) as response:
+            content_type = response.headers.get("Content-Type", "image/jpeg")
+            img_data = response.read()
+            return Response(
+                content=img_data,
+                media_type=content_type,
+                headers={"Cache-Control": "public, max-age=86400"}
+            )
+    except Exception:
+        raise HTTPException(status_code=404, detail="Imagen no disponible")
 
 
 @app.get("/api/download/sql-script")

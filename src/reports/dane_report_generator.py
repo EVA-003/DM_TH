@@ -38,15 +38,32 @@ class DANEReportGenerator:
 
     def load_data(self) -> Dict[str, pd.DataFrame]:
         # 1. Nómina Gold (Directos Buk)
-        nomina_file = GOLD_DIR / f"fact_nomina_{self.year}_{self.month:02d}.parquet"
-        if not nomina_file.exists():
-            nomina_file = SILVER_DIR / "silver_employees.parquet"
-        
-        df_nomina = pd.read_parquet(nomina_file) if nomina_file.exists() else pd.DataFrame()
+        df_nomina = None
+        try:
+            from src.database.azure_data_service import azure_data_service
+            if azure_data_service.is_connected():
+                df_nomina = azure_data_service.get_gold_nomina(self.year, self.month)
+        except Exception:
+            df_nomina = None
+
+        if df_nomina is None or df_nomina.empty:
+            nomina_file = GOLD_DIR / f"fact_nomina_{self.year}_{self.month:02d}.parquet"
+            if not nomina_file.exists():
+                nomina_file = SILVER_DIR / "silver_employees.parquet"
+            df_nomina = pd.read_parquet(nomina_file) if nomina_file.exists() else pd.DataFrame()
 
         # 2. Temporales (EST / Jiro / Sigha)
-        temp_file = SILVER_DIR / "silver_temporales.parquet"
-        df_temp = pd.read_parquet(temp_file) if temp_file.exists() else pd.DataFrame()
+        df_temp = None
+        try:
+            from src.database.azure_data_service import azure_data_service
+            if azure_data_service.is_connected():
+                df_temp = azure_data_service.get_silver_temporales()
+        except Exception:
+            df_temp = None
+
+        if df_temp is None or df_temp.empty:
+            temp_file = SILVER_DIR / "silver_temporales.parquet"
+            df_temp = pd.read_parquet(temp_file) if temp_file.exists() else pd.DataFrame()
 
         return {"nomina": df_nomina, "temporales": df_temp}
 

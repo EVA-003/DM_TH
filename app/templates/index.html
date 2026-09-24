@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
   <title>Maaji Talent AI • Enterprise Suite</title>
   <!-- Tailwind CSS -->
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
@@ -3951,6 +3952,28 @@
       }
     }
 
+    function getAvatarSrc(url) {
+      if (!url || typeof url !== 'string' || url.trim() === '') return '';
+      const u = url.trim();
+      if (u.startsWith('http://') || u.startsWith('https://')) {
+        return `/api/avatar/proxy?url=${encodeURIComponent(u)}`;
+      }
+      return u;
+    }
+
+    async function loadTiData(year = currentPeriodYear, month = currentPeriodMonth) {
+      try {
+        const resTi = await fetch(`/api/ti/novedades?year=${year}&month=${month}`);
+        if (resTi.ok) {
+          rawTiData = await resTi.json();
+          renderTiTable();
+          if (typeof renderTiSpreadsheet === 'function' && currentTiViewMode === 'spreadsheet') {
+            renderTiSpreadsheet();
+          }
+        }
+      } catch(e) { console.error('Error loading TI data:', e); }
+    }
+
     function setTab(tabId) {
       ['nomina', 'vacaciones', 'ti', 'dane'].forEach(t => {
         const btn = document.getElementById('nav-' + t);
@@ -3960,6 +3983,7 @@
             btn.className = 'tab-btn-active w-full flex items-center justify-center space-x-2 py-3 px-3 rounded-xl text-xs font-extrabold text-center transition cursor-pointer';
             view.classList.remove('hidden');
             if (t === 'dane') loadDaneData(currentPeriodMonth);
+            if (t === 'ti') loadTiData(currentPeriodYear, currentPeriodMonth);
           } else {
             btn.className = 'tab-btn-inactive w-full flex items-center justify-center space-x-2 py-3 px-3 rounded-xl text-xs font-extrabold text-center transition cursor-pointer';
             view.classList.add('hidden');
@@ -6089,7 +6113,7 @@
         const fullName = `${r['(*) Nombre'] || ''} ${r['(*) Apellido'] || ''}`.trim();
         const initials = getInitials(fullName);
         const avatarHtml = r.picture_url && r.picture_url.trim() !== ''
-          ? `<img src="${r.picture_url}" alt="${fullName}" class="w-7 h-7 rounded-full object-cover border border-slate-200 shadow-xs flex-shrink-0" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-7 h-7 rounded-full bg-slate-900 text-[#E5F973] font-bold text-xs flex items-center justify-center flex-shrink-0\\'>${initials}</div>'">`
+          ? `<img src="${getAvatarSrc(r.picture_url)}" referrerpolicy="no-referrer" alt="${fullName}" class="w-7 h-7 rounded-full object-cover border border-slate-200 shadow-xs flex-shrink-0" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-7 h-7 rounded-full bg-slate-900 text-[#E5F973] font-bold text-xs flex items-center justify-center flex-shrink-0\\'>${initials}</div>'">`
           : `<div class="w-7 h-7 rounded-full bg-slate-900 text-[#E5F973] font-bold text-xs flex items-center justify-center flex-shrink-0">${initials}</div>`;
 
         return `
@@ -6525,7 +6549,7 @@
       tbody.innerHTML = data.map((r, idx) => {
         const initials = getInitials(r.nombre_completo);
         const avatarHtml = r.picture_url && r.picture_url.trim() !== ''
-          ? `<img src="${r.picture_url}" alt="${r.nombre_completo}" class="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-xs flex-shrink-0" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-8 h-8 rounded-full bg-slate-900 text-[#E5F973] font-bold text-xs flex items-center justify-center flex-shrink-0\\'>${initials}</div>'">`
+          ? `<img src="${getAvatarSrc(r.picture_url)}" referrerpolicy="no-referrer" alt="${r.nombre_completo}" class="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-xs flex-shrink-0" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-8 h-8 rounded-full bg-slate-900 text-[#E5F973] font-bold text-xs flex items-center justify-center flex-shrink-0\\'>${initials}</div>'">`
           : `<div class="w-8 h-8 rounded-full bg-slate-900 text-[#E5F973] font-bold text-xs flex items-center justify-center flex-shrink-0">${initials}</div>`;
 
         const tipoContrato = r.tipo_contrato || (r.fecha_retiro ? 'Término Fijo' : 'Indefinido');
@@ -7234,7 +7258,7 @@
       container.innerHTML = top4.map(l => {
         const initials = getInitials(l.supervisor_nombre);
         const avatarHtml = l.picture_url && l.picture_url.trim() !== ''
-          ? `<img src="${l.picture_url}" class="w-4 h-4 rounded-full object-cover">`
+          ? `<img src="${getAvatarSrc(l.picture_url)}" referrerpolicy="no-referrer" class="w-4 h-4 rounded-full object-cover">`
           : `<span class="w-4 h-4 rounded-full bg-slate-900 text-[#E5F973] text-[9px] font-bold flex items-center justify-center">${initials}</span>`;
         return `
           <button onclick="selectLeaderOption('${l.supervisor_nombre.replace(/'/g, "\\'")}')" class="bg-white hover:bg-amber-100/80 border border-amber-200 px-2.5 py-1 rounded-xl text-[11px] font-bold text-slate-900 flex items-center space-x-1.5 shadow-2xs transition cursor-pointer">
@@ -7355,7 +7379,7 @@
       tbody.innerHTML = filtered.map(r => {
         const initials = getInitials(r.nombre_completo);
         const avatarHtml = r.picture_url && r.picture_url.trim() !== ''
-          ? `<img src="${r.picture_url}" alt="${r.nombre_completo}" class="w-7 h-7 rounded-full object-cover border border-slate-200 shadow-xs flex-shrink-0" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-7 h-7 rounded-full bg-slate-900 text-[#E5F973] font-bold text-xs flex items-center justify-center flex-shrink-0\\'>${initials}</div>'">`
+          ? `<img src="${getAvatarSrc(r.picture_url)}" referrerpolicy="no-referrer" alt="${r.nombre_completo}" class="w-7 h-7 rounded-full object-cover border border-slate-200 shadow-xs flex-shrink-0" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-7 h-7 rounded-full bg-slate-900 text-[#E5F973] font-bold text-xs flex items-center justify-center flex-shrink-0\\'>${initials}</div>'">`
           : `<div class="w-7 h-7 rounded-full bg-slate-900 text-[#E5F973] font-bold text-xs flex items-center justify-center flex-shrink-0">${initials}</div>`;
 
         let planHtml = '';
@@ -7528,7 +7552,7 @@
       const avatarContainer = document.getElementById('selected-leader-avatar-container');
       if (avatarContainer) {
         if (leader.picture_url && leader.picture_url.trim() !== '') {
-          avatarContainer.innerHTML = `<img src="${leader.picture_url}" alt="${leader.supervisor_nombre}" class="w-9 h-9 rounded-full object-cover border border-amber-300 shadow-xs flex-shrink-0 ring-2 ring-amber-200/50" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-9 h-9 rounded-full bg-amber-100 text-amber-900 font-black text-xs flex items-center justify-center flex-shrink-0 ring-2 ring-amber-200/50\\'>${initials}</div>'">`;
+          avatarContainer.innerHTML = `<img src="${getAvatarSrc(leader.picture_url)}" referrerpolicy="no-referrer" alt="${leader.supervisor_nombre}" class="w-9 h-9 rounded-full object-cover border border-amber-300 shadow-xs flex-shrink-0 ring-2 ring-amber-200/50" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-9 h-9 rounded-full bg-amber-100 text-amber-900 font-black text-xs flex items-center justify-center flex-shrink-0 ring-2 ring-amber-200/50\\'>${initials}</div>'">`;
         } else {
           avatarContainer.innerHTML = `<div class="w-9 h-9 rounded-full bg-amber-100 text-amber-900 font-black text-xs flex items-center justify-center flex-shrink-0 ring-2 ring-amber-200/50">${initials}</div>`;
         }
@@ -7558,7 +7582,7 @@
         const isSelected = l.supervisor_nombre === selectedLeaderName;
         const initials = getInitials(l.supervisor_nombre);
         const avatarHtml = l.picture_url && l.picture_url.trim() !== ''
-          ? `<img src="${l.picture_url}" alt="${l.supervisor_nombre}" class="w-9 h-9 rounded-full object-cover border border-slate-200 shadow-xs flex-shrink-0" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-9 h-9 rounded-full ${isSelected ? 'bg-amber-700 text-white' : 'bg-amber-100 text-amber-900'} font-black text-xs flex items-center justify-center flex-shrink-0\\'>${initials}</div>'">`
+          ? `<img src="${getAvatarSrc(l.picture_url)}" referrerpolicy="no-referrer" alt="${l.supervisor_nombre}" class="w-9 h-9 rounded-full object-cover border border-slate-200 shadow-xs flex-shrink-0" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-9 h-9 rounded-full ${isSelected ? 'bg-amber-700 text-white' : 'bg-amber-100 text-amber-900'} font-black text-xs flex items-center justify-center flex-shrink-0\\'>${initials}</div>'">`
           : `<div class="w-9 h-9 rounded-full ${isSelected ? 'bg-amber-700 text-white' : 'bg-amber-100 text-amber-900'} font-black text-xs flex items-center justify-center flex-shrink-0 ring-1 ring-amber-300/40">${initials}</div>`;
 
         const pasivoFmt = l.total_pasivo ? `$${Math.round(l.total_pasivo).toLocaleString('es-CO')}` : '';

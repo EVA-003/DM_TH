@@ -26,9 +26,33 @@ class SilverTINovedadesProcessor:
 
     def generate_ti_template(self, year: int, month: int) -> pd.DataFrame:
         logger.info(f"Generando plantilla de novedades para TI ({year}-{month:02d})...")
-        
-        emp_parquet = self.silver_dir / "silver_employees.parquet"
-        df_emp = pd.read_parquet(emp_parquet)
+        self.outputs_dir.mkdir(parents=True, exist_ok=True)
+        self.silver_dir.mkdir(parents=True, exist_ok=True)
+
+        df_emp = None
+        try:
+            from src.database.azure_data_service import azure_data_service
+            if azure_data_service.is_connected():
+                df_emp = azure_data_service.get_silver_employees()
+        except Exception as e:
+            logger.warning(f"Error cargando silver employees desde Azure: {e}")
+            df_emp = None
+
+        if df_emp is None or df_emp.empty:
+            emp_parquet = self.silver_dir / "silver_employees.parquet"
+            if emp_parquet.exists():
+                df_emp = pd.read_parquet(emp_parquet)
+            else:
+                try:
+                    from src.processing.silver_employees import SilverEmployeesProcessor
+                    df_emp = SilverEmployeesProcessor().process()
+                except Exception as e:
+                    logger.error(f"Error procesando silver employees: {e}")
+                    raise FileNotFoundError("No se encontró silver_employees ni en Azure ni local.")
+
+        df_emp = df_emp.copy()
+        df_emp["fecha_ingreso_str"] = df_emp["fecha_ingreso"].fillna("").astype(str).str[:10]
+        df_emp["fecha_retiro_str"] = df_emp["fecha_retiro"].fillna("").astype(str).str[:10]
 
         start_month = f"{year}-{month:02d}-01"
         import calendar
@@ -37,19 +61,22 @@ class SilverTINovedadesProcessor:
 
         # Ingresos del mes
         df_ingresos = df_emp[
-            (df_emp["fecha_ingreso"] >= start_month) & 
-            (df_emp["fecha_ingreso"] <= end_month)
+            (df_emp["fecha_ingreso_str"] >= start_month) & 
+            (df_emp["fecha_ingreso_str"] <= end_month)
         ].copy()
         df_ingresos["movimiento"] = "INGRESO"
-        df_ingresos["fecha_movimiento"] = df_ingresos["fecha_ingreso"]
+        df_ingresos["fecha_movimiento"] = df_ingresos["fecha_ingreso_str"]
 
         # Retiros del mes
         df_retiros = df_emp[
-            (df_emp["fecha_retiro"] >= start_month) & 
-            (df_emp["fecha_retiro"] <= end_month)
+            (df_emp["fecha_retiro_str"] != "") &
+            (df_emp["fecha_retiro_str"] != "None") &
+            (df_emp["fecha_retiro_str"] != "nan") &
+            (df_emp["fecha_retiro_str"] >= start_month) & 
+            (df_emp["fecha_retiro_str"] <= end_month)
         ].copy()
         df_retiros["movimiento"] = "RETIRO"
-        df_retiros["fecha_movimiento"] = df_retiros["fecha_retiro"]
+        df_retiros["fecha_movimiento"] = df_retiros["fecha_retiro_str"]
 
         # Consolidar
         df_novedades = pd.concat([df_ingresos, df_retiros], ignore_index=True)
@@ -137,6 +164,11 @@ class SilverTINovedadesProcessor:
             ws.column_dimensions[col_letter].width = max(max_len + 3, 12)
 
         wb.save(out_excel)
+        try:
+            self.silver_dir.mkdir(parents=True, exist_ok=True)
+            df_ti.to_parquet(self.silver_dir / f"ti_novedades_{year}_{month:02d}.parquet", index=False)
+        except Exception:
+            pass
         logger.info(f"Plantilla para TI generada con estilos oficiales: {len(df_ti)} novedades en {out_excel.name}")
         return df_ti
 

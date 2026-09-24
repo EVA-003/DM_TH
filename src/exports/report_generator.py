@@ -28,11 +28,30 @@ class NominaReportGenerator:
 
     def generate_excel_report(self, year: int = 2026, month: int = 7, custom_columns: list = None) -> Path:
         from datetime import datetime
-        gold_path = self.gold_dir / f"fact_nomina_{year}_{month:02d}.parquet"
-        if not gold_path.exists():
-            raise FileNotFoundError(f"No se encontró la tabla Gold para {year}-{month:02d} en {gold_path}")
+        self.outputs_dir.mkdir(parents=True, exist_ok=True)
 
-        df = pd.read_parquet(gold_path).copy()
+        df = None
+        try:
+            from src.database.azure_data_service import azure_data_service
+            if azure_data_service.is_connected():
+                df = azure_data_service.get_gold_nomina(year, month)
+        except Exception as e:
+            logger.warning(f"Error cargando Gold desde Azure: {e}")
+            df = None
+
+        if df is None or df.empty:
+            gold_path = self.gold_dir / f"fact_nomina_{year}_{month:02d}.parquet"
+            if gold_path.exists():
+                df = pd.read_parquet(gold_path).copy()
+            else:
+                try:
+                    from src.datamart.gold_nomina import GoldNominaDatamart
+                    df = GoldNominaDatamart().generate_monthly_fact(year, month)
+                except Exception as e:
+                    logger.error(f"Error generando gold local: {e}")
+                    raise FileNotFoundError(f"No se encontró la tabla Gold para {year}-{month:02d} ni en Azure ni local.")
+        else:
+            df = df.copy()
 
         # Incorporar columnas dinámicas en el DataFrame si existen
         if custom_columns:
@@ -392,12 +411,16 @@ class NominaReportGenerator:
             else:
                 ws_cons.cell(r_i, 10, f"=SUM(B{r_i}:H{r_i})").number_format = "$#,##0"
 
-        # Guardar en outputs y en Downloads del usuario
+        # Guardar en outputs
         wb.save(output_excel)
-        dl_path = Path(r"C:\Users\oberrio\Downloads") / f"Informe_Gestion_Nomina_{year}_{month:02d}_Oficial.xlsx"
-        wb.save(dl_path)
-
-        logger.info(f"Libro oficial de nómina TH generado exitosamente en: {output_excel} y {dl_path}")
+        logger.info(f"Libro oficial de nómina TH generado exitosamente en: {output_excel}")
+        try:
+            dl_path = Path.home() / "Downloads" / f"Informe_Gestion_Nomina_{year}_{month:02d}_Oficial.xlsx"
+            if dl_path.parent.exists():
+                wb.save(dl_path)
+                logger.info(f"Copia guardada en carpeta Downloads: {dl_path}")
+        except Exception:
+            pass
         return output_excel
 
 
