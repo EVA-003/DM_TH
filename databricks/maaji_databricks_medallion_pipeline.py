@@ -48,7 +48,7 @@ GOLD_PATH   = f"abfss://{GOLD_CONTAINER}@{STORAGE_ACCOUNT}.dfs.core.windows.net/
 
 # 2. Widgets interactivos para ejecución dinámica en Databricks
 try:
-    dbutils.widgets.dropdown("mes_objetivo", "TODOS_2026", ["TODOS_2026", "2026-06", "2026-07", "2026-08"], "1. Período Objetivo")
+    dbutils.widgets.dropdown("mes_objetivo", "TODOS_2026", ["TODOS_2026", "2026-06", "2026-07", "2026-08", "2026-09"], "1. Período Objetivo")
     dbutils.widgets.dropdown("extraer_buk_api", "NO", ["NO", "SI"], "2. ¿Re-extraer Buk API en vivo?")
     dbutils.widgets.dropdown("modo_ejecucion", "PRODUCCION", ["PRODUCCION", "SIMULACION_AUMENTO_SALARIAL", "SIMULACION_HORAS_EXTRAS"], "3. Modo de Ejecución")
     dbutils.widgets.text("pct_simulacion", "10.0", "4. % Variación (Solo si es Simulación)")
@@ -147,7 +147,7 @@ except Exception as e:
 
 # COMMAND ----------
 if MES_OBJETIVO == "TODOS_2026":
-    PERIODOS = [(2026, 6), (2026, 7), (2026, 8)]
+    PERIODOS = [(2026, 6), (2026, 7), (2026, 8), (2026, 9)]
 else:
     y, m = MES_OBJETIVO.split("-")
     PERIODOS = [(int(y), int(m))]
