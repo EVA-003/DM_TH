@@ -272,7 +272,7 @@ class NominaReportGenerator:
             c_m.number_format = "$#,##0"
             c_m.border = border_thin
 
-            c_n = ws_nom.cell(excel_row, 14, f"=+(L{excel_row}/K{excel_row})-1")
+            c_n = ws_nom.cell(excel_row, 14, f"=IF(K{excel_row}>0, (L{excel_row}/K{excel_row})-1, 0)")
             c_n.number_format = "0.0%"
             c_n.border = border_thin
 
@@ -420,6 +420,24 @@ class NominaReportGenerator:
         hist_costo = {1: 1873414812, 2: 1889237257, 3: 1981171857, 4: 2097912389, 5: 1968619505, 6: 1973046587, 7: 1973046587}
         hist_mod = {1: 350456321, 2: 344105198, 3: 376152765, 4: 397337000, 5: 360190720, 6: 327982503, 7: 348794280}
         hist_moi = {1: 1522958491, 2: 1545132060, 3: 1606143092, 4: 1700575389, 5: 1608428785, 6: 1542365845, 7: 1446208429}
+
+        # Cargar métricas reales de Parquets Gold existentes para meses previos
+        for m_prev in range(1, 13):
+            if m_prev != month:
+                p_prev = self.gold_dir / f"fact_nomina_{year}_{m_prev:02d}.parquet"
+                if p_prev.exists():
+                    try:
+                        df_prev = pd.read_parquet(p_prev)
+                        hist_hc[m_prev] = len(df_prev)
+                        c_prev = float(df_prev["costo_total_empleador"].sum())
+                        hist_costo[m_prev] = round(c_prev)
+                        m_direct = float(df_prev[df_prev.get("clasificacion_mano_obra", pd.Series(dtype=str)) == "Directa"]["costo_total_empleador"].sum())
+                        if m_direct == 0:
+                            m_direct = float(df_prev[df_prev["cargo_nombre"].astype(str).str.contains("Confecci|Corte|Planta|Costura", case=False, na=False)]["costo_total_empleador"].sum())
+                        hist_mod[m_prev] = round(m_direct)
+                        hist_moi[m_prev] = round(c_prev - m_direct)
+                    except Exception as e:
+                        logger.warning(f"Error leyendo histórico para mes {m_prev}: {e}")
 
         # Calcular valores reales de MOD y MOI para el mes activo
         mod_val = int(df[df.get("clasificacion_mano_obra", pd.Series(dtype=str)) == "Directa"]["costo_total_empleador"].sum()) if "costo_total_empleador" in df.columns else 348794280

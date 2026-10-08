@@ -146,8 +146,9 @@
           <span class="text-slate-500 font-medium">Período:</span>
           <select id="global-period-select" onchange="switchPeriod(this.value)" class="bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg px-2 py-0.5 text-xs font-black text-slate-900 focus:ring-2 focus:ring-sky-500 cursor-pointer outline-none transition">
             <option value="2026-06">Junio 2026</option>
-            <option value="2026-07" selected>Julio 2026</option>
+            <option value="2026-07">Julio 2026</option>
             <option value="2026-08">Agosto 2026</option>
+            <option value="2026-09" selected>Septiembre 2026</option>
           </select>
         </div>
         <div onclick="triggerAzureSync()" class="glass-card hover:border-sky-400 px-3 py-1.5 rounded-xl flex items-center space-x-2 text-xs font-semibold cursor-pointer group transition" title="Hacer clic para sincronizar en caliente desde Azure Data Lake (stmaajidwhdev)">
@@ -3919,7 +3920,7 @@
       currentPeriodYear = parseInt(parts[0]);
       currentPeriodMonth = parseInt(parts[1]);
 
-      const monthNames = { 6: 'Junio', 7: 'Julio', 8: 'Agosto' };
+      const monthNames = { 6: 'Junio', 7: 'Julio', 8: 'Agosto', 9: 'Septiembre' };
       const mName = monthNames[currentPeriodMonth] || `Mes ${currentPeriodMonth}`;
 
       // Update header select if triggered externally
