@@ -123,7 +123,7 @@ class SilverEmployeesProcessor:
             salario_base = float(current_job.get("wage") or current_job.get("base_wage") or 0.0)
             fecha_ingreso = emp.get("active_since") or current_job.get("start_date")
             fecha_retiro = emp.get("active_until") or current_job.get("end_date")
-            contract_type = current_job.get("contract_type") or "Indefinido"
+            contract_type = current_job.get("type_of_contract") or current_job.get("contract_type") or "Indefinido"
 
             antiguedad = calcular_antiguedad_interna(str(fecha_ingreso), reference_date)
             clasif_mo = clasificar_mod_moi(role_name, area_name, location_name)

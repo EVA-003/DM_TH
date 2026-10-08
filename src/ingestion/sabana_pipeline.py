@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Pipeline de Ingesta y Agrupación de la Sábana de Conceptos de Buk.
 Extrae Comisiones, Horas Extras, Recargos y Auxilios agrupados por Cédula.
@@ -54,9 +54,13 @@ class SabanaPipeline:
                 return "comision"
             elif any(k in c for k in ["hora extra", "recargo", "ajuste hora extra"]):
                 return "hora_extra"
-            elif "auxilio de transporte" in c and "extralegal" not in c:
+            elif "auxilio de rodamiento" in c:
+                return "auxilio_rodamiento"
+            elif "auxilio de transporte extralegal" in c or "transporte extralegal" in c or "extralegal" in c:
+                return "auxilio_transporte_extralegal"
+            elif "auxilio de transporte" in c:
                 return "auxilio_transporte"
-            elif any(k in c for k in ["bono", "auxilio de rodamiento", "extralegal", "sostenimiento"]):
+            elif any(k in c for k in ["bono", "sostenimiento"]):
                 return "otros_devengados"
             return "otros"
 
@@ -70,6 +74,8 @@ class SabanaPipeline:
             comisiones = group[group["categoria"] == "comision"]["valor"].sum()
             horas_extras = group[group["categoria"] == "hora_extra"]["valor"].sum()
             aux_transporte = group[group["categoria"] == "auxilio_transporte"]["valor"].sum()
+            aux_rodamiento = group[group["categoria"] == "auxilio_rodamiento"]["valor"].sum()
+            aux_extralegal = group[group["categoria"] == "auxilio_transporte_extralegal"]["valor"].sum()
             otros = group[group["categoria"] == "otros_devengados"]["valor"].sum()
             cant_he_horas = group[group["categoria"] == "hora_extra"]["horas"].sum()
 
@@ -79,6 +85,8 @@ class SabanaPipeline:
                 "horas_extras": round(float(horas_extras), 2),
                 "cantidad_horas_extras": round(float(cant_he_horas), 2),
                 "auxilio_transporte": round(float(aux_transporte), 2),
+                "auxilio_rodamiento": round(float(aux_rodamiento), 2),
+                "auxilio_transporte_extralegal": round(float(aux_extralegal), 2),
                 "otros_devengados": round(float(otros), 2)
             })
 

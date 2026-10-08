@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Capa Gold: Generación del Datamart Dimensional de Gestión de Nómina Mensual.
 Integra colaboradores con la Sábana de Conceptos de Buk (Comisiones y Horas Extras).
@@ -68,19 +68,54 @@ class GoldNominaDatamart:
             df_activos["horas_extras"] = df_activos["horas_extras"].fillna(0.0)
             df_activos["cantidad_horas_extras"] = df_activos["cantidad_horas_extras"].fillna(0.0)
             df_activos["auxilio_transporte"] = df_activos["auxilio_transporte"].fillna(0.0)
+            df_activos["auxilio_rodamiento"] = df_activos.get("auxilio_rodamiento", pd.Series(0.0, index=df_activos.index)).fillna(0.0)
+            df_activos["auxilio_transporte_extralegal"] = df_activos.get("auxilio_transporte_extralegal", pd.Series(0.0, index=df_activos.index)).fillna(0.0)
             df_activos["otros_devengados"] = df_activos["otros_devengados"].fillna(0.0)
         else:
             df_activos["comisiones"] = 0.0
             df_activos["horas_extras"] = 0.0
             df_activos["cantidad_horas_extras"] = 0.0
             df_activos["auxilio_transporte"] = 0.0
+            df_activos["auxilio_rodamiento"] = 0.0
+            df_activos["auxilio_transporte_extralegal"] = 0.0
             df_activos["otros_devengados"] = 0.0
+
+        df_activos["administracion_temporal"] = 0.0
+
+        # Incorporar Personal Temporal Activo (EST) si existe
+        temp_path = self.silver_dir / "silver_temporales.parquet"
+        if temp_path.exists():
+            df_temp = pd.read_parquet(temp_path)
+            df_temp_activos = df_temp[df_temp["estado"] == "ACTIVO"].copy()
+            if not df_temp_activos.empty:
+                df_temp_activos["tipo_contrato"] = "Empresa de Servicios Temporales (EST)"
+                df_temp_activos["tarifa_arl_pct"] = 0.02436
+                df_temp_activos["periodo_anio"] = year
+                df_temp_activos["periodo_mes"] = month
+                df_temp_activos["periodo_corte"] = cutoff_date
+                df_temp_activos["comisiones"] = 0.0
+                df_temp_activos["horas_extras"] = 0.0
+                df_temp_activos["cantidad_horas_extras"] = 0.0
+                df_temp_activos["auxilio_rodamiento"] = 0.0
+                df_temp_activos["auxilio_transporte_extralegal"] = 0.0
+                df_temp_activos["auxilio_transporte"] = np.where(df_temp_activos["salario_base"] <= 3501810, 249100.0, 0.0)
+                df_temp_activos["administracion_temporal"] = (df_temp_activos["salario_base"] * 0.10).round(2)
+                df_temp_activos["otros_devengados"] = 0.0
+                df_temp_activos["clasificacion_mano_obra"] = np.where(
+                    df_temp_activos["area_nombre"].astype(str).str.contains("Planta|Corte|Costura", case=False, na=False),
+                    "Directa",
+                    "Indirecta"
+                )
+                df_activos = pd.concat([df_activos, df_temp_activos], ignore_index=True)
+                df_activos = df_activos.drop_duplicates(subset=["documento"], keep="first")
 
         # Totales devengados reales
         df_activos["total_devengado"] = (
             df_activos["salario_base"] +
             df_activos["comisiones"] +
             df_activos["horas_extras"] +
+            df_activos["auxilio_rodamiento"] +
+            df_activos["auxilio_transporte_extralegal"] +
             df_activos["otros_devengados"]
         ).round(2)
 
@@ -103,11 +138,24 @@ class GoldNominaDatamart:
             df_activos["seguridad_social_arl"]
         ).round(2)
 
-        df_activos["costo_total_empleador"] = (df_activos["total_devengado"] + df_activos["total_carga_prestacional"]).round(2)
+        df_activos["costo_total_empleador"] = (
+            df_activos["total_devengado"] + 
+            df_activos["total_carga_prestacional"] + 
+            df_activos["administracion_temporal"]
+        ).round(2)
 
         output_gold = self.gold_dir / f"fact_nomina_{year}_{month:02d}.parquet"
         df_activos.to_parquet(output_gold, index=False)
         logger.info(f"Datamart Gold generado: {len(df_activos)} colaboradores activos en {output_gold.name}")
+
+        try:
+            from src.database.azure_data_service import azure_data_service
+            if azure_data_service.is_connected():
+                azure_data_service.save_gold_nomina(df_activos, year, month)
+                logger.info(f"Datamart Gold sincronizado en Azure Data Lake: fact_nomina_{year}_{month:02d}.parquet")
+        except Exception as e:
+            logger.warning(f"No se pudo sincronizar Gold a Azure: {e}")
+
         return df_activos
 
 
