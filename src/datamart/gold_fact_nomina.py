@@ -82,13 +82,20 @@ class GoldNominaDatamart:
 
         df_activos["administracion_temporal"] = 0.0
 
-        # Incorporar Personal Temporal Activo (EST) si existe
+        # Incorporar Personal Temporal (EST) con vinculación en el mes
         temp_path = self.silver_dir / "silver_temporales.parquet"
         if temp_path.exists():
             df_temp = pd.read_parquet(temp_path)
-            df_temp_activos = df_temp[df_temp["estado"] == "ACTIVO"].copy()
+            df_temp["fi_dt"] = pd.to_datetime(df_temp["fecha_ingreso"], errors="coerce")
+            df_temp["fr_dt"] = pd.to_datetime(df_temp["fecha_retiro"], errors="coerce")
+            
+            # Incluir activos o retirados en el mismo mes consultado
+            cond_temp_activo = df_temp["estado"] == "ACTIVO"
+            cond_temp_retiro_mes = df_temp["fr_dt"].between(start_month_dt, cutoff_dt)
+            df_temp_activos = df_temp[cond_temp_activo | cond_temp_retiro_mes].copy()
+            
             if not df_temp_activos.empty:
-                df_temp_activos["tipo_contrato"] = "Empresa de Servicios Temporales (EST)"
+                df_temp_activos["tipo_contrato"] = "Obra o Labor"
                 df_temp_activos["tarifa_arl_pct"] = 0.02436
                 df_temp_activos["periodo_anio"] = year
                 df_temp_activos["periodo_mes"] = month
@@ -98,7 +105,7 @@ class GoldNominaDatamart:
                 df_temp_activos["cantidad_horas_extras"] = 0.0
                 df_temp_activos["auxilio_rodamiento"] = 0.0
                 df_temp_activos["auxilio_transporte_extralegal"] = 0.0
-                df_temp_activos["auxilio_transporte"] = np.where(df_temp_activos["salario_base"] <= 3501810, 249100.0, 0.0)
+                df_temp_activos["auxilio_transporte"] = np.where(df_temp_activos["salario_base"] <= 3501810, 249095.0, 0.0)
                 df_temp_activos["administracion_temporal"] = (df_temp_activos["salario_base"] * 0.10).round(2)
                 df_temp_activos["otros_devengados"] = 0.0
                 df_temp_activos["clasificacion_mano_obra"] = np.where(

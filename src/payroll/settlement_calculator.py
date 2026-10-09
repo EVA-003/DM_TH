@@ -18,7 +18,7 @@ GOLD_DIR = BASE_DIR / "data" / "gold"
 SILVER_DIR = BASE_DIR / "data" / "silver"
 
 SMMLV_2026 = 1750905.0
-AUX_TRANSPORTE_2026 = 249100.0
+AUX_TRANSPORTE_2026 = 249095.0
 
 
 class SettlementCalculator:

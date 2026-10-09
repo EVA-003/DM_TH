@@ -21,7 +21,7 @@ from src.exports.report_generator import NominaReportGenerator
 AJUSTES_FILE = SILVER_DIR / "adjustments_workflow.json"
 
 SMMLV_2026 = 1750905.0
-AUX_TRANSPORTE_2026 = 249100.0
+AUX_TRANSPORTE_2026 = 249095.0
 
 
 class AdjustmentManager:

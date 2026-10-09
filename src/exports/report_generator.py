@@ -71,6 +71,7 @@ class NominaReportGenerator:
         df.reset_index(drop=True, inplace=True)
 
         wb = openpyxl.Workbook()
+        wb.calculation.fullCalcOnLoad = True
 
         # Estilos corporativos Maaji
         font_bold = Font(name="Calibri", size=10, bold=True)
@@ -148,7 +149,7 @@ class NominaReportGenerator:
         # Parámetros salariales y Auxilio de transporte
         ws_datos.cell(13, 6, "Auxilio de transporte").font = font_bold
         ws_datos.cell(13, 9, 200000).number_format = "$#,##0"
-        ws_datos.cell(13, 10, 249100).number_format = "$#,##0" # J13 = 249,100
+        ws_datos.cell(13, 10, 249095).number_format = "$#,##0" # J13 = 249,095
 
         ws_datos.cell(14, 6, "SMMLV").font = font_bold
         ws_datos.cell(14, 9, 1423500).number_format = "$#,##0"
@@ -158,7 +159,7 @@ class NominaReportGenerator:
         ws_datos.cell(3, 16, 1750905).number_format = "$#,##0"
 
         ws_datos.cell(19, 1, "Auxilio Transporte Legal ").font = font_bold
-        ws_datos.cell(19, 2, 249100).number_format = "$#,##0"
+        ws_datos.cell(19, 2, 249095).number_format = "$#,##0"
 
         # -------------------------------------------------------------------------
         # 2. HOJA: Nomina {Mes} (33 Columnas Oficiales TH + Auditoría HE)
@@ -205,8 +206,7 @@ class NominaReportGenerator:
             "Total Hora Extra ",                     # Col AD (30)
             "Total Comisiones ",                     # Col AE (31)
             "Total 2026 Costo Maaji",                # Col AF (32)
-            "Total 2026 Devengado",                  # Col AG (33)
-            "Auditoría Legal HE (CST Art. 159)"      # Col AH (34)
+            "Total 2026 Devengado"                   # Col AG (33)
         ]
 
         header_fill = PatternFill(start_color="1E293B", end_color="1E293B", fill_type="solid")
@@ -360,11 +360,6 @@ class NominaReportGenerator:
             c_ag.font = font_bold
             c_ag.border = border_thin
 
-            # Col AH (34): Auditoría Legal Horas Extras
-            c_ah = ws_nom.cell(excel_row, 34, f'=IF(AD{excel_row}>=650000, "⚠️ Alerta Legal (>12h/sem)", "✅ Conforme CST")')
-            c_ah.alignment = Alignment(horizontal="center")
-            c_ah.border = border_thin
-
         # Fila de Totales
         tot_row = len(df) + 2
         ws_nom.cell(tot_row, 4, "TOTAL GENERAL").font = font_bold
@@ -378,7 +373,7 @@ class NominaReportGenerator:
             c_tot.fill = PatternFill(start_color="F1F5F9", end_color="F1F5F9", fill_type="solid")
             c_tot.border = Border(top=Side(style="thin"), bottom=Side(style="double"))
 
-        for c in range(1, 35):
+        for c in range(1, 34):
             col_letter = get_column_letter(c)
             ws_nom.column_dimensions[col_letter].width = 16
         ws_nom.column_dimensions["B"].width = 15
@@ -392,7 +387,6 @@ class NominaReportGenerator:
         ws_nom.column_dimensions["AC"].width = 22
         ws_nom.column_dimensions["AF"].width = 22
         ws_nom.column_dimensions["AG"].width = 20
-        ws_nom.column_dimensions["AH"].width = 26
 
         # -------------------------------------------------------------------------
         # 3. HOJA: Consolidado (Evolución Headcount y Costos Dinámica)
@@ -492,10 +486,27 @@ class NominaReportGenerator:
         # Guardar en outputs
         wb.save(output_excel)
         logger.info(f"Libro oficial de nómina TH generado exitosamente en: {output_excel}")
+
+        # Precalcular con Excel COM en Windows para cachear valores de fórmulas (<v> tags)
         try:
+            import win32com.client as win32
+            excel_app = win32.gencache.EnsureDispatch('Excel.Application')
+            excel_app.Visible = False
+            excel_app.DisplayAlerts = False
+            wb_com = excel_app.Workbooks.Open(str(output_excel.resolve()))
+            wb_com.Application.CalculateFull()
+            wb_com.Save()
+            wb_com.Close(SaveChanges=True)
+            excel_app.Quit()
+            logger.info("Fórmulas de prestaciones y totales precalculadas y cacheadas con Excel COM.")
+        except Exception as e:
+            logger.debug(f"Excel COM pre-calculation omitido: {e}")
+
+        try:
+            import shutil
             dl_path = Path.home() / "Downloads" / f"Informe_Gestion_Nomina_{year}_{month:02d}_Oficial.xlsx"
             if dl_path.parent.exists():
-                wb.save(dl_path)
+                shutil.copy(output_excel, dl_path)
                 logger.info(f"Copia guardada en carpeta Downloads: {dl_path}")
         except Exception:
             pass
