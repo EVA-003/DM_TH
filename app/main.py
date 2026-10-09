@@ -72,25 +72,38 @@ def load_gold_data(year: int = 2026, month: int = 7) -> pd.DataFrame:
         else:
             df = pd.read_parquet(path)
 
-    # 3. Integrar temporales desde Azure o local
-    df_temp = None
-    if azure_data_service.is_connected():
-        try:
-            df_temp = azure_data_service.get_silver_temporales()
-        except Exception:
-            df_temp = None
+    # 3. Integrar temporales solo si no están ya presentes en el datamart del mes
+    has_temporales = ("tipo_contrato" in df.columns) and (df["tipo_contrato"].astype(str).str.contains("Obra", na=False).any())
+    if not has_temporales:
+        import calendar
+        _, last_day = calendar.monthrange(year, month)
+        start_month_dt = pd.to_datetime(f"{year}-{month:02d}-01")
+        cutoff_dt = pd.to_datetime(f"{year}-{month:02d}-{last_day:02d}")
 
-    if df_temp is None:
-        temp_path = SILVER_DIR / "silver_temporales.parquet"
-        if temp_path.exists():
-            df_temp = pd.read_parquet(temp_path)
+        df_temp = None
+        if azure_data_service.is_connected():
+            try:
+                df_temp = azure_data_service.get_silver_temporales()
+            except Exception:
+                df_temp = None
 
-    if df_temp is not None and not df_temp.empty:
-        df_temp = df_temp.copy()
-        df_temp["total_devengado"] = df_temp["salario_base"]
-        df_temp["total_carga_prestacional"] = (df_temp["salario_base"] * 0.38).round(2)
-        df_temp["costo_total_empleador"] = (df_temp["salario_base"] + df_temp["total_carga_prestacional"]).round(2)
-        df = pd.concat([df, df_temp], ignore_index=True).drop_duplicates(subset=["documento"], keep="first")
+        if df_temp is None:
+            temp_path = SILVER_DIR / "silver_temporales.parquet"
+            if temp_path.exists():
+                df_temp = pd.read_parquet(temp_path)
+
+        if df_temp is not None and not df_temp.empty:
+            df_temp = df_temp.copy()
+            df_temp["fi_dt"] = pd.to_datetime(df_temp["fecha_ingreso"], errors="coerce")
+            df_temp["fr_dt"] = pd.to_datetime(df_temp["fecha_retiro"], errors="coerce")
+            cond_vigente = (df_temp["fi_dt"] <= cutoff_dt) & (df_temp["fr_dt"].isna() | (df_temp["fr_dt"] >= start_month_dt))
+            df_temp_vigente = df_temp[cond_vigente].copy()
+            if not df_temp_vigente.empty:
+                df_temp_vigente["tipo_contrato"] = "Obra o Labor"
+                df_temp_vigente["total_devengado"] = df_temp_vigente["salario_base"]
+                df_temp_vigente["total_carga_prestacional"] = (df_temp_vigente["salario_base"] * 0.38).round(2)
+                df_temp_vigente["costo_total_empleador"] = (df_temp_vigente["salario_base"] + df_temp_vigente["total_carga_prestacional"]).round(2)
+                df = pd.concat([df, df_temp_vigente], ignore_index=True).drop_duplicates(subset=["documento"], keep="first")
 
     _CACHE_GOLD[cache_key] = df
     return df
@@ -261,6 +274,16 @@ async def get_auditoria(year: int = 2026, month: int = 7):
 async def get_nomina_anomalies(year: int = 2026, month: int = 7):
     engine = NominaAuditEngine()
     return engine.scan_anomalies(year, month)
+
+
+@app.get("/api/payroll/preflight-audit")
+async def get_preflight_audit(year: int = 2026, month: int = 9):
+    """
+    Auditoría Pre-Flight dinámica de cierre de nómina y comparativa MoM.
+    Diseñado para la revisión de Sebastián Gómez y la reunión mensual con el Director General.
+    """
+    engine = NominaAuditEngine()
+    return engine.run_preflight_audit(year, month)
 
 
 @app.get("/api/nomina")

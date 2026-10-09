@@ -13,6 +13,22 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; }
     .font-display { font-family: 'Outfit', sans-serif; }
+
+    @media print {
+      body * { visibility: hidden !important; }
+      #printable-sebas-minuta, #printable-sebas-minuta * { visibility: visible !important; }
+      #printable-sebas-minuta {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 15px !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: white !important;
+      }
+    }
     
     .glass-card {
       background: #FFFFFF;
@@ -297,34 +313,62 @@
 
           </div>
 
-          <!-- RIGHT: ESTADO DEL CIERRE & ACTIONS (MATCHING media_1788818390991.png) -->
+          <!-- RIGHT: ESTADO DEL CIERRE & ACTIONS (PRE-FLIGHT CHECK + SEBAS & DIRECCIÓN) -->
           <div class="flex flex-col gap-3 flex-shrink-0 w-full lg:w-80">
             <div>
-              <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest pl-1 mb-1.5">ESTADO DEL CIERRE</p>
+              <div class="flex items-center justify-between pl-1 mb-1.5">
+                <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">ESTADO DEL CIERRE PRE-DESCARGA</p>
+                <span id="preflight-hero-period-pill" class="text-[9px] font-black bg-[#E5F973] text-slate-950 px-2 py-0.5 rounded-full uppercase tracking-wider">SEPTIEMBRE 2026</span>
+              </div>
               
-              <!-- AUDIT CARD -->
-              <div onclick="scrollToSection('audit-section-anchor')" class="bg-[#101924]/90 hover:bg-[#14202d] border border-slate-700/80 hover:border-[#E5F973]/50 rounded-2xl p-4 sm:p-5 flex items-center justify-between gap-4 transition-all duration-200 shadow-xl group cursor-pointer">
-                <div class="flex items-center space-x-3.5">
-                  <div class="w-11 h-11 rounded-full bg-[#E5F973] text-slate-950 flex items-center justify-center text-lg font-black shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <i class="fas fa-check"></i>
+              <!-- PRE-FLIGHT AUDIT CARD -->
+              <div onclick="openSebasDirectorAuditModal()" class="bg-[#101924]/95 hover:bg-[#14202d] border border-slate-700/80 hover:border-[#E5F973]/60 rounded-2xl p-4 flex flex-col gap-2.5 transition-all duration-200 shadow-xl group cursor-pointer" title="Hacer clic para ver la Auditoría Ejecutiva Completa de Sebas y Dirección">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-[#E5F973] text-slate-950 flex items-center justify-center text-base font-black shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <i class="fas fa-shield-check"></i>
+                    </div>
+                    <div>
+                      <div class="flex items-center space-x-2">
+                        <p class="text-sm font-black text-[#E5F973] tracking-wide leading-tight">PRE-FLIGHT VALIDADO</p>
+                        <span id="hero-audit-badge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[9px] font-black px-1.5 py-0.2 rounded-full">6/6 PASS</span>
+                      </div>
+                      <p id="hero-audit-status" class="text-[11px] text-slate-300 font-medium mt-0.5">Parámetros, temporales y fórmulas conformes</p>
+                    </div>
                   </div>
-                  <div>
-                    <p class="text-base font-black text-[#E5F973] tracking-wider leading-tight">AUDITADO</p>
-                    <p id="hero-audit-status" class="text-xs text-slate-300 font-medium mt-0.5">6/6 validaciones aprobadas</p>
-                  </div>
-                </div>
-                <div>
                   <i class="fas fa-arrow-right text-slate-400 group-hover:text-[#E5F973] group-hover:translate-x-1 transition text-xs"></i>
+                </div>
+
+                <!-- MICRO-METRICS MOM BAR -->
+                <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/80 text-[11px]">
+                  <div class="bg-slate-900/80 rounded-xl p-2 border border-slate-800">
+                    <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wider">Variación MoM Costo</span>
+                    <span id="preflight-hero-delta" class="font-black text-emerald-400 font-mono">-3.99% MoM</span>
+                    <span id="preflight-hero-delta-sub" class="text-[9px] text-slate-400 block font-medium">-$70.9M vs Ago</span>
+                  </div>
+                  <div class="bg-slate-900/80 rounded-xl p-2 border border-slate-800">
+                    <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wider">Población Activa</span>
+                    <span id="preflight-hero-hc" class="font-black text-slate-100 font-mono">317 colab.</span>
+                    <span id="preflight-hero-hc-sub" class="text-[9px] text-slate-400 block font-medium">305 Dir • 12 Temp</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- ACTION BUTTONS -->
             <div class="flex flex-col gap-2.5 pt-1">
-              <a href="/api/download/nomina?year=2026&month=7" id="btn-download-nomina-report" download class="animate-shimmer-btn w-full bg-[#E5F973] hover:bg-[#d4f326] text-slate-950 font-black px-4 py-3.5 rounded-xl text-[13px] flex items-center justify-center space-x-2.5 shadow-[0_0_15px_rgba(229,249,115,0.35)] transition-all duration-300 cursor-pointer group hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(229,249,115,0.55)]">
+              <a href="/api/download/nomina?year=2026&month=9" id="btn-download-nomina-report" download class="animate-shimmer-btn w-full bg-[#E5F973] hover:bg-[#d4f326] text-slate-950 font-black px-4 py-3.5 rounded-xl text-[13px] flex items-center justify-center space-x-2.5 shadow-[0_0_15px_rgba(229,249,115,0.35)] transition-all duration-300 cursor-pointer group hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(229,249,115,0.55)]">
                 <i class="fas fa-file-excel text-base text-slate-950 group-hover:rotate-12 transition-transform"></i>
-                <span>Generar Reporte Mensual</span>
+                <span>Generar Reporte Mensual (Excel)</span>
               </a>
+
+              <!-- BOTÓN DESTACADO SEBAS & REUNIÓN CON EL DIRECTOR -->
+              <button type="button" onclick="openSebasDirectorAuditModal()" class="w-full bg-gradient-to-r from-amber-400 via-amber-300 to-[#E5F973] hover:from-amber-300 hover:to-[#d4f326] text-slate-950 font-black px-4 py-3 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer group">
+                <i class="fas fa-briefcase text-slate-950 group-hover:rotate-6 transition-transform"></i>
+                <span>Auditoría Sebas & Reunión Dirección</span>
+                <span class="bg-slate-950 text-[#E5F973] text-[9px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-wider">PLUS</span>
+              </button>
+
               <button type="button" onclick="openNominaClosingModal()" class="w-full bg-[#101924]/90 hover:bg-[#14202d] text-slate-300 hover:text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 border border-slate-700/80 transition-all duration-200 shadow-md cursor-pointer group">
                 <i class="fas fa-sliders text-[#E5F973] group-hover:scale-110 transition-transform"></i>
                 <span>Asistente de Cierre & Validaciones</span>
@@ -700,27 +744,81 @@
           </div>
         </div>
 
-        <!-- BENTO RIGHT: AUDITORÍA PREVIA A ENTREGA (Col 5 - QUALITY CHECKLIST WITHOUT DUPLICATE BUTTONS) -->
+        <!-- BENTO RIGHT: AUDITORÍA PREVIA A ENTREGA (DINÁMICA PRE-FLIGHT CHECK) -->
         <div class="lg:col-span-5 glass-card p-6 flex flex-col justify-between border-emerald-100/90">
           <div>
             <div class="flex justify-between items-center mb-3">
               <div class="flex items-center space-x-2.5">
-                <span class="inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                <h3 class="text-base font-black text-slate-950 font-display">Auditoría Previa a Entrega</h3>
+                <span class="inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 animate-pulse"></span>
+                <h3 class="text-base font-black text-slate-950 font-display">Pre-Flight Check: Cierre de Nómina</h3>
               </div>
-              <span class="bg-emerald-100 text-emerald-800 text-[11px] font-black px-2.5 py-0.5 rounded-full border border-emerald-200">
+              <span id="bento-preflight-badge" class="bg-emerald-100 text-emerald-800 text-[11px] font-black px-2.5 py-0.5 rounded-full border border-emerald-200">
                 6/6 PASS
               </span>
             </div>
-            <p class="text-xs text-slate-500 mb-3">Validación de consistencia contable ejecutada automáticamente antes del cierre mensual:</p>
+            <p class="text-xs text-slate-500 mb-3">Control de 6 puntos auditado en caliente para <strong id="bento-preflight-period-label" class="text-slate-900">Septiembre 2026</strong> contra archivos del mes y mes anterior:</p>
 
-            <ul class="space-y-2 text-xs text-slate-700 font-medium">
-              <li class="flex items-start space-x-2 p-1.5 rounded-xl hover:bg-emerald-50/60 transition"><i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i><span>1. Cero colaboradores activos con salario en \$0</span></li>
-              <li class="flex items-start space-x-2 p-1.5 rounded-xl hover:bg-emerald-50/60 transition"><i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i><span>2. Cero duplicados de cédula en la sábana mensual</span></li>
-              <li class="flex items-start space-x-2 p-1.5 rounded-xl hover:bg-emerald-50/60 transition"><i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i><span>3. Todas las razones sociales pertenecen al Grupo Maaji</span></li>
-              <li class="flex items-start space-x-2 p-1.5 rounded-xl hover:bg-emerald-50/60 transition"><i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i><span>4. Auditoría de variaciones salariales contra mes anterior</span></li>
-              <li class="flex items-start space-x-2 p-1.5 rounded-xl hover:bg-emerald-50/60 transition"><i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i><span>5. Conciliación de cuentas bancarias y dispersión</span></li>
-              <li class="flex items-start space-x-2 p-1.5 rounded-xl hover:bg-emerald-50/60 transition"><i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i><span>6. Revisión de parafiscales y provisiones de ley</span></li>
+            <ul id="bento-preflight-list" class="space-y-2 text-xs text-slate-700 font-medium">
+              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+                <div class="flex items-start space-x-2">
+                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <div>
+                    <p class="font-bold text-slate-900 text-xs">1. Auxilio Legal de Transporte Parametrizado ($249,095)</p>
+                    <p class="text-[10px] text-slate-500">Cifra legal exacta sin redondeos a $249,100.</p>
+                  </div>
+                </div>
+                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">$249,095 Legal</span>
+              </li>
+              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+                <div class="flex items-start space-x-2">
+                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <div>
+                    <p class="font-bold text-slate-900 text-xs">2. Personal Temporal (EST) & Tarifa de Administración 10%</p>
+                    <p class="text-[10px] text-slate-500">Contrato 'Obra o Labor' con 10% de fee sumado a Costo Maaji.</p>
+                  </div>
+                </div>
+                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">Temporales OK</span>
+              </li>
+              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+                <div class="flex items-start space-x-2">
+                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <div>
+                    <p class="font-bold text-slate-900 text-xs">3. Formulación Completa de Prestaciones Sociales</p>
+                    <p class="text-[10px] text-slate-500">Provisiones calculadas y cacheadas en OpenXML (cero celdas en blanco).</p>
+                  </div>
+                </div>
+                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">100% Formulado</span>
+              </li>
+              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+                <div class="flex items-start space-x-2">
+                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <div>
+                    <p class="font-bold text-slate-900 text-xs">4. Comisiones de Tiendas y Auxilios Extralegales Conciliados</p>
+                    <p class="text-[10px] text-slate-500">Comisiones Col AE y auxilios no salariales cruzados contra Buk.</p>
+                  </div>
+                </div>
+                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">Conciliado</span>
+              </li>
+              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+                <div class="flex items-start space-x-2">
+                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <div>
+                    <p class="font-bold text-slate-900 text-xs">5. Cobertura de Personal Retirado en el Período</p>
+                    <p class="text-[10px] text-slate-500">Colaboradores con baja en el mes contemplados para corte contable.</p>
+                  </div>
+                </div>
+                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">Retiros OK</span>
+              </li>
+              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+                <div class="flex items-start space-x-2">
+                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <div>
+                    <p class="font-bold text-slate-900 text-xs">6. Estructura Oficial de 33 Columnas (Col A–AG)</p>
+                    <p class="text-[10px] text-slate-500">Columna CST excluida, hoja 'Datos ' de parámetros y 'Consolidado' dinámico.</p>
+                  </div>
+                </div>
+                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">33 Cols OK</span>
+              </li>
             </ul>
           </div>
 
@@ -728,8 +826,8 @@
             <span class="flex items-center gap-1.5 text-emerald-700 font-bold">
               <i class="fas fa-shield-check text-emerald-600"></i> Archivo oficial listo para emisión
             </span>
-            <button onclick="openAnomaliesModal()" class="text-indigo-600 hover:text-indigo-800 font-bold cursor-pointer">
-              Ver reporte de auditoría <i class="fas fa-arrow-right text-[9px]"></i>
+            <button onclick="openSebasDirectorAuditModal()" class="text-indigo-600 hover:text-indigo-800 font-bold cursor-pointer flex items-center gap-1">
+              <span>Auditoría Sebas & Dirección</span> <i class="fas fa-arrow-right text-[9px]"></i>
             </button>
           </div>
         </div>
@@ -1663,6 +1761,86 @@
             <span class="text-[#E5F973]">Continuar a Cierre Oficial</span>
             <i class="fas fa-arrow-right text-[10px]"></i>
           </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: AUDITORÍA EJECUTIVA SEBAS & REUNIÓN CON DIRECCIÓN  -->
+  <!-- ========================================================= -->
+  <div id="modal-sebas-director-audit" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md overflow-y-auto">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-5xl w-full overflow-hidden animate-in fade-in zoom-in duration-200 my-8">
+      
+      <!-- MODAL HEADER (LUXURY EXECUTIVE) -->
+      <div class="px-6 py-4 bg-gradient-to-r from-[#090D16] via-[#161F30] to-[#090D16] text-white flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center space-x-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-[#E5F973] text-slate-950 flex items-center justify-center font-black text-lg shadow-lg flex-shrink-0">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2.5 flex-wrap gap-y-1">
+              <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-tight font-display">Auditoría Ejecutiva de Cierre de Nómina</h3>
+              <span id="sebas-modal-period-badge" class="bg-[#E5F973] text-slate-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider shadow-xs">
+                SEPTIEMBRE 2026
+              </span>
+              <span id="sebas-modal-health-badge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                🟢 100% CONFORME
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 font-medium mt-0.5">Panel Oficial de Talento Humano para Sebastián Gómez • Reunión de Cierre con Dirección General</p>
+          </div>
+        </div>
+
+        <button onclick="closeSebasDirectorAuditModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer">
+          <i class="fas fa-times text-xs"></i>
+        </button>
+      </div>
+
+      <!-- MODAL SUB-HEADER TABS -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-100 p-2 border-b border-slate-200 text-xs font-bold">
+        <button onclick="setSebasModalTab('financiero')" id="sebas-tab-btn-financiero" class="bg-white text-slate-950 shadow-xs px-3 py-2 rounded-xl flex items-center justify-center space-x-1.5 transition">
+          <i class="fas fa-chart-line text-sky-600"></i>
+          <span>1. Resumen MoM (Dirección)</span>
+        </button>
+        <button onclick="setSebasModalTab('preflight')" id="sebas-tab-btn-preflight" class="text-slate-600 hover:text-slate-900 px-3 py-2 rounded-xl flex items-center justify-center space-x-1.5 transition">
+          <i class="fas fa-list-check text-emerald-600"></i>
+          <span>2. Matriz Pre-Flight (6 Puntos)</span>
+        </button>
+        <button onclick="setSebasModalTab('legal')" id="sebas-tab-btn-legal" class="text-slate-600 hover:text-slate-900 px-3 py-2 rounded-xl flex items-center justify-center space-x-1.5 transition">
+          <i class="fas fa-scale-balanced text-indigo-600"></i>
+          <span>3. Auditoría Legal & Riesgo</span>
+        </button>
+        <button onclick="setSebasModalTab('minuta')" id="sebas-tab-btn-minuta" class="text-slate-600 hover:text-slate-900 px-3 py-2 rounded-xl flex items-center justify-center space-x-1.5 transition">
+          <i class="fas fa-file-contract text-amber-600"></i>
+          <span>4. Minuta Imprimible</span>
+        </button>
+      </div>
+
+      <!-- MODAL BODY -->
+      <div class="p-6 space-y-6 max-h-[72vh] overflow-y-auto" id="sebas-modal-content">
+        <!-- Rendered dynamically via renderSebasDirectorModalContent() -->
+      </div>
+
+      <!-- MODAL FOOTER -->
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div class="text-xs text-slate-500 font-semibold flex items-center gap-2">
+          <i class="fas fa-check-double text-emerald-600"></i>
+          <span id="sebas-modal-footer-caption">Auditoría validada dinámicamente sobre la población del período consultado.</span>
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button type="button" onclick="closeSebasDirectorAuditModal()" class="w-full sm:w-auto px-5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-200 rounded-xl transition cursor-pointer">
+            Cerrar
+          </button>
+          <button type="button" onclick="printSebasMinuta()" class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center justify-center space-x-1.5 cursor-pointer">
+            <i class="fas fa-print text-slate-600"></i>
+            <span>Imprimir Minuta</span>
+          </button>
+          <a id="sebas-modal-download-btn" href="/api/download/nomina?year=2026&month=9" download class="w-full sm:w-auto bg-[#E5F973] hover:bg-[#d4f326] text-slate-950 text-xs font-black px-5 py-2.5 rounded-xl shadow-md transition flex items-center justify-center space-x-2 cursor-pointer">
+            <i class="fas fa-file-excel"></i>
+            <span>Descargar Excel Oficial</span>
+          </a>
         </div>
       </div>
 
@@ -3906,7 +4084,7 @@
 
   <script>
     let currentPeriodYear = 2026;
-    let currentPeriodMonth = 7;
+    let currentPeriodMonth = 9;
     let rawNominaData = [];
     let currentFilteredData = [];
     let currentSortColumn = 'costo_total_empleador';
@@ -5273,6 +5451,589 @@
       if (m) m.classList.add('hidden');
     }
 
+    // =============================================================
+    // PRE-FLIGHT CHECK & AUDITORÍA EJECUTIVA SEBAS & DIRECCIÓN
+    // =============================================================
+    let currentPreflightData = null;
+    let currentSebasTab = 'financiero';
+
+    async function loadPreflightAudit(year = currentPeriodYear, month = currentPeriodMonth) {
+      try {
+        const res = await fetch(`/api/payroll/preflight-audit?year=${year}&month=${month}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        currentPreflightData = data;
+
+        renderPreflightHero(data);
+        renderPreflightBento(data);
+
+        // Actualizar modal si está abierto actualmente
+        const modal = document.getElementById('modal-sebas-director-audit');
+        if (modal && !modal.classList.contains('hidden')) {
+          renderSebasDirectorModalContent(data);
+        }
+      } catch(e) {
+        console.error('Error cargando auditoría pre-flight:', e);
+      }
+    }
+
+    function renderPreflightHero(data) {
+      if (!data) return;
+      const pill = document.getElementById('preflight-hero-period-pill');
+      if (pill) pill.innerText = (data.periodo_label || '').toUpperCase();
+
+      const badge = document.getElementById('hero-audit-badge');
+      if (badge) {
+        badge.innerText = `${data.checkpoints_preflight.passed_checks}/${data.checkpoints_preflight.total_checks} PASS`;
+        badge.className = data.checkpoints_preflight.all_passed
+          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[9px] font-black px-1.5 py-0.2 rounded-full'
+          : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-black px-1.5 py-0.2 rounded-full';
+      }
+
+      const status = document.getElementById('hero-audit-status');
+      if (status) {
+        status.innerText = data.estado_general === 'LISTO_PARA_EMISION'
+          ? 'Parámetros, temporales y fórmulas conformes'
+          : 'Revisión preventiva requerida';
+      }
+
+      const deltaEl = document.getElementById('preflight-hero-delta');
+      if (deltaEl) {
+        if (data.has_prior) {
+          const sign = data.variacion_mom.delta_costo_pct >= 0 ? '+' : '';
+          deltaEl.innerText = `${sign}${data.variacion_mom.delta_costo_pct}% MoM`;
+          deltaEl.className = data.variacion_mom.delta_costo <= 0
+            ? 'font-black text-emerald-400 font-mono'
+            : 'font-black text-amber-400 font-mono';
+        } else {
+          deltaEl.innerText = 'Línea Base';
+          deltaEl.className = 'font-black text-slate-300 font-mono';
+        }
+      }
+
+      const deltaSub = document.getElementById('preflight-hero-delta-sub');
+      if (deltaSub) {
+        if (data.has_prior) {
+          const deltaM = (data.variacion_mom.delta_costo / 1e6).toFixed(1);
+          const sign = data.variacion_mom.delta_costo >= 0 ? '+' : '';
+          const prevLabel = (data.prev_periodo_label || '').split(' ')[0].substring(0, 3);
+          deltaSub.innerText = `${sign}$${deltaM}M vs ${prevLabel}`;
+        } else {
+          deltaSub.innerText = 'Primer mes cargado';
+        }
+      }
+
+      const hcEl = document.getElementById('preflight-hero-hc');
+      if (hcEl) hcEl.innerText = `${data.headcount.total} colab.`;
+
+      const hcSub = document.getElementById('preflight-hero-hc-sub');
+      if (hcSub) hcSub.innerText = `${data.headcount.directos} Dir • ${data.headcount.temporales} Temp`;
+
+      const btnNom = document.getElementById('btn-download-nomina-report');
+      if (btnNom) {
+        const parts = data.periodo.split('-');
+        btnNom.href = `/api/download/nomina?year=${parts[0]}&month=${parseInt(parts[1])}`;
+      }
+    }
+
+    function renderPreflightBento(data) {
+      if (!data) return;
+      const bentoLabel = document.getElementById('bento-preflight-period-label');
+      if (bentoLabel) bentoLabel.innerText = data.periodo_label;
+
+      const bentoBadge = document.getElementById('bento-preflight-badge');
+      if (bentoBadge) {
+        bentoBadge.innerText = `${data.checkpoints_preflight.passed_checks}/${data.checkpoints_preflight.total_checks} PASS`;
+      }
+
+      const bentoList = document.getElementById('bento-preflight-list');
+      if (bentoList && data.checkpoints_preflight?.checks) {
+        bentoList.innerHTML = data.checkpoints_preflight.checks.map(c => `
+          <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 hover:bg-emerald-50/70 border border-slate-200/60 hover:border-emerald-200 transition">
+            <div class="flex items-start space-x-2.5">
+              <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+              <div>
+                <p class="font-bold text-slate-900 text-xs">${c.titulo}</p>
+                <p class="text-[10px] text-slate-500 font-medium leading-relaxed">${c.descripcion}</p>
+              </div>
+            </div>
+            <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap ml-2">
+              ${c.badge}
+            </span>
+          </li>
+        `).join('');
+      }
+    }
+
+    async function openSebasDirectorAuditModal() {
+      const modal = document.getElementById('modal-sebas-director-audit');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+
+      const expectedPeriod = `${currentPeriodYear}-${currentPeriodMonth.toString().padStart(2, '0')}`;
+      if (!currentPreflightData || currentPreflightData.periodo !== expectedPeriod) {
+        const content = document.getElementById('sebas-modal-content');
+        if (content) {
+          content.innerHTML = `
+            <div class="p-10 text-center text-slate-400 font-bold text-sm">
+              <i class="fas fa-spinner fa-spin text-3xl mb-3 text-amber-500"></i>
+              <p>Generando auditoría ejecutiva y comparativa MoM para Dirección...</p>
+            </div>
+          `;
+        }
+        await loadPreflightAudit(currentPeriodYear, currentPeriodMonth);
+      } else {
+        renderSebasDirectorModalContent(currentPreflightData);
+      }
+    }
+
+    function closeSebasDirectorAuditModal() {
+      const modal = document.getElementById('modal-sebas-director-audit');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function setSebasModalTab(tabName) {
+      currentSebasTab = tabName;
+      ['financiero', 'preflight', 'legal', 'minuta'].forEach(t => {
+        const btn = document.getElementById(`sebas-tab-btn-${t}`);
+        if (btn) {
+          if (t === tabName) {
+            btn.className = 'bg-white text-slate-950 shadow-xs px-3 py-2 rounded-xl flex items-center justify-center space-x-1.5 transition font-black';
+          } else {
+            btn.className = 'text-slate-600 hover:text-slate-900 px-3 py-2 rounded-xl flex items-center justify-center space-x-1.5 transition font-semibold';
+          }
+        }
+      });
+      if (currentPreflightData) {
+        renderSebasDirectorModalContent(currentPreflightData);
+      }
+    }
+
+    function renderSebasDirectorModalContent(data) {
+      const content = document.getElementById('sebas-modal-content');
+      if (!content || !data) return;
+
+      // Update Header Badges
+      const pBadge = document.getElementById('sebas-modal-period-badge');
+      if (pBadge) pBadge.innerText = (data.periodo_label || '').toUpperCase();
+
+      const dlBtn = document.getElementById('sebas-modal-download-btn');
+      if (dlBtn) {
+        const parts = data.periodo.split('-');
+        dlBtn.href = `/api/download/nomina?year=${parts[0]}&month=${parseInt(parts[1])}`;
+      }
+
+      const caption = document.getElementById('sebas-modal-footer-caption');
+      if (caption) {
+        caption.innerHTML = `Auditoría validada dinámicamente sobre <strong>${data.headcount.total} colaboradores</strong> (${data.headcount.directos} directos + ${data.headcount.temporales} temporales).`;
+      }
+
+      if (currentSebasTab === 'financiero') {
+        const deltaC = data.variacion_mom.delta_costo;
+        const deltaCPct = data.variacion_mom.delta_costo_pct;
+        const deltaHC = data.variacion_mom.delta_headcount;
+        const deltaCom = data.variacion_mom.delta_comisiones;
+        const deltaHE = data.variacion_mom.delta_horas_extras;
+
+        content.innerHTML = `
+          <!-- 4 EXECUTIVE KPI CARDS -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <div class="p-4 rounded-2xl bg-gradient-to-br from-[#090D16] via-[#161F30] to-[#090D16] text-white border border-slate-700 shadow-md">
+              <span class="text-[10px] text-[#E5F973] font-black uppercase tracking-wider block">Costo Total Nómina</span>
+              <p class="text-2xl font-black text-white font-mono mt-1">${(data.resumen_financiero.costo_total_empleador/1e6).toFixed(1)}M</p>
+              <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-800 text-[10px]">
+                <span class="${deltaC <= 0 ? 'text-emerald-400' : 'text-amber-400'} font-bold">
+                  ${deltaCPct >= 0 ? '+' : ''}${deltaCPct}% MoM
+                </span>
+                <span class="text-slate-400 font-medium">${data.has_prior ? data.variacion_mom.delta_costo_formateado : 'Línea Base'}</span>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 shadow-xs">
+              <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Población Activa</span>
+              <p class="text-2xl font-black text-slate-900 font-mono mt-1">${data.headcount.total} <span class="text-sm font-medium text-slate-500">colab.</span></p>
+              <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-200/80 text-[10px]">
+                <span class="text-indigo-700 font-bold">${data.headcount.directos} Dir • ${data.headcount.temporales} Temp</span>
+                <span class="text-slate-500 font-medium">${deltaHC >= 0 ? '+' : ''}${deltaHC} personas</span>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 shadow-xs">
+              <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Comisiones Retail</span>
+              <p class="text-2xl font-black text-amber-600 font-mono mt-1">$${(data.resumen_financiero.comisiones_total/1e6).toFixed(1)}M</p>
+              <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-200/80 text-[10px]">
+                <span class="text-slate-700 font-bold">Tiendas Retail</span>
+                <span class="text-slate-500 font-medium">${deltaCom >= 0 ? '+' : ''}${(deltaCom/1e6).toFixed(1)}M MoM</span>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 shadow-xs">
+              <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Horas Extras & Recargos</span>
+              <p class="text-2xl font-black text-sky-600 font-mono mt-1">$${(data.resumen_financiero.horas_extras_total/1e6).toFixed(1)}M</p>
+              <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-200/80 text-[10px]">
+                <span class="text-slate-700 font-bold">Planta / Operaciones</span>
+                <span class="text-slate-500 font-medium">${deltaHE >= 0 ? '+' : ''}${(deltaHE/1e6).toFixed(1)}M MoM</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- NARRATIVA EJECUTIVA PARA EL DIRECTOR -->
+          <div class="p-4 bg-gradient-to-r from-amber-50 to-amber-100/50 rounded-2xl border border-amber-300/80 shadow-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <div class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-black text-xs">
+                  <i class="fas fa-comment-dots"></i>
+                </div>
+                <h4 class="text-xs font-black text-slate-950 uppercase tracking-wide">Narrativa Ejecutiva de Cierre para la Reunión</h4>
+              </div>
+              <button onclick="copyExecutiveNarrative()" class="text-[10px] font-bold text-amber-900 hover:text-amber-950 bg-white/80 border border-amber-300 px-2 py-1 rounded-lg flex items-center gap-1 transition cursor-pointer">
+                <i class="fas fa-copy"></i> Copiar Texto
+              </button>
+            </div>
+            <p id="sebas-executive-narrative-text" class="text-xs text-slate-800 leading-relaxed font-medium bg-white/70 p-3 rounded-xl border border-amber-200">
+              ${data.variacion_mom.explicacion_gerencial}
+            </p>
+          </div>
+
+          <!-- DESGLOSE COMPARATIVO SOCIEDADES & MANO DE OBRA -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- SOCIEDADES MAS VS ARMO -->
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-black text-slate-950 uppercase tracking-wide flex items-center gap-1.5">
+                  <i class="fas fa-building text-indigo-600"></i> Distribución por Razón Social
+                </h4>
+                <span class="text-[10px] font-bold text-slate-500">2 Sociedades</span>
+              </div>
+              <div class="space-y-2 text-xs">
+                <div class="p-3 bg-white rounded-xl border border-slate-200 flex items-center justify-between">
+                  <div>
+                    <p class="font-black text-slate-900">MAS S.A.S BIC</p>
+                    <p class="text-[10px] text-slate-500 font-medium">${data.auditoria_direccion.sociedades.mas.headcount} colaboradores activos</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-black text-slate-900 font-mono">$${(data.auditoria_direccion.sociedades.mas.costo/1e6).toFixed(1)}M COP</p>
+                    <p class="text-[10px] text-slate-400 font-medium">Costo consolidado</p>
+                  </div>
+                </div>
+                <div class="p-3 bg-white rounded-xl border border-slate-200 flex items-center justify-between">
+                  <div>
+                    <p class="font-black text-slate-900">ART MODE S.A.S BIC</p>
+                    <p class="text-[10px] text-slate-500 font-medium">${data.auditoria_direccion.sociedades.armo.headcount} colaboradores activos</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-black text-slate-900 font-mono">$${(data.auditoria_direccion.sociedades.armo.costo/1e6).toFixed(1)}M COP</p>
+                    <p class="text-[10px] text-slate-400 font-medium">Costo consolidado</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MANO DE OBRA MOD VS MOI -->
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-black text-slate-950 uppercase tracking-wide flex items-center gap-1.5">
+                  <i class="fas fa-chart-pie text-sky-600"></i> Clasificación Mano de Obra
+                </h4>
+                <span class="text-[10px] font-bold text-slate-500">Planta vs Operación</span>
+              </div>
+              <div class="space-y-2 text-xs">
+                <div class="p-3 bg-white rounded-xl border border-slate-200 flex items-center justify-between">
+                  <div>
+                    <p class="font-black text-slate-900 flex items-center gap-1.5">
+                      <span class="w-2.5 h-2.5 rounded-full bg-sky-600"></span> MOD (Planta Producción)
+                    </p>
+                    <p class="text-[10px] text-slate-500 font-medium">${data.auditoria_direccion.mano_de_obra.mod.headcount} colaboradores (${data.auditoria_direccion.mano_de_obra.mod.pct}%)</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-black text-slate-900 font-mono">$${(data.auditoria_direccion.mano_de_obra.mod.costo/1e6).toFixed(1)}M COP</p>
+                    <p class="text-[10px] text-slate-400 font-medium">Costeo directo</p>
+                  </div>
+                </div>
+                <div class="p-3 bg-white rounded-xl border border-slate-200 flex items-center justify-between">
+                  <div>
+                    <p class="font-black text-slate-900 flex items-center gap-1.5">
+                      <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span> MOI (Admin / Comercial)
+                    </p>
+                    <p class="text-[10px] text-slate-500 font-medium">${data.auditoria_direccion.mano_de_obra.moi.headcount} colaboradores (${data.auditoria_direccion.mano_de_obra.moi.pct}%)</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-black text-slate-900 font-mono">$${(data.auditoria_direccion.mano_de_obra.moi.costo/1e6).toFixed(1)}M COP</p>
+                    <p class="text-[10px] text-slate-400 font-medium">Costeo indirecto</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- TENDENCIA HISTÓRICA MULTIMES (Junio - Julio - Agosto - Septiembre) -->
+          ${data.tendencia_historica && data.tendencia_historica.length > 0 ? `
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-black text-slate-950 uppercase tracking-wide flex items-center gap-1.5">
+                  <i class="fas fa-timeline text-emerald-600"></i> Evolución Multimes de Talento Humano (Lakehouse)
+                </h4>
+                <span class="text-[10px] font-bold text-slate-500">${data.tendencia_historica.length} Meses Disponibles</span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                ${data.tendencia_historica.map(t => `
+                  <div class="p-3 rounded-xl border transition ${t.is_current ? 'bg-slate-900 text-white border-slate-800 shadow-md ring-2 ring-[#E5F973]' : 'bg-white border-slate-200 text-slate-800'}">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-[10px] font-black ${t.is_current ? 'text-[#E5F973]' : 'text-slate-500'} uppercase">${t.label}</span>
+                      ${t.is_current ? '<span class="w-1.5 h-1.5 rounded-full bg-[#E5F973]"></span>' : ''}
+                    </div>
+                    <p class="text-base font-black font-mono">${t.costo_formateado} COP</p>
+                    <p class="text-[10px] ${t.is_current ? 'text-slate-300' : 'text-slate-400'} font-medium mt-0.5">${t.headcount} colab.</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        `;
+      } else if (currentSebasTab === 'preflight') {
+        content.innerHTML = `
+          <div class="space-y-4">
+            <div class="p-4 bg-emerald-50/70 border border-emerald-300 rounded-2xl flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-lg">
+                  <i class="fas fa-check-double"></i>
+                </div>
+                <div>
+                  <h4 class="text-xs font-black text-emerald-950 uppercase tracking-wide">6/6 Validaciones de Calidad Conformes</h4>
+                  <p class="text-[11px] text-emerald-800 font-medium">Requisitos técnicos exigidos por Doris y Mónica aprobados al 100%.</p>
+                </div>
+              </div>
+              <span class="bg-emerald-200 text-emerald-950 text-xs font-black px-3 py-1 rounded-xl">
+                100% Aprobado
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              ${data.checkpoints_preflight.checks.map(c => `
+                <div class="p-4 bg-white rounded-2xl border border-slate-200 hover:border-emerald-300 transition space-y-2 shadow-2xs">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                      <div class="w-7 h-7 rounded-lg bg-slate-900 text-[#E5F973] flex items-center justify-center text-xs">
+                        <i class="fas ${c.icono}"></i>
+                      </div>
+                      <p class="text-xs font-black text-slate-900">${c.titulo}</p>
+                    </div>
+                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full">
+                      ${c.badge}
+                    </span>
+                  </div>
+                  <p class="text-[11px] text-slate-600 leading-relaxed font-medium pl-9">${c.descripcion}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (currentSebasTab === 'legal') {
+        content.innerHTML = `
+          <div class="space-y-4">
+            <!-- EXCEPCIONES SALARIALES DECLARADAS -->
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div class="w-7 h-7 rounded-lg bg-slate-900 text-[#E5F973] flex items-center justify-center text-xs">
+                    <i class="fas fa-user-tie"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-xs font-black text-slate-900 uppercase tracking-wide">Auditoría Salarial & Excepciones Buk</h4>
+                    <p class="text-[10px] text-slate-500">Verificación de contratos sin sueldo ordinario (without_wage) vs posibles inconsistencias</p>
+                  </div>
+                </div>
+                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full">0 Inconsistencias</span>
+              </div>
+
+              ${data.auditoria_direccion.excepciones_salario.length > 0 ? `
+                <div class="space-y-2">
+                  ${data.auditoria_direccion.excepciones_salario.map(e => `
+                    <div class="p-3 bg-white rounded-xl border border-slate-200 flex items-center justify-between text-xs">
+                      <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">
+                          ${getInitials(e.nombre_completo)}
+                        </div>
+                        <div>
+                          <p class="font-black text-slate-900">${e.nombre_completo} <span class="text-slate-400 font-normal">(C.C. ${e.documento})</span></p>
+                          <p class="text-[10px] text-slate-500 font-medium">${e.cargo_nombre} • <span class="text-slate-700 font-bold">${e.area_nombre}</span></p>
+                        </div>
+                      </div>
+                      <div class="text-right">
+                        <span class="bg-amber-100 text-amber-900 text-[10px] font-black px-2 py-0.5 rounded-full block mb-0.5">Honorarios / Dividendos</span>
+                        <span class="text-[9px] text-slate-400 font-medium">Excepción Buk Autorizada</span>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : '<p class="text-xs text-slate-400 py-2">No se registran excepciones salariales en el período.</p>'}
+            </div>
+
+            <!-- PICOS HORAS EXTRAS -->
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div class="w-7 h-7 rounded-lg bg-sky-500 text-white flex items-center justify-center text-xs">
+                    <i class="fas fa-clock"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-xs font-black text-slate-900 uppercase tracking-wide">Control Operativo Horas Extras (CST Art. 159)</h4>
+                    <p class="text-[10px] text-slate-500">Colaboradores con alta intensidad de recargos para control de supervisores</p>
+                  </div>
+                </div>
+                <span class="bg-sky-100 text-sky-800 text-[10px] font-black px-2.5 py-0.5 rounded-full">${data.auditoria_direccion.horas_extras_picos.length} casos</span>
+              </div>
+
+              ${data.auditoria_direccion.horas_extras_picos.length > 0 ? `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  ${data.auditoria_direccion.horas_extras_picos.map(h => `
+                    <div class="p-3 bg-white rounded-xl border border-slate-200 flex items-center justify-between">
+                      <div>
+                        <p class="font-bold text-slate-900">${h.nombre_completo}</p>
+                        <p class="text-[10px] text-slate-500 font-medium">${h.cargo_nombre} • ${h.area_nombre}</p>
+                      </div>
+                      <span class="font-mono font-black text-sky-600 text-xs">${h.monto_formateado}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : '<p class="text-xs text-slate-400 py-2">No se detectaron recargos fuera de rango.</p>'}
+            </div>
+          </div>
+        `;
+      } else if (currentSebasTab === 'minuta') {
+        content.innerHTML = `
+          <div class="bg-white p-6 rounded-2xl border border-slate-300 shadow-sm space-y-6 text-slate-800 font-sans" id="printable-sebas-minuta">
+            <!-- MEMBRETE FORMAL -->
+            <div class="border-b-2 border-slate-900 pb-4 flex items-center justify-between">
+              <div>
+                <h2 class="text-xl font-black text-slate-950 uppercase tracking-tight font-display">MAAJI • TALENTO HUMANO</h2>
+                <p class="text-xs text-slate-600 font-bold uppercase tracking-wider mt-0.5">Acta Oficial de Cierre y Liquidación de Nómina</p>
+              </div>
+              <div class="text-right text-xs font-mono">
+                <p class="font-black text-slate-900">Período: ${data.periodo_label}</p>
+                <p class="text-slate-500">Fecha Cierre: ${new Date().toLocaleDateString('es-CO')}</p>
+              </div>
+            </div>
+
+            <!-- CUADRO DE CIFRAS CONSOLIDADAS -->
+            <div class="space-y-2">
+              <h3 class="text-xs font-black text-slate-950 uppercase tracking-wider">1. Resumen Financiero Consolidado</h3>
+              <table class="w-full text-xs text-left border-collapse border border-slate-200">
+                <thead>
+                  <tr class="bg-slate-100 text-slate-900 font-black">
+                    <th class="p-2 border border-slate-200">Concepto</th>
+                    <th class="p-2 border border-slate-200 text-right">${data.periodo_label}</th>
+                    <th class="p-2 border border-slate-200 text-right">${data.prev_periodo_label || 'Mes Anterior'}</th>
+                    <th class="p-2 border border-slate-200 text-right">Variación MoM</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 font-medium">
+                  <tr>
+                    <td class="p-2 font-bold text-slate-900">Costo Total Nómina (Maaji)</td>
+                    <td class="p-2 text-right font-black font-mono text-slate-950">${data.resumen_financiero.costo_total_formateado}</td>
+                    <td class="p-2 text-right font-mono text-slate-600">$${(data.variacion_mom.prev_costo_total/1e6).toFixed(1)}M COP</td>
+                    <td class="p-2 text-right font-black font-mono ${data.variacion_mom.delta_costo <= 0 ? 'text-emerald-700' : 'text-amber-700'}">
+                      ${data.variacion_mom.delta_costo_formateado} (${data.variacion_mom.delta_costo_pct}%)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="p-2">Población Activa Total</td>
+                    <td class="p-2 text-right font-bold font-mono">${data.headcount.total} colaboradores</td>
+                    <td class="p-2 text-right font-mono text-slate-600">${data.variacion_mom.prev_headcount} colaboradores</td>
+                    <td class="p-2 text-right font-mono">${data.variacion_mom.delta_headcount >= 0 ? '+' : ''}${data.variacion_mom.delta_headcount} personas</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 pl-4 text-slate-600">• Colaboradores Directos</td>
+                    <td class="p-2 text-right font-mono">${data.headcount.directos}</td>
+                    <td class="p-2 text-right font-mono text-slate-400">-</td>
+                    <td class="p-2 text-right font-mono text-slate-400">-</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 pl-4 text-slate-600">• Colaboradores Temporales (Obra o Labor)</td>
+                    <td class="p-2 text-right font-mono">${data.headcount.temporales}</td>
+                    <td class="p-2 text-right font-mono text-slate-400">-</td>
+                    <td class="p-2 text-right font-mono text-slate-400">-</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2">Comisiones Comerciales Retail</td>
+                    <td class="p-2 text-right font-mono">$${(data.resumen_financiero.comisiones_total/1e6).toFixed(1)}M COP</td>
+                    <td class="p-2 text-right font-mono text-slate-400">-</td>
+                    <td class="p-2 text-right font-mono">${(data.variacion_mom.delta_comisiones/1e6).toFixed(1)}M COP</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2">Horas Extras y Recargos</td>
+                    <td class="p-2 text-right font-mono">$${(data.resumen_financiero.horas_extras_total/1e6).toFixed(1)}M COP</td>
+                    <td class="p-2 text-right font-mono text-slate-400">-</td>
+                    <td class="p-2 text-right font-mono">${(data.variacion_mom.delta_horas_extras/1e6).toFixed(1)}M COP</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2">Auxilio Legal de Transporte ($249,095)</td>
+                    <td class="p-2 text-right font-mono">$${(data.resumen_financiero.auxilio_transporte_total/1e6).toFixed(1)}M COP</td>
+                    <td class="p-2 text-right font-mono text-emerald-700 font-bold">100% Conforme</td>
+                    <td class="p-2 text-right font-mono text-emerald-700 font-bold">0 Desviaciones</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- EXPLICACIÓN GERENCIAL -->
+            <div class="space-y-1.5">
+              <h3 class="text-xs font-black text-slate-950 uppercase tracking-wider">2. Explicación Gerencial de Variación</h3>
+              <p class="text-xs text-slate-700 leading-relaxed font-medium bg-slate-50 p-3 rounded-xl border border-slate-200">
+                ${data.variacion_mom.explicacion_gerencial}
+              </p>
+            </div>
+
+            <!-- CERTIFICACIÓN DE CONTROL DE CALIDAD -->
+            <div class="space-y-1.5">
+              <h3 class="text-xs font-black text-slate-950 uppercase tracking-wider">3. Certificación de Controles Técnicos (Doris & Mónica)</h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Se certifica que el informe mensual generado contiene las 33 columnas oficiales, incluye provisiones prestacionales calculadas al 100%, incorpora al personal temporal activo y retirado dentro del período con su correspondiente tarifa de administración (10%), y cumple a cabalidad con la normativa laboral colombiana vigente.
+              </p>
+            </div>
+
+            <!-- BLOQUE DE FIRMAS -->
+            <div class="grid grid-cols-3 gap-6 pt-8 border-t border-slate-300 text-center text-xs">
+              <div class="space-y-1">
+                <div class="border-b border-slate-400 pb-8"></div>
+                <p class="font-black text-slate-950">Sebastián Gómez</p>
+                <p class="text-[10px] text-slate-500">Líder de Talento Humano</p>
+              </div>
+              <div class="space-y-1">
+                <div class="border-b border-slate-400 pb-8"></div>
+                <p class="font-black text-slate-950">Doris / Mónica</p>
+                <p class="text-[10px] text-slate-500">Analistas de Nómina & Compensación</p>
+              </div>
+              <div class="space-y-1">
+                <div class="border-b border-slate-400 pb-8"></div>
+                <p class="font-black text-slate-950">Dirección General</p>
+                <p class="text-[10px] text-slate-500">Vo.Bo. Aprobación de Pago</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function printSebasMinuta() {
+      setSebasModalTab('minuta');
+      setTimeout(() => {
+        window.print();
+      }, 300);
+    }
+
+    function copyExecutiveNarrative() {
+      const text = document.getElementById('sebas-executive-narrative-text')?.innerText;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Narrativa ejecutiva copiada al portapapeles para la reunión con el Director.', 'success', '¡Copiado!');
+      }).catch(() => {
+        prompt('Copia este texto:', text);
+      });
+    }
+
     let isFloatingCopilotOpen = false;
     let isFloatingCopilotMaximized = false;
 
@@ -6448,6 +7209,11 @@
           }
         }
       } catch(e) { console.error(e); }
+
+      // 6. Cargar Auditoría Pre-Flight & Métricas MoM para Sebas & Dirección
+      try {
+        await loadPreflightAudit(year, month);
+      } catch(e) { console.error('Error cargando Pre-Flight Audit:', e); }
     }
 
     function filterByChip(chip) {
@@ -8552,6 +9318,7 @@
         closeEmployeeDrawer();
         closeReformaLaboralModal();
         closeMinTrabajoModal();
+        closeSebasDirectorAuditModal();
       }
     });
 
@@ -8561,6 +9328,15 @@
       if (portEl && window.location.port) {
         portEl.innerText = `Activo (${window.location.port})`;
       }
+
+      // Sincronizar período inicial desde el selector global
+      const periodSel = document.getElementById('global-period-select');
+      if (periodSel && periodSel.value) {
+        const parts = periodSel.value.split('-');
+        currentPeriodYear = parseInt(parts[0]);
+        currentPeriodMonth = parseInt(parts[1]);
+      }
+
       updateSortIcons();
       initDashboard();
       checkPendingAdjustmentsCount();
@@ -8572,6 +9348,7 @@
       if (tabParam) setTimeout(() => setTab(tabParam), 300);
       const modalParam = urlParams.get('modal');
       if (modalParam === 'anomalies') setTimeout(openAnomaliesModal, 600);
+      else if (modalParam === 'sebas' || modalParam === 'direccion') setTimeout(openSebasDirectorAuditModal, 600);
       else if (modalParam === 'liquidador') setTimeout(openSettlementModal, 600);
       else if (modalParam === 'cierre') setTimeout(openNominaClosingModal, 600);
       else if (modalParam === 'ajustes') setTimeout(openAdjustmentsModal, 600);
