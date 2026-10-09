@@ -401,86 +401,86 @@
       </div>
 
       <!-- 5 VIBRANT KPI CARDS -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
         
         <!-- CARD 1: POBLACION ACTIVA -->
-        <div onclick="filterByChip('ALL'); scrollToSection('explorador-section-anchor');" class="glass-card card-accent-emerald p-5 relative overflow-hidden group hover:border-emerald-300 transition-all duration-300 shadow-xs cursor-pointer" title="Total de colaboradores activos en Buk">
-          <div class="flex items-center justify-between mb-3">
+        <div onclick="filterByChip('ALL'); scrollToSection('explorador-section-anchor');" class="glass-card card-accent-emerald p-4 sm:p-4.5 relative overflow-hidden group hover:border-emerald-300 transition-all duration-300 shadow-xs cursor-pointer" title="Total de colaboradores activos en Buk">
+          <div class="flex items-center justify-between mb-2.5">
             <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider flex items-center gap-1">
               Población Activa <i class="fas fa-circle-question text-slate-300 text-[10px]"></i>
             </span>
-            <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 flex items-center justify-center text-base shadow-xs group-hover:scale-110 transition-transform">
+            <div class="w-8.5 h-8.5 rounded-xl bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 flex items-center justify-center text-sm shadow-xs group-hover:scale-105 transition-transform">
               <i class="fas fa-users-viewfinder"></i>
             </div>
           </div>
-          <p id="kpi-headcount" class="text-3xl font-black text-slate-950 font-display tracking-tight">772</p>
-          <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100/90">
-            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-800 bg-emerald-100/90 border border-emerald-200/60 px-2 py-0.5 rounded-full">
-              <i class="fas fa-arrow-trend-up text-[10px]"></i> <span id="kpi-altas-sub">+13 altas</span>
+          <p id="kpi-headcount" class="text-2xl sm:text-[28px] font-black text-slate-950 font-display tracking-tight leading-none">772</p>
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-100/90">
+            <span class="inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-800 bg-emerald-100/90 border border-emerald-200/60 px-2 py-0.5 rounded-full">
+              <i class="fas fa-arrow-trend-up text-[9px]"></i> <span id="kpi-altas-sub">+13 altas</span>
             </span>
-            <span id="kpi-sub-headcount" class="text-[11px] text-slate-500 font-bold">320 MAS • 452 ART</span>
+            <span id="kpi-sub-headcount" class="text-[10px] text-slate-500 font-bold">320 MAS • 452 ART</span>
           </div>
         </div>
 
         <!-- CARD 2: MASA SALARIAL BASE -->
-        <div class="glass-card card-accent-sky p-5 relative overflow-hidden group hover:border-sky-300 transition-all duration-300 shadow-xs" title="Suma total de salarios básicos contractuales del personal activo">
-          <div class="flex items-center justify-between mb-3">
+        <div class="glass-card card-accent-sky p-4 sm:p-4.5 relative overflow-hidden group hover:border-sky-300 transition-all duration-300 shadow-xs" title="Suma total de salarios básicos contractuales del personal activo">
+          <div class="flex items-center justify-between mb-2.5">
             <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider flex items-center gap-1">
               Masa Salarial Base <i class="fas fa-circle-question text-slate-300 text-[10px]"></i>
             </span>
-            <div class="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-700 border border-sky-500/20 flex items-center justify-center text-base shadow-xs group-hover:scale-110 transition-transform">
+            <div class="w-8.5 h-8.5 rounded-xl bg-sky-500/10 text-sky-700 border border-sky-500/20 flex items-center justify-center text-sm shadow-xs group-hover:scale-105 transition-transform">
               <i class="fas fa-wallet"></i>
             </div>
           </div>
-          <p id="kpi-salario" class="text-3xl font-black text-slate-950 font-display tracking-tight">$1,657.6M</p>
-          <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100/90">
-            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold text-sky-800 bg-sky-100/90 border border-sky-200/60 px-2 py-0.5 rounded-full" title="Variación contra Junio 2026 por altas del mes">
-              <i class="fas fa-arrow-trend-up text-[10px]"></i> +3.4% MoM
+          <p id="kpi-salario" class="text-2xl sm:text-[28px] font-black text-slate-950 font-display tracking-tight leading-none">$1,657.6M</p>
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-100/90">
+            <span class="inline-flex items-center gap-1 text-[10px] font-extrabold text-sky-800 bg-sky-100/90 border border-sky-200/60 px-2 py-0.5 rounded-full" title="Variación contra periodo anterior">
+              <i class="fas fa-arrow-trend-up text-[9px]"></i> +3.4% MoM
             </span>
-            <span id="kpi-sub-salario" class="text-[11px] text-slate-500 font-bold">Prom: $2.1M</span>
+            <span id="kpi-sub-salario" class="text-[10px] text-slate-500 font-bold">Prom: $2.1M</span>
           </div>
         </div>
 
         <!-- CARD 3: COMISIONES & EXTRAS -->
-        <div onclick="filterByAnomaly('comisiones'); scrollToSection('explorador-section-anchor');" class="glass-card card-accent-amber p-5 relative overflow-hidden group hover:border-amber-300 transition-all duration-300 shadow-xs cursor-pointer" title="Total de comisiones comerciales y horas extras liquidadas en Buk">
-          <div class="flex items-center justify-between mb-3">
+        <div onclick="filterByAnomaly('comisiones'); scrollToSection('explorador-section-anchor');" class="glass-card card-accent-amber p-4 sm:p-4.5 relative overflow-hidden group hover:border-amber-300 transition-all duration-300 shadow-xs cursor-pointer" title="Total de comisiones comerciales y horas extras liquidadas en Buk">
+          <div class="flex items-center justify-between mb-2.5">
             <span class="text-[11px] font-extrabold text-amber-700 uppercase tracking-wider flex items-center gap-1">
               Comisiones & Extras <i class="fas fa-circle-question text-amber-400 text-[10px]"></i>
             </span>
-            <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-700 border border-amber-500/20 flex items-center justify-center text-base shadow-xs group-hover:scale-110 transition-transform">
+            <div class="w-8.5 h-8.5 rounded-xl bg-amber-500/10 text-amber-700 border border-amber-500/20 flex items-center justify-center text-sm shadow-xs group-hover:scale-105 transition-transform">
               <i class="fas fa-bolt"></i>
             </div>
           </div>
-          <p id="kpi-comisiones" class="text-3xl font-black text-amber-600 font-display tracking-tight">$66.6M</p>
-          <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100/90">
-            <span class="inline-flex items-center gap-1 text-[11px] font-extrabold text-amber-900 bg-amber-100/90 border border-amber-200/60 px-2 py-0.5 rounded-full">
-              <i class="fas fa-file-invoice-dollar text-[10px]"></i> Buk Sábana
+          <p id="kpi-comisiones" class="text-2xl sm:text-[28px] font-black text-amber-600 font-display tracking-tight leading-none">$66.6M</p>
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-100/90">
+            <span class="inline-flex items-center gap-1 text-[10px] font-extrabold text-amber-900 bg-amber-100/90 border border-amber-200/60 px-2 py-0.5 rounded-full">
+              <i class="fas fa-file-invoice-dollar text-[9px]"></i> Buk Sábana
             </span>
-            <span id="kpi-sub-comisiones" class="text-[11px] text-amber-700 font-bold">$45.5M com • $21.2M HE</span>
+            <span id="kpi-sub-comisiones" class="text-[10px] text-amber-700 font-bold">$45.5M com • $21.2M HE</span>
           </div>
         </div>
 
         <!-- CARD 4: CARGA PRESTACIONAL -->
-        <div class="glass-card card-accent-violet p-5 relative overflow-hidden group hover:border-violet-300 transition-all duration-300 shadow-xs" title="Carga prestacional y parafiscal legal colombiana (40.3%)">
-          <div class="flex items-center justify-between mb-3">
+        <div class="glass-card card-accent-violet p-4 sm:p-4.5 relative overflow-hidden group hover:border-violet-300 transition-all duration-300 shadow-xs" title="Carga prestacional y parafiscal legal colombiana (40.3%)">
+          <div class="flex items-center justify-between mb-2.5">
             <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider flex items-center gap-1">
               Carga Prestacional <i class="fas fa-circle-question text-slate-300 text-[10px]"></i>
             </span>
-            <div class="w-10 h-10 rounded-2xl bg-violet-500/10 text-violet-700 border border-violet-500/20 flex items-center justify-center text-base shadow-xs group-hover:scale-110 transition-transform">
+            <div class="w-8.5 h-8.5 rounded-xl bg-violet-500/10 text-violet-700 border border-violet-500/20 flex items-center justify-center text-sm shadow-xs group-hover:scale-105 transition-transform">
               <i class="fas fa-shield-halved"></i>
             </div>
           </div>
-          <p id="kpi-carga" class="text-3xl font-black text-slate-950 font-display tracking-tight">$667.8M</p>
-          <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100/90">
-            <span id="kpi-sub-carga-badge" class="inline-flex items-center gap-1 text-[11px] font-extrabold text-violet-800 bg-violet-100/90 border border-violet-200/60 px-2 py-0.5 rounded-full">
-              <i class="fas fa-calculator text-[10px]"></i> 40.3% Legal
+          <p id="kpi-carga" class="text-2xl sm:text-[28px] font-black text-slate-950 font-display tracking-tight leading-none">$667.8M</p>
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-100/90">
+            <span id="kpi-sub-carga-badge" class="inline-flex items-center gap-1 text-[10px] font-extrabold text-violet-800 bg-violet-100/90 border border-violet-200/60 px-2 py-0.5 rounded-full">
+              <i class="fas fa-calculator text-[9px]"></i> 40.3% Legal
             </span>
-            <span class="text-[11px] text-slate-500 font-bold">Cesantías + ARL</span>
+            <span class="text-[10px] text-slate-500 font-bold">Cesantías + ARL</span>
           </div>
         </div>
 
         <!-- CARD 5: COSTO TOTAL EMPRESA (HERO LUXURY) -->
-        <div class="p-5 rounded-3xl luxury-glass-dark text-white border border-white/[0.1] shadow-xl relative overflow-hidden flex flex-col justify-between group hover:border-[#E5F973]/40 transition-all duration-300" title="Costo integral total de Talento Humano para la empresa">
+        <div class="p-4 sm:p-4.5 rounded-3xl luxury-glass-dark text-white border border-white/[0.1] shadow-xl relative overflow-hidden flex flex-col justify-between group hover:border-[#E5F973]/40 transition-all duration-300" title="Costo integral total de Talento Humano para la empresa">
           <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-[#E5F973]/10 rounded-full blur-xl pointer-events-none"></div>
           <div>
             <div class="flex items-center justify-between mb-2">
@@ -489,9 +489,9 @@
               </span>
               <span class="w-2 h-2 rounded-full bg-[#E5F973]"></span>
             </div>
-            <p id="kpi-costo" class="text-3xl font-black text-white font-display tracking-tight">$2,412.8M</p>
+            <p id="kpi-costo" class="text-2xl sm:text-[28px] font-black text-white font-display tracking-tight leading-none">$2,412.8M</p>
           </div>
-          <div class="flex items-center justify-between mt-3 pt-2 border-t border-white/[0.08]">
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-white/[0.08]">
             <span class="text-[10px] font-black bg-[#E5F973] text-slate-950 px-2 py-0.5 rounded-full uppercase tracking-wider">
               100% Cuadrado
             </span>
@@ -501,365 +501,266 @@
 
       </div>
 
-      <!-- BENTO ROW 1: EVOLUCIÓN DEL COSTO LABORAL (7 MESES) + SALUD DEL CIERRE / ANOMALÍAS -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <!-- ========================================================= -->
+      <!-- UNIFIED EXECUTIVE BENTO SUITE: 3 BALANCED PILLARS           -->
+      <!-- Ahorro de +450px verticales, cero scroll fatigue, vista 360° -->
+      <!-- ========================================================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4" id="audit-section-anchor">
         
-        <!-- CARD 1: EVOLUCIÓN DEL COSTO LABORAL (Col 7) -->
-        <div class="lg:col-span-7 glass-card p-6 flex flex-col justify-between">
+        <!-- PILLAR 1: ESTRUCTURA FINANCIERA (MOD VS MOI & SOCIEDADES) (Col 4) -->
+        <div class="lg:col-span-4 glass-card p-5 flex flex-col justify-between">
           <div>
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+            <div class="flex items-center justify-between mb-3">
               <div>
-                <h3 class="text-base font-black text-slate-950 font-display flex items-center gap-2">
-                  <i class="fas fa-chart-simple text-indigo-600"></i> Evolución del Costo Laboral
+                <h3 class="text-sm font-black text-slate-950 font-display flex items-center gap-2">
+                  <i class="fas fa-chart-pie text-indigo-600"></i> Estructura: MOD vs. MOI
                 </h3>
-                <p class="text-xs text-slate-500 font-medium mt-0.5">Histórico de costo total de nómina vs. masa salarial base (2026).</p>
+                <p class="text-[11px] text-slate-500 font-medium">Distribución planta vs. admin/retail</p>
               </div>
-              <div class="flex items-center space-x-2">
-                <span class="text-[10px] font-extrabold bg-slate-100 text-slate-800 border border-slate-200 px-2.5 py-1 rounded-lg">
-                  Últimos 7 meses
-                </span>
-              </div>
-            </div>
-
-            <!-- CHART LEGEND -->
-            <div class="flex items-center space-x-4 text-xs font-bold text-slate-600 mb-3">
-              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-slate-900"></span> Costo Total ($M)</span>
-              <span class="flex items-center gap-1.5"><span class="w-3 h-1.5 rounded-full bg-emerald-500"></span> Masa Salarial Base ($M)</span>
-            </div>
-
-            <!-- VISUAL 7-MONTH BARS & TREND GRAPH -->
-            <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80">
-              <div class="grid grid-cols-7 gap-2 sm:gap-3 items-end h-44 pt-6 pb-2 text-center">
-                <!-- ENE -->
-                <div class="flex flex-col items-center h-full justify-end group cursor-pointer" title="Enero 2026: Costo $2,180M • Base $1,490M">
-                  <span class="text-[9px] font-bold text-slate-400 group-hover:text-slate-900 transition">$2.18B</span>
-                  <div class="w-full max-w-[28px] bg-slate-800 group-hover:bg-slate-950 rounded-t-lg transition-all duration-200" style="height: 70%;"></div>
-                  <span class="text-[10px] font-bold text-slate-600 mt-1">Ene</span>
-                </div>
-                <!-- FEB -->
-                <div class="flex flex-col items-center h-full justify-end group cursor-pointer" title="Febrero 2026: Costo $2,220M • Base $1,520M">
-                  <span class="text-[9px] font-bold text-slate-400 group-hover:text-slate-900 transition">$2.22B</span>
-                  <div class="w-full max-w-[28px] bg-slate-800 group-hover:bg-slate-950 rounded-t-lg transition-all duration-200" style="height: 74%;"></div>
-                  <span class="text-[10px] font-bold text-slate-600 mt-1">Feb</span>
-                </div>
-                <!-- MAR -->
-                <div class="flex flex-col items-center h-full justify-end group cursor-pointer" title="Marzo 2026: Costo $2,260M • Base $1,550M">
-                  <span class="text-[9px] font-bold text-slate-400 group-hover:text-slate-900 transition">$2.26B</span>
-                  <div class="w-full max-w-[28px] bg-slate-800 group-hover:bg-slate-950 rounded-t-lg transition-all duration-200" style="height: 78%;"></div>
-                  <span class="text-[10px] font-bold text-slate-600 mt-1">Mar</span>
-                </div>
-                <!-- ABR -->
-                <div class="flex flex-col items-center h-full justify-end group cursor-pointer" title="Abril 2026: Costo $2,300M • Base $1,580M">
-                  <span class="text-[9px] font-bold text-slate-400 group-hover:text-slate-900 transition">$2.30B</span>
-                  <div class="w-full max-w-[28px] bg-slate-800 group-hover:bg-slate-950 rounded-t-lg transition-all duration-200" style="height: 82%;"></div>
-                  <span class="text-[10px] font-bold text-slate-600 mt-1">Abr</span>
-                </div>
-                <!-- MAY -->
-                <div class="flex flex-col items-center h-full justify-end group cursor-pointer" title="Mayo 2026: Costo $2,340M • Base $1,610M">
-                  <span class="text-[9px] font-bold text-slate-400 group-hover:text-slate-900 transition">$2.34B</span>
-                  <div class="w-full max-w-[28px] bg-slate-800 group-hover:bg-slate-950 rounded-t-lg transition-all duration-200" style="height: 86%;"></div>
-                  <span class="text-[10px] font-bold text-slate-600 mt-1">May</span>
-                </div>
-                <!-- JUN -->
-                <div class="flex flex-col items-center h-full justify-end group cursor-pointer" title="Junio 2026: Costo $2,360M • Base $1,620M">
-                  <span class="text-[9px] font-bold text-slate-400 group-hover:text-slate-900 transition">$2.36B</span>
-                  <div class="w-full max-w-[28px] bg-slate-800 group-hover:bg-slate-950 rounded-t-lg transition-all duration-200" style="height: 88%;"></div>
-                  <span class="text-[10px] font-bold text-slate-600 mt-1">Jun</span>
-                </div>
-                <!-- JUL (ACTIVO) -->
-                <div class="flex flex-col items-center h-full justify-end group cursor-pointer" title="Julio 2026 (Cierre Oficial): Costo $2,412.8M • Base $1,657.6M (+3.4%)">
-                  <span class="text-[9px] font-black text-emerald-800 group-hover:scale-110 transition">$2.41B</span>
-                  <div class="w-full max-w-[28px] bg-gradient-to-t from-slate-950 to-indigo-900 rounded-t-lg border-2 border-[#E5F973] shadow-md transition-all duration-200" style="height: 94%;"></div>
-                  <span class="text-[10px] font-black text-slate-950 mt-1 bg-[#E5F973] px-1.5 rounded">Jul</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
-            <span>Incremento intermensual: <strong class="text-emerald-700 font-black">+3.4%</strong> (impulsado por altas y cierre de novedades)</span>
-            <span class="text-slate-400">Fuente: Databricks Gold</span>
-          </div>
-        </div>
-
-        <!-- CARD 2: SALUD DEL CIERRE & ANOMALÍAS (Col 5) -->
-        <div class="lg:col-span-5 glass-card p-6 flex flex-col justify-between border-amber-200/80">
-          <div>
-            <div class="flex justify-between items-center mb-3">
-              <div class="flex items-center space-x-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                <h3 class="text-base font-black text-slate-950 font-display">Salud del Cierre & Auditoría</h3>
-              </div>
-              <button onclick="openAnomaliesModal()" class="text-xs font-bold text-indigo-700 hover:text-indigo-900 flex items-center gap-1 cursor-pointer">
-                <span>Ver detalles</span>
-                <i class="fas fa-arrow-right text-[10px]"></i>
-              </button>
-            </div>
-
-            <!-- 3 HEALTH BADGES -->
-            <div class="grid grid-cols-3 gap-2 mb-4">
-              <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
-                <p class="text-lg font-black text-emerald-800 leading-tight">0</p>
-                <p class="text-[9px] font-bold text-emerald-700 uppercase">Bloqueantes</p>
-              </div>
-              <div class="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-center cursor-pointer hover:bg-amber-100 transition" onclick="openAnomaliesModal()">
-                <p class="text-lg font-black text-amber-800 leading-tight">4</p>
-                <p class="text-[9px] font-bold text-amber-800 uppercase">Picos detectados</p>
-              </div>
-              <div class="p-2.5 bg-sky-50 border border-sky-200 rounded-xl text-center">
-                <p class="text-lg font-black text-sky-800 leading-tight">6/6</p>
-                <p class="text-[9px] font-bold text-sky-800 uppercase">Controles OK</p>
-              </div>
-            </div>
-
-            <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Anomalías & Picos Principales:</p>
-            
-            <!-- ANOMALY LIST (CLICKABLE CROSS-FILTER) -->
-            <div class="space-y-1.5 text-xs font-semibold">
-              <div onclick="filterByAnomaly('tiendas'); scrollToSection('explorador-section-anchor');" class="flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-amber-50/80 border border-slate-100 transition cursor-pointer">
-                <div class="flex items-center space-x-2">
-                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                  <span class="text-slate-800">Tiendas Medellín (Cumplimiento Retail)</span>
-                </div>
-                <span class="bg-amber-100 text-amber-900 text-[10px] font-black px-2 py-0.5 rounded-md">+18% Costo</span>
-              </div>
-
-              <div onclick="filterByAnomaly('comisiones'); scrollToSection('explorador-section-anchor');" class="flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-sky-50/80 border border-slate-100 transition cursor-pointer">
-                <div class="flex items-center space-x-2">
-                  <span class="w-2 h-2 rounded-full bg-sky-500"></span>
-                  <span class="text-slate-800">Comisiones Comerciales Sobrecumplidas</span>
-                </div>
-                <span class="bg-sky-100 text-sky-900 text-[10px] font-black px-2 py-0.5 rounded-md">+12% Costo</span>
-              </div>
-
-              <div onclick="filterByAnomaly('extras'); scrollToSection('explorador-section-anchor');" class="flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-rose-50/80 border border-slate-100 transition cursor-pointer">
-                <div class="flex items-center space-x-2">
-                  <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                  <span class="text-slate-800">Horas Extras Cierre Inventario</span>
-                </div>
-                <span class="bg-rose-100 text-rose-900 text-[10px] font-black px-2 py-0.5 rounded-md">+31% Costo</span>
-              </div>
-
-              <div onclick="filterByAnomaly('otros'); scrollToSection('explorador-section-anchor');" class="flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-indigo-50/80 border border-slate-100 transition cursor-pointer">
-                <div class="flex items-center space-x-2">
-                  <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-                  <span class="text-slate-800">Otros Conceptos & Auxilios</span>
-                </div>
-                <span class="bg-indigo-100 text-indigo-900 text-[10px] font-black px-2 py-0.5 rounded-md">+8% Costo</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-            <span class="text-[11px] text-slate-500">Haz clic en cualquier pico para filtrar la tabla.</span>
-            <button onclick="openAnomaliesModal()" class="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-[#E5F973] font-extrabold text-[11px] rounded-lg transition cursor-pointer">Auditar</button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- BENTO ROW 2: ESTRUCTURA FINANCIERA MOD VS MOI + AUDITORÍA PREVIA A ENTREGA -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5" id="audit-section-anchor">
-        
-        <!-- BENTO LEFT: ESTRUCTURA FINANCIERA MOD VS MOI (Col 7 - DONUT CHART & METRIC BARS) -->
-        <div class="lg:col-span-7 glass-card p-6 flex flex-col justify-between">
-          <div>
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
-              <div>
-                <h3 class="text-base font-black text-slate-950 font-display flex items-center gap-2">
-                  <i class="fas fa-chart-pie text-indigo-600"></i> Estructura Financiera: MOD vs. MOI
-                </h3>
-                <p class="text-xs text-slate-500 font-medium mt-0.5">Distribución del costo laboral entre planta de producción y áreas comerciales/administrativas.</p>
-              </div>
-              <span class="text-[10px] font-extrabold bg-[#090D16] text-[#E5F973] px-2.5 py-1 rounded-full whitespace-nowrap shadow-xs flex items-center gap-1">
-                <i class="fas fa-bolt text-[9px]"></i> Costeo
+              <span class="text-[10px] font-extrabold bg-[#090D16] text-[#E5F973] px-2 py-0.5 rounded-full whitespace-nowrap shadow-2xs">
+                Costeo
               </span>
             </div>
 
-            <!-- DONUT CHART + HORIZONTAL BARS (MATCHING MOCKUP media_1788818107434.png) -->
-            <div class="flex flex-col sm:flex-row items-center gap-6 py-2">
-              
-              <!-- DONUT CHART (SVG - EXACTLY 2 COLORS: MOD CYAN & MOI PURPLE) -->
-              <div class="relative w-36 h-36 flex items-center justify-center flex-shrink-0">
+            <!-- COMPACT DONUT + PROGRESS BARS -->
+            <div class="flex items-center gap-3.5 py-1">
+              <!-- DONUT CHART (SVG) -->
+              <div class="relative w-28 h-28 flex items-center justify-center flex-shrink-0">
                 <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                  <!-- Base Track Background -->
                   <circle cx="50" cy="50" r="38" stroke="#F1F5F9" stroke-width="12" fill="transparent" />
-                  <!-- MOD (Sky Blue: 33.3%) -->
                   <circle id="donut-arc-mod" cx="50" cy="50" r="38" stroke="#0284C7" stroke-width="12" fill="transparent"
                           stroke-dasharray="79.59 238.76" stroke-dashoffset="0" class="transition-all duration-500" />
-                  <!-- MOI (Purple/Violet: 66.7%) -->
                   <circle id="donut-arc-moi" cx="50" cy="50" r="38" stroke="#8B5CF6" stroke-width="12" fill="transparent"
                           stroke-dasharray="159.17 238.76" stroke-dashoffset="-79.59" class="transition-all duration-500" />
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-                  <span id="donut-total-cost" class="text-sm font-black text-slate-950 font-display tracking-tight">$2,412.8M</span>
-                  <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total</span>
+                  <span id="donut-total-cost" class="text-xs font-black text-slate-950 font-display tracking-tight">$1,705.3M</span>
+                  <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Total</span>
                 </div>
               </div>
 
-              <!-- METRIC ROWS WITH PROGRESS BARS -->
-              <div class="flex-1 w-full space-y-4">
-                
+              <!-- PROGRESS BARS -->
+              <div class="flex-1 space-y-2.5">
                 <!-- MOD ROW -->
-                <div onclick="filterByChip('MOD'); scrollToSection('explorador-section-anchor');" class="p-2.5 rounded-xl hover:bg-slate-50 transition cursor-pointer group">
-                  <div class="flex items-center justify-between text-xs mb-1.5">
-                    <span class="flex items-center gap-2 font-bold text-slate-800 group-hover:text-sky-700 transition">
-                      <span class="w-2.5 h-2.5 rounded-full bg-[#0284C7]"></span> MOD (Planta)
+                <div onclick="filterByChip('MOD'); scrollToSection('explorador-section-anchor');" class="p-2 rounded-xl hover:bg-slate-50 transition cursor-pointer group">
+                  <div class="flex items-center justify-between text-xs mb-1">
+                    <span class="flex items-center gap-1.5 font-bold text-slate-800 group-hover:text-sky-700 transition text-[11px]">
+                      <span class="w-2 h-2 rounded-full bg-[#0284C7]"></span> MOD Planta
                     </span>
-                    <div class="flex items-center space-x-3 text-xs font-mono">
-                      <strong id="bento-mod-pct" class="text-slate-950 font-black">33.3%</strong>
-                      <span id="bento-mod-costo" class="text-slate-700 font-bold">$348.8M</span>
-                      <span id="bento-mod-colab" class="text-slate-400 font-medium">109 colab.</span>
+                    <div class="flex items-center space-x-1.5 text-[11px] font-mono">
+                      <strong id="bento-mod-pct" class="text-slate-950 font-black">59.3%</strong>
+                      <span id="bento-mod-costo" class="text-slate-700 font-bold">$1,011M</span>
                     </div>
                   </div>
-                  <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex relative">
-                    <div id="bento-bar-mod-fill" class="h-full bg-[#0284C7] rounded-full transition-all duration-500" style="width: 33.3%;"></div>
+                  <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden flex relative">
+                    <div id="bento-bar-mod-fill" class="h-full bg-[#0284C7] rounded-full transition-all duration-500" style="width: 59.3%;"></div>
                   </div>
+                  <span id="bento-mod-colab" class="text-[10px] text-slate-400 font-medium block mt-0.5">317 colab.</span>
                 </div>
 
                 <!-- MOI ROW -->
-                <div onclick="filterByChip('MOI'); scrollToSection('explorador-section-anchor');" class="p-4 rounded-xl hover:bg-slate-50 transition cursor-pointer group">
-                  <div class="flex items-center justify-between text-xs mb-1.5">
-                    <span class="flex items-center gap-2 font-bold text-slate-800 group-hover:text-purple-700 transition">
-                      <span class="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]"></span> MOI (Retail/Admin)
+                <div onclick="filterByChip('MOI'); scrollToSection('explorador-section-anchor');" class="p-2 rounded-xl hover:bg-slate-50 transition cursor-pointer group">
+                  <div class="flex items-center justify-between text-xs mb-1">
+                    <span class="flex items-center gap-1.5 font-bold text-slate-800 group-hover:text-purple-700 transition text-[11px]">
+                      <span class="w-2 h-2 rounded-full bg-[#8B5CF6]"></span> MOI Retail/Adm
                     </span>
-                    <div class="flex items-center space-x-3 text-xs font-mono">
-                      <strong id="bento-moi-pct" class="text-slate-950 font-black">66.7%</strong>
-                      <span id="bento-moi-costo" class="text-slate-700 font-bold">$1,446.2M</span>
-                      <span id="bento-moi-colab" class="text-slate-400 font-medium">218 colab.</span>
+                    <div class="flex items-center space-x-1.5 text-[11px] font-mono">
+                      <strong id="bento-moi-pct" class="text-slate-950 font-black">40.7%</strong>
+                      <span id="bento-moi-costo" class="text-slate-700 font-bold">$694M</span>
                     </div>
                   </div>
-                  <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex relative">
-                    <div id="bento-bar-moi-fill" class="h-full bg-[#8B5CF6] rounded-full transition-all duration-500" style="width: 66.7%;"></div>
+                  <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden flex relative">
+                    <div id="bento-bar-moi-fill" class="h-full bg-[#8B5CF6] rounded-full transition-all duration-500" style="width: 40.7%;"></div>
                   </div>
+                  <span id="bento-moi-colab" class="text-[10px] text-slate-400 font-medium block mt-0.5">218 colab.</span>
                 </div>
-
               </div>
-
             </div>
           </div>
 
           <!-- FOOTER RAZONES SOCIALES -->
-          <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span class="font-bold text-slate-700 flex items-center gap-1.5"><i class="fas fa-arrows-split-up-and-left text-emerald-600"></i> Razones Sociales:</span>
-            <div class="flex items-center space-x-2">
-              <button type="button" onclick="filterByChip('MAS'); scrollToSection('explorador-section-anchor');" id="chip-sociedad-mas" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-1 rounded-xl text-[11px] transition cursor-pointer">
-                MAS S.A.S BIC
+          <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+            <span class="font-bold text-slate-600 flex items-center gap-1"><i class="fas fa-building text-slate-400 text-[10px]"></i> Empresa:</span>
+            <div class="flex items-center space-x-1.5">
+              <button type="button" onclick="filterByChip('MAS'); scrollToSection('explorador-section-anchor');" id="chip-sociedad-mas" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-2 py-0.5 rounded-lg text-[10px] transition cursor-pointer">
+                MAS BIC
               </button>
-              <button type="button" onclick="filterByChip('ARMO'); scrollToSection('explorador-section-anchor');" id="chip-sociedad-armo" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-1 rounded-xl text-[11px] transition cursor-pointer">
-                ART MODE S.A.S BIC
-              </button>
-              <button type="button" onclick="filterByChip('ALL'); scrollToSection('explorador-section-anchor');" class="bg-slate-100 hover:bg-slate-200 text-slate-500 font-semibold px-3 py-1 rounded-xl text-[11px] transition cursor-pointer">
-                Otras (ver todas)
+              <button type="button" onclick="filterByChip('ARMO'); scrollToSection('explorador-section-anchor');" id="chip-sociedad-armo" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-2 py-0.5 rounded-lg text-[10px] transition cursor-pointer">
+                ART MODE
               </button>
             </div>
           </div>
         </div>
 
-        <!-- BENTO RIGHT: AUDITORÍA PREVIA A ENTREGA (DINÁMICA PRE-FLIGHT CHECK) -->
-        <div class="lg:col-span-5 glass-card p-6 flex flex-col justify-between border-emerald-100/90">
+        <!-- PILLAR 2: DINÁMICA HISTÓRICA & TENDENCIA MOM (Col 4) -->
+        <div class="lg:col-span-4 glass-card p-5 flex flex-col justify-between">
           <div>
-            <div class="flex justify-between items-center mb-3">
-              <div class="flex items-center space-x-2.5">
-                <span class="inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 animate-pulse"></span>
-                <h3 class="text-base font-black text-slate-950 font-display">Pre-Flight Check: Cierre de Nómina</h3>
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="text-sm font-black text-slate-950 font-display flex items-center gap-2">
+                  <i class="fas fa-chart-simple text-indigo-600"></i> Tendencia Histórica 2026
+                </h3>
+                <p class="text-[11px] text-slate-500 font-medium">Comparativa intermensual del costo laboral</p>
               </div>
-              <span id="bento-preflight-badge" class="bg-emerald-100 text-emerald-800 text-[11px] font-black px-2.5 py-0.5 rounded-full border border-emerald-200">
+              <span id="badge-anomalies-summary" class="text-[10px] font-black text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                🟢 MoM Conforme
+              </span>
+            </div>
+
+            <!-- CHART LEGEND -->
+            <div class="flex items-center space-x-3 text-[10px] font-bold text-slate-500 mb-2">
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-slate-900"></span> Costo Mensual</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-[#E5F973] border border-slate-900"></span> Mes Activo</span>
+            </div>
+
+            <!-- DYNAMIC MULTI-MONTH BARS CONTAINER -->
+            <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-200/80">
+              <div id="bento-trend-bars-container" class="grid grid-cols-4 gap-2 items-end h-32 pt-3 pb-1 text-center">
+                <!-- Dynamically populated via renderPreflightBento -->
+                <div class="flex flex-col items-center h-full justify-end group cursor-pointer" onclick="switchPeriod('2026-06')">
+                  <span class="text-[9px] font-bold text-slate-400 font-mono">$1,790M</span>
+                  <div class="w-full max-w-[26px] bg-slate-800 group-hover:bg-slate-950 rounded-t-lg transition-all" style="height: 80%;"></div>
+                  <span class="text-[10px] font-bold text-slate-600 mt-1">Jun</span>
+                </div>
+                <div class="flex flex-col items-center h-full justify-end group cursor-pointer" onclick="switchPeriod('2026-07')">
+                  <span class="text-[9px] font-bold text-slate-400 font-mono">$1,800M</span>
+                  <div class="w-full max-w-[26px] bg-slate-800 group-hover:bg-slate-950 rounded-t-lg transition-all" style="height: 82%;"></div>
+                  <span class="text-[10px] font-bold text-slate-600 mt-1">Jul</span>
+                </div>
+                <div class="flex flex-col items-center h-full justify-end group cursor-pointer" onclick="switchPeriod('2026-08')">
+                  <span class="text-[9px] font-bold text-slate-400 font-mono">$1,776M</span>
+                  <div class="w-full max-w-[26px] bg-slate-800 group-hover:bg-slate-950 rounded-t-lg transition-all" style="height: 79%;"></div>
+                  <span class="text-[10px] font-bold text-slate-600 mt-1">Ago</span>
+                </div>
+                <div class="flex flex-col items-center h-full justify-end group cursor-pointer" onclick="switchPeriod('2026-09')">
+                  <span class="text-[9px] font-black text-emerald-800 font-mono">$1,705M</span>
+                  <div class="w-full max-w-[26px] bg-gradient-to-t from-slate-950 to-indigo-900 rounded-t-lg border-2 border-[#E5F973] shadow-md" style="height: 76%;"></div>
+                  <span class="text-[10px] font-black text-slate-950 mt-1 bg-[#E5F973] px-1.5 rounded">Sep</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FOOTER VARIACIÓN MOM -->
+          <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+            <span>Variación MoM: <strong id="trend-mom-highlight" class="text-emerald-700 font-black">-3.99% (-$70.9M vs Ago)</strong></span>
+            <button onclick="openAnomaliesModal()" class="text-indigo-600 hover:text-indigo-800 font-bold cursor-pointer text-[10px] flex items-center gap-1">
+              <span>Picos Buk</span> <i class="fas fa-chevron-right text-[8px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- PILLAR 3: CONTROL DE CALIDAD & PRE-FLIGHT CHECK (Col 4) -->
+        <div class="lg:col-span-4 glass-card p-5 flex flex-col justify-between border-emerald-100/90">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <div class="flex items-center space-x-2">
+                <span class="inline-flex rounded-full h-2 w-2 bg-emerald-500 animate-pulse"></span>
+                <h3 class="text-sm font-black text-slate-950 font-display">Pre-Flight Check</h3>
+              </div>
+              <span id="bento-preflight-badge" class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full border border-emerald-200">
                 6/6 PASS
               </span>
             </div>
-            <p class="text-xs text-slate-500 mb-3">Control de 6 puntos auditado en caliente para <strong id="bento-preflight-period-label" class="text-slate-900">Septiembre 2026</strong> contra archivos del mes y mes anterior:</p>
+            <p class="text-[11px] text-slate-500 mb-2">Auditoría en caliente para <strong id="bento-preflight-period-label" class="text-slate-900">Septiembre 2026</strong>:</p>
 
-            <ul id="bento-preflight-list" class="space-y-2 text-xs text-slate-700 font-medium">
-              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+            <ul id="bento-preflight-list" class="space-y-1.5 text-xs text-slate-700 font-medium max-h-[160px] overflow-y-auto pr-1 dropdown-scrollbar">
+              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
                 <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
                   <div>
-                    <p class="font-bold text-slate-900 text-xs">1. Auxilio Legal de Transporte Parametrizado ($249,095)</p>
-                    <p class="text-[10px] text-slate-500">Cifra legal exacta sin redondeos a $249,100.</p>
+                    <p class="font-bold text-slate-900 text-[11px]">1. Auxilio Transporte ($249,095)</p>
+                    <p class="text-[9px] text-slate-500">Cifra legal exacta sin redondeos.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">$249,095 Legal</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">$249,095</span>
               </li>
-              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
                 <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
                   <div>
-                    <p class="font-bold text-slate-900 text-xs">2. Personal Temporal (EST) & Tarifa de Administración 10%</p>
-                    <p class="text-[10px] text-slate-500">Contrato 'Obra o Labor' con 10% de fee sumado a Costo Maaji.</p>
+                    <p class="font-bold text-slate-900 text-[11px]">2. Temporales (EST) + Fee 10%</p>
+                    <p class="text-[9px] text-slate-500">Contrato 'Obra o Labor' con fee.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">Temporales OK</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">EST OK</span>
               </li>
-              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
                 <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
                   <div>
-                    <p class="font-bold text-slate-900 text-xs">3. Formulación Completa de Prestaciones Sociales</p>
-                    <p class="text-[10px] text-slate-500">Provisiones calculadas y cacheadas en OpenXML (cero celdas en blanco).</p>
+                    <p class="font-bold text-slate-900 text-[11px]">3. Prestaciones Sociales OpenXML</p>
+                    <p class="text-[9px] text-slate-500">100% formuladas y cacheadas.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">100% Formulado</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">100% Fórmulas</span>
               </li>
-              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
                 <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
                   <div>
-                    <p class="font-bold text-slate-900 text-xs">4. Comisiones de Tiendas y Auxilios Extralegales Conciliados</p>
-                    <p class="text-[10px] text-slate-500">Comisiones Col AE y auxilios no salariales cruzados contra Buk.</p>
+                    <p class="font-bold text-slate-900 text-[11px]">4. Comisiones Comerciales</p>
+                    <p class="text-[9px] text-slate-500">Conciliadas desde Buk Sábana.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">Conciliado</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">Comisiones OK</span>
               </li>
-              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
                 <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
                   <div>
-                    <p class="font-bold text-slate-900 text-xs">5. Cobertura de Personal Retirado en el Período</p>
-                    <p class="text-[10px] text-slate-500">Colaboradores con baja en el mes contemplados para corte contable.</p>
+                    <p class="font-bold text-slate-900 text-[11px]">5. Universo Completo & Retiros</p>
+                    <p class="text-[9px] text-slate-500">Todo el personal con vinculación.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">Retiros OK</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">Activos + Retiros</span>
               </li>
-              <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
                 <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
                   <div>
-                    <p class="font-bold text-slate-900 text-xs">6. Estructura Oficial de 33 Columnas (Col A–AG)</p>
-                    <p class="text-[10px] text-slate-500">Columna CST excluida, hoja 'Datos ' de parámetros y 'Consolidado' dinámico.</p>
+                    <p class="font-bold text-slate-900 text-[11px]">6. Plantilla Oficial 33 Columnas</p>
+                    <p class="text-[9px] text-slate-500">Estructura exacta con auxilio extralegal.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">33 Cols OK</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">33 Cols OK</span>
               </li>
             </ul>
           </div>
 
-          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
-            <span class="flex items-center gap-1.5 text-emerald-700 font-bold">
-              <i class="fas fa-shield-check text-emerald-600"></i> Archivo oficial listo para emisión
+          <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+            <span class="flex items-center gap-1 text-emerald-700 font-bold text-[10px]">
+              <i class="fas fa-shield-check text-emerald-600"></i> Emisión Conforme
             </span>
-            <button onclick="openSebasDirectorAuditModal()" class="text-indigo-600 hover:text-indigo-800 font-bold cursor-pointer flex items-center gap-1">
-              <span>Auditoría Sebas & Dirección</span> <i class="fas fa-arrow-right text-[9px]"></i>
+            <button onclick="openSebasDirectorAuditModal()" class="text-indigo-600 hover:text-indigo-800 font-bold cursor-pointer flex items-center gap-1 text-[10px]">
+              <span>Auditoría Sebas</span> <i class="fas fa-arrow-right text-[8px]"></i>
             </button>
           </div>
         </div>
 
       </div>
 
+
+
       <!-- ULTRA-POLISHED EXPLORER TABLE (CON APERTURA DE DRAWER 360°) -->
-      <div class="glass-card p-6" id="explorador-section-anchor">
-        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
-          <div>
-            <div class="flex items-center space-x-3">
-              <h3 class="text-base font-black text-slate-950 font-display">Explorador de Colaboradores</h3>
-              <span id="nomina-count-badge" class="bg-slate-100 text-slate-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">772 registros</span>
+      <div class="glass-card p-5" id="explorador-section-anchor">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3.5 mb-3.5">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-xl bg-slate-900 text-[#E5F973] flex items-center justify-center text-xs shadow-xs flex-shrink-0">
+              <i class="fas fa-users"></i>
             </div>
-            <p class="text-xs text-slate-500 font-medium mt-0.5">Consulta, filtra y analiza la información. Haz clic en cualquier colaborador para abrir el <strong class="text-indigo-600 font-extrabold">Panel 360°</strong>.</p>
+            <div>
+              <div class="flex items-center space-x-2">
+                <h3 class="text-sm font-black text-slate-950 font-display">Explorador de Colaboradores</h3>
+                <span id="nomina-count-badge" class="bg-slate-100 text-slate-800 border border-slate-200/80 text-[10px] font-extrabold px-2 py-0.5 rounded-full">772 registros</span>
+              </div>
+              <p class="text-[11px] text-slate-500 font-medium">Haz clic en cualquier fila para inspección <strong class="text-indigo-600 font-bold">360°</strong> del colaborador.</p>
+            </div>
           </div>
 
-          <!-- FILTERS & SEARCH -->
+          <!-- FILTERS & SEARCH IN TIGHT COHESIVE BAR -->
           <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
-            <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl">
+            <div class="flex items-center space-x-1 bg-slate-100/80 border border-slate-200/60 p-1 rounded-xl">
               <button onclick="filterByChip('ALL')" id="chip-ALL" class="filter-chip-active px-3 py-1.5 rounded-lg text-xs transition">Todos</button>
               <button onclick="filterByChip('MOD')" id="chip-MOD" class="filter-chip-inactive px-3 py-1.5 rounded-lg text-xs transition">MOD</button>
               <button onclick="filterByChip('MOI')" id="chip-MOI" class="filter-chip-inactive px-3 py-1.5 rounded-lg text-xs transition">MOI</button>
@@ -869,7 +770,7 @@
 
             <div class="relative w-full sm:w-64">
               <i class="fas fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-              <input type="text" id="nomina-search" oninput="handleSearch(this.value)" placeholder="Buscar por nombre, cédula, cargo..." class="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 font-medium">
+              <input type="text" id="nomina-search" oninput="handleSearch(this.value)" placeholder="Buscar por cédula, nombre, cargo..." class="w-full pl-8 pr-3 py-2 bg-slate-50/90 border border-slate-200/80 rounded-xl text-xs outline-none focus:bg-white focus:border-indigo-500 font-medium transition shadow-2xs">
             </div>
           </div>
         </div>
@@ -5588,19 +5489,65 @@
       const bentoList = document.getElementById('bento-preflight-list');
       if (bentoList && data.checkpoints_preflight?.checks) {
         bentoList.innerHTML = data.checkpoints_preflight.checks.map(c => `
-          <li class="flex items-start justify-between p-2 rounded-xl bg-slate-50 hover:bg-emerald-50/70 border border-slate-200/60 hover:border-emerald-200 transition">
-            <div class="flex items-start space-x-2.5">
-              <i class="fas fa-circle-check text-emerald-500 text-sm mt-0.5 flex-shrink-0"></i>
+          <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50/70 border border-slate-200/60 hover:border-emerald-200 transition">
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
               <div>
-                <p class="font-bold text-slate-900 text-xs">${c.titulo}</p>
-                <p class="text-[10px] text-slate-500 font-medium leading-relaxed">${c.descripcion}</p>
+                <p class="font-bold text-slate-900 text-[11px]">${c.titulo}</p>
+                <p class="text-[9px] text-slate-500 leading-tight">${c.descripcion}</p>
               </div>
             </div>
-            <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full whitespace-nowrap ml-2">
+            <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap ml-1.5">
               ${c.badge}
             </span>
           </li>
         `).join('');
+      }
+
+      // 1. Dinamizar barras intermensuales de tendencia (Jun, Jul, Ago, Sep...)
+      const barsContainer = document.getElementById('bento-trend-bars-container');
+      if (barsContainer && Array.isArray(data.tendencia_historica) && data.tendencia_historica.length > 0) {
+        const maxCost = Math.max(...data.tendencia_historica.map(t => t.costo_total || 0));
+        barsContainer.innerHTML = data.tendencia_historica.map(t => {
+          const isCurrent = t.is_current || (t.periodo === data.periodo);
+          const heightPct = maxCost > 0 ? Math.max(30, Math.min(95, Math.round((t.costo_total / maxCost) * 90))) : 60;
+          const shortMonth = t.label ? t.label.split(' ')[0].substring(0, 3) : t.periodo;
+          
+          if (isCurrent) {
+            return `
+              <div class="flex flex-col items-center h-full justify-end group cursor-pointer" onclick="switchPeriod('${t.periodo}')" title="${t.label}: ${t.costo_formateado} (${t.headcount} colab.)">
+                <span class="text-[9px] font-black text-emerald-800 font-mono">${t.costo_formateado}</span>
+                <div class="w-full max-w-[26px] bg-gradient-to-t from-slate-950 to-indigo-900 rounded-t-lg border-2 border-[#E5F973] shadow-md transition-all group-hover:scale-105" style="height: ${heightPct}%;"></div>
+                <span class="text-[10px] font-black text-slate-950 mt-1 bg-[#E5F973] px-1.5 rounded">${shortMonth}</span>
+              </div>
+            `;
+          } else {
+            return `
+              <div class="flex flex-col items-center h-full justify-end group cursor-pointer" onclick="switchPeriod('${t.periodo}')" title="${t.label}: ${t.costo_formateado} (${t.headcount} colab.)">
+                <span class="text-[9px] font-bold text-slate-400 font-mono group-hover:text-slate-700 transition">${t.costo_formateado}</span>
+                <div class="w-full max-w-[26px] bg-slate-700 hover:bg-slate-900 rounded-t-lg transition-all group-hover:scale-105" style="height: ${heightPct}%;"></div>
+                <span class="text-[10px] font-bold text-slate-600 mt-1 group-hover:text-slate-950 transition">${shortMonth}</span>
+              </div>
+            `;
+          }
+        }).join('');
+      }
+
+      // 2. Dinamizar pie de variación MoM
+      const momHighlight = document.getElementById('trend-mom-highlight');
+      if (momHighlight) {
+        if (data.variacion_mom) {
+          const pct = data.variacion_mom.delta_costo_pct;
+          const sign = pct > 0 ? '+' : '';
+          const deltaM = (data.variacion_mom.delta_costo / 1000000).toFixed(1);
+          const deltaSign = deltaM > 0 ? '+' : '';
+          const prevName = data.prev_periodo_label ? data.prev_periodo_label.split(' ')[0].substring(0, 3) : 'Ant';
+          momHighlight.innerText = `${sign}${pct.toFixed(2)}% (${deltaSign}$${deltaM}M vs ${prevName})`;
+          momHighlight.className = pct <= 0 ? 'text-emerald-700 font-black' : 'text-amber-700 font-black';
+        } else {
+          momHighlight.innerText = 'Periodo base (sin histórico previo)';
+          momHighlight.className = 'text-slate-500 font-medium';
+        }
       }
     }
 
