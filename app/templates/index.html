@@ -243,7 +243,7 @@
         <span>3. Novedades TI</span>
       </button>
       <button onclick="setTab('dane')" id="nav-dane" class="tab-btn-inactive w-full flex items-center justify-center space-x-2 py-3 px-3 rounded-xl text-xs font-bold text-center transition cursor-pointer">
-        <i class="fas fa-chart-line text-[#E5F973]"></i>
+        <i class="fas fa-chart-line text-emerald-600"></i>
         <span>4. Informe DANE</span>
       </button>
     </div>
@@ -338,7 +338,8 @@
               <div onclick="openSebasDirectorAuditModal()" class="flex items-center justify-between pb-2.5 border-b border-white/[0.08] cursor-pointer group" title="Hacer clic para abrir la Minuta y Auditoría Ejecutiva">
                 <div class="flex items-center space-x-2">
                   <span class="w-2 h-2 rounded-full bg-[#E5F973] animate-pulse"></span>
-                  <span class="text-[10px] font-black uppercase text-slate-300 tracking-wider">PRE-FLIGHT VALIDADO</span>
+                  <span id="preflight-hero-period-pill" class="text-[10px] font-black uppercase text-slate-300 tracking-wider">PRE-FLIGHT VALIDADO</span>
+                  <span id="hero-audit-status" class="hidden">Parámetros, temporales y fórmulas conformes</span>
                 </div>
                 <div class="flex items-center space-x-2">
                   <span id="hero-audit-badge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[9px] font-black px-2 py-0.5 rounded-full">6/6 PASS</span>
@@ -1159,7 +1160,7 @@
               <span>+ Registrar Novedad Manual</span>
             </button>
 
-            <a href="/api/download/ti?year=2026&month=7" id="btn-download-ti-template" download class="bg-slate-950 hover:bg-slate-900 text-white font-extrabold px-5 py-3 rounded-2xl text-xs flex items-center space-x-2 shadow-xl shadow-slate-950/20 border border-slate-800 transition">
+            <a href="/api/download/ti?year=2026&month=9" id="btn-download-ti-template" download class="bg-slate-950 hover:bg-slate-900 text-white font-extrabold px-5 py-3 rounded-2xl text-xs flex items-center space-x-2 shadow-xl shadow-slate-950/20 border border-slate-800 transition">
               <i class="fas fa-download text-[#E5F973]"></i>
               <span>Exportar Excel para TI (.xlsx)</span>
             </a>
@@ -1275,7 +1276,7 @@
           <div class="bg-[#107C41] text-white px-4 py-2 flex items-center justify-between text-xs font-bold">
             <div class="flex items-center space-x-2">
               <i class="fas fa-file-excel text-lg text-white"></i>
-              <span class="font-mono">TI_Novedades_Estructura_Creacion_Emplea_2026_07.xlsx</span>
+              <span class="font-mono" id="ti-spreadsheet-title">TI_Novedades_Estructura_Creacion_Emplea_2026_09.xlsx</span>
               <span class="bg-white/20 text-[10px] px-2 py-0.5 rounded font-normal">Solo Lectura • Previsualización en Vivo</span>
             </div>
             <span class="text-[11px] text-emerald-100 font-mono">10 Columnas Oficiales</span>
@@ -1357,17 +1358,23 @@
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
             <!-- PERIOD SELECTOR -->
             <div class="inline-flex p-1 bg-slate-900 border border-slate-700 rounded-2xl shadow-inner">
-              <button type="button" onclick="changeDaneMonth(7)" id="btn-dane-m7" class="px-3 py-1.5 rounded-xl text-xs font-black transition cursor-pointer text-slate-400 hover:text-white">
-                Julio 2026
+              <button type="button" onclick="changeDaneMonth(6)" id="btn-dane-m6" class="px-2.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer text-slate-400 hover:text-white">
+                Jun 2026
               </button>
-              <button type="button" onclick="changeDaneMonth(8)" id="btn-dane-m8" class="px-3 py-1.5 rounded-xl text-xs font-black transition cursor-pointer bg-[#E5F973] text-slate-950 shadow-xs">
-                Agosto 2026
+              <button type="button" onclick="changeDaneMonth(7)" id="btn-dane-m7" class="px-2.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer text-slate-400 hover:text-white">
+                Jul 2026
+              </button>
+              <button type="button" onclick="changeDaneMonth(8)" id="btn-dane-m8" class="px-2.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer text-slate-400 hover:text-white">
+                Ago 2026
+              </button>
+              <button type="button" onclick="changeDaneMonth(9)" id="btn-dane-m9" class="px-2.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer bg-[#E5F973] text-slate-950 shadow-xs">
+                Sep 2026
               </button>
             </div>
 
-            <a id="btn-download-dane-excel" href="/api/download/dane-excel?year=2026&month=8" download class="animate-shimmer-btn w-full sm:w-auto bg-[#E5F973] hover:bg-[#d4f326] text-slate-950 font-black px-5 py-3 rounded-2xl text-[13px] flex items-center justify-center space-x-2.5 shadow-[0_0_15px_rgba(229,249,115,0.35)] transition-all duration-300 cursor-pointer group hover:scale-[1.02]">
+            <a id="btn-download-dane-excel" href="/api/download/dane-excel?year=2026&month=9" download class="animate-shimmer-btn w-full sm:w-auto bg-[#E5F973] hover:bg-[#d4f326] text-slate-950 font-black px-5 py-3 rounded-2xl text-[13px] flex items-center justify-center space-x-2.5 shadow-[0_0_15px_rgba(229,249,115,0.35)] transition-all duration-300 cursor-pointer group hover:scale-[1.02]">
               <i class="fas fa-file-excel text-base text-slate-950 group-hover:rotate-12 transition-transform"></i>
-              <span id="dane-download-text">Descargar Formulario DANE Agosto (.xlsx)</span>
+              <span id="dane-download-text">Descargar Formulario DANE Septiembre (.xlsx)</span>
             </a>
           </div>
         </div>
@@ -4063,6 +4070,10 @@
             renderTiSpreadsheet();
           }
         }
+        const btnTi = document.getElementById('btn-download-ti-template');
+        if (btnTi) btnTi.href = `/api/download/ti?year=${year}&month=${month}`;
+        const titleEl = document.getElementById('ti-spreadsheet-title');
+        if (titleEl) titleEl.innerText = `TI_Novedades_Estructura_Creacion_Emplea_${year}_${String(month).padStart(2, '0')}.xlsx`;
       } catch(e) { console.error('Error loading TI data:', e); }
     }
 
@@ -4968,8 +4979,8 @@
             nombre_entidad_2: nombreEntidad2,
             valor_deuda_2: valorDeuda2,
             ya_cobro_quincena_1: yaCobro1Q,
-            year: 2026,
-            month: 7
+            year: currentPeriodYear,
+            month: currentPeriodMonth
           })
         });
         const data = await res.json();
@@ -6076,7 +6087,7 @@
         const res = await fetch('/api/copilot', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({query: q, year: 2026, month: 7})
+          body: JSON.stringify({query: q, year: currentPeriodYear, month: currentPeriodMonth})
         });
         const data = await res.json();
 
@@ -7118,11 +7129,6 @@
           document.getElementById('donut-arc-moi').setAttribute('stroke-dasharray', `${moiArcLength.toFixed(2)} ${totalCircumference}`);
           document.getElementById('donut-arc-moi').setAttribute('stroke-dashoffset', `-${modArcLength.toFixed(2)}`);
         }
-        if (document.getElementById('bento-mod-pct-top')) document.getElementById('bento-mod-pct-top').innerText = `${kpis.mod.pct}%`;
-        if (document.getElementById('bento-moi-pct-top')) document.getElementById('bento-moi-pct-top').innerText = `${kpis.moi.pct}%`;
-        if (document.getElementById('bento-bar-mod')) document.getElementById('bento-bar-mod').style.width = `${kpis.mod.pct}%`;
-        if (document.getElementById('bento-bar-moi')) document.getElementById('bento-bar-moi').style.width = `${kpis.moi.pct}%`;
-
         if (document.getElementById('bento-mod-pct')) document.getElementById('bento-mod-pct').innerText = `${kpis.mod.pct}%`;
         if (document.getElementById('bento-mod-costo')) document.getElementById('bento-mod-costo').innerText = `$${(kpis.mod.costo / 1e6).toFixed(1)}M`;
         if (document.getElementById('bento-mod-colab')) document.getElementById('bento-mod-colab').innerText = `${kpis.mod.headcount} colab.`;
@@ -7132,17 +7138,6 @@
         if (document.getElementById('bento-moi-costo')) document.getElementById('bento-moi-costo').innerText = `$${(kpis.moi.costo / 1e6).toFixed(1)}M`;
         if (document.getElementById('bento-moi-colab')) document.getElementById('bento-moi-colab').innerText = `${kpis.moi.headcount} colab.`;
         if (document.getElementById('bento-bar-moi-fill')) document.getElementById('bento-bar-moi-fill').style.width = `${kpis.moi.pct}%`;
-
-        if (document.getElementById('bento-mas-info')) {
-          const masC = (kpis.empresas?.mas?.costo / 1e6).toFixed(1);
-          const masH = kpis.empresas?.mas?.headcount || 320;
-          document.getElementById('bento-mas-info').innerHTML = `MAS S.A.S BIC: <strong>$${masC}M</strong> (${masH} colab.)`;
-        }
-        if (document.getElementById('bento-armo-info')) {
-          const armoC = (kpis.empresas?.armo?.costo / 1e6).toFixed(1);
-          const armoH = kpis.empresas?.armo?.headcount || 452;
-          document.getElementById('bento-armo-info').innerHTML = `ART MODE S.A.S BIC: <strong>$${armoC}M</strong> (${armoH} colab.)`;
-        }
       } catch(e) { console.error('Error fetching KPIs:', e); }
 
       // 2. Fetch Nomina Table
@@ -8410,58 +8405,6 @@
       }, 2000);
     }
 
-    async function sendAIQuery(promptType) {
-      try {
-        const res = await fetch('/api/copilot', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ query: promptType, year: 2026, month: 7 })
-        });
-        const ans = await res.json();
-        document.getElementById('ai-chat-output').innerHTML = `
-          <div class="flex items-center space-x-2 text-[#E5F973] font-bold text-sm mb-2">
-            <i class="fas fa-wand-magic-sparkles"></i>
-            <span>${ans.title}</span>
-          </div>
-          <p class="text-slate-300 leading-relaxed whitespace-pre-line">${ans.content}</p>
-        `;
-      } catch(e) { console.error(e); }
-    }
-
-    async function sendCustomCopilotQuery() {
-      const input = document.getElementById('copilot-user-input');
-      if (!input) return;
-      const text = input.value.trim();
-      if (!text) return;
-      
-      const out = document.getElementById('ai-chat-output');
-      out.innerHTML = `
-        <div class="flex items-center space-x-2 text-amber-400 font-bold text-sm mb-2 animate-pulse">
-          <i class="fas fa-spinner fa-spin"></i>
-          <span>Analizando Lakehouse de Talento Humano...</span>
-        </div>
-        <p class="text-slate-400">Consultando tablas de Databricks para "${text}"...</p>
-      `;
-      
-      try {
-        const res = await fetch('/api/copilot', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ query: text, year: 2026, month: 7 })
-        });
-        const ans = await res.json();
-        out.innerHTML = `
-          <div class="flex items-center space-x-2 text-[#E5F973] font-bold text-sm mb-2">
-            <i class="fas fa-wand-magic-sparkles"></i>
-            <span>${ans.title}</span>
-          </div>
-          <p class="text-slate-300 leading-relaxed whitespace-pre-line">${ans.content}</p>
-        `;
-      } catch(e) {
-        out.innerHTML = `<p class="text-rose-400">Error al consultar el Copiloto: ${e.message}</p>`;
-      }
-    }
-
     async function uploadFile(file, url, statusElementId) {
       if (!file) return;
       const statusEl = document.getElementById(statusElementId);
@@ -8616,10 +8559,10 @@
     // DANE MODULE & BOT LOGIC
     // =========================================================
     let currentDaneMetrics = null;
-    let currentDaneMonth = 8; // Por defecto Agosto 2026 (calibrado oficial para Doris)
+    let currentDaneMonth = 9; // Por defecto Septiembre 2026 (sincronizado con periodo activo)
 
     async function loadDaneData(month = currentDaneMonth) {
-      currentDaneMonth = parseInt(month) || 8;
+      currentDaneMonth = parseInt(month) || 9;
       try {
         const res = await fetch(`/api/dane/kpis?year=2026&month=${currentDaneMonth}`);
         if (!res.ok) throw new Error('Error al cargar datos del DANE');
@@ -8656,22 +8599,22 @@
         // Update Download Link & Button
         const downloadBtn = document.getElementById('btn-download-dane-excel');
         const downloadText = document.getElementById('dane-download-text');
-        const monthName = currentDaneMonth === 8 ? 'Agosto' : 'Julio';
+        const monthNames = { 6: 'Junio', 7: 'Julio', 8: 'Agosto', 9: 'Septiembre' };
+        const monthName = monthNames[currentDaneMonth] || `Mes ${currentDaneMonth}`;
         if (downloadBtn) downloadBtn.href = `/api/download/dane-excel?year=2026&month=${currentDaneMonth}`;
         if (downloadText) downloadText.textContent = `Descargar Formulario DANE ${monthName} (.xlsx)`;
 
         // Update Pills
-        const btnM7 = document.getElementById('btn-dane-m7');
-        const btnM8 = document.getElementById('btn-dane-m8');
-        if (btnM7 && btnM8) {
-          if (currentDaneMonth === 7) {
-            btnM7.className = 'px-3 py-1.5 rounded-xl text-xs font-black transition cursor-pointer bg-[#E5F973] text-slate-950 shadow-xs';
-            btnM8.className = 'px-3 py-1.5 rounded-xl text-xs font-black transition cursor-pointer text-slate-400 hover:text-white';
-          } else {
-            btnM8.className = 'px-3 py-1.5 rounded-xl text-xs font-black transition cursor-pointer bg-[#E5F973] text-slate-950 shadow-xs';
-            btnM7.className = 'px-3 py-1.5 rounded-xl text-xs font-black transition cursor-pointer text-slate-400 hover:text-white';
+        [6, 7, 8, 9].forEach(m => {
+          const btn = document.getElementById('btn-dane-m' + m);
+          if (btn) {
+            if (m === currentDaneMonth) {
+              btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer bg-[#E5F973] text-slate-950 shadow-xs';
+            } else {
+              btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer text-slate-400 hover:text-white';
+            }
           }
-        }
+        });
 
         // Render Table
         renderDaneTable(data);
@@ -8792,7 +8735,8 @@
       const avatarContainer = document.getElementById('drawer-avatar-container');
       if (avatarContainer) {
         if (emp.picture_url && emp.picture_url.trim() !== '') {
-          avatarContainer.innerHTML = `<img src="${emp.picture_url}" alt="${emp.nombre_completo}" class="w-12 h-12 rounded-2xl object-cover border border-slate-700 shadow-md">`;
+          const src = getAvatarSrc(emp.picture_url);
+          avatarContainer.innerHTML = `<img src="${src}" referrerpolicy="no-referrer" alt="${emp.nombre_completo}" class="w-12 h-12 rounded-2xl object-cover border border-slate-700 shadow-md" onerror="this.onerror=null; this.parentElement.innerText='${initials}'">`;
         } else {
           avatarContainer.innerHTML = initials;
         }

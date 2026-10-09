@@ -276,7 +276,7 @@ class CopilotIntelligenceEngine:
             if historical:
                 res = historical
             else:
-                res = self._route_query(q)
+                res = self._route_query(q, q_raw)
                 
             # Inject time travel badge if needed
             if is_time_travel:
@@ -299,7 +299,9 @@ class CopilotIntelligenceEngine:
                 self.year, self.month = orig_year, orig_month
                 self.df_nom, self.df_vac, self.df_ti = orig_df_nom, orig_df_vac, orig_df_ti
 
-    def _route_query(self, q: str) -> Dict[str, Any]:
+    def _route_query(self, q: str, q_raw: str = "") -> Dict[str, Any]:
+        if not q_raw:
+            q_raw = q
         # 1. SALUDOS & PRESENTACIÓN
         if any(w == q for w in ["hola", "buenas", "buenos dias", "buenas tardes", "buenas noches", "hey", "saludos", "ayuda", "menu", "que puedes hacer", "que haces"]):
             return self._response_welcome()
@@ -1064,9 +1066,11 @@ class CopilotIntelligenceEngine:
         tot_costo = self.df_nom["costo_total_empleador"].sum() if not self.df_nom.empty else 1793500000.0
         tot_pasivo = self.df_vac["pasivo_estimado"].sum() if not self.df_vac.empty else 254238823.0
 
+        month_names = {6: "Junio", 7: "Julio", 8: "Agosto", 9: "Septiembre"}
+        m_label = f"{month_names.get(self.month, f'Mes {self.month}')} {self.year}"
         return {
-            "title": f"Resumen General de Cierre de Talento Humano ({self.year}-{self.month:02d})",
-            "content": f"📊 **Cierre Oficial Julio 2026 (Maaji Enterprise):**\n\n"
+            "title": f"Resumen General de Cierre de Talento Humano ({m_label})",
+            "content": f"📊 **Cierre Oficial {m_label} (Maaji Enterprise):**\n\n"
                        f"• **Headcount Directo:** {tot_headcount} colaboradoras activas.\n"
                        f"• **Masa Salarial Base:** ${tot_sal:,.0f} COP / mes.\n"
                        f"• **Costo Total Compañía:** ${tot_costo:,.0f} COP (incluye $497.7M en prestaciones y parafiscales).\n"
