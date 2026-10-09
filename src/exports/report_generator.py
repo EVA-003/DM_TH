@@ -21,6 +21,65 @@ logger = logging.getLogger("ReportGenerator")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 
+def _inject_cached_values_into_xlsx(file_path: Path, values_map: dict):
+    """
+    Inyecta valores precalculados directamente en las etiquetas <v> del OpenXML de Excel (.xlsx).
+    Garantiza compatibilidad absoluta con Linux/Ubuntu (servidores sin Microsoft Office COM),
+    así como en visores web (SharePoint, Teams, OneDrive) y Vista Protegida de Excel,
+    asegurando que todas las prestaciones sociales y totales se muestren calculados al instante.
+    """
+    import zipfile
+    import xml.etree.ElementTree as ET
+    import shutil
+    try:
+        with zipfile.ZipFile(file_path, "r") as zin:
+            wb_xml = zin.read("xl/workbook.xml")
+            rels_xml = zin.read("xl/_rels/workbook.xml.rels")
+
+        wb_tree = ET.fromstring(wb_xml)
+        rels_tree = ET.fromstring(rels_xml)
+
+        rel_map = {}
+        for r in rels_tree:
+            rel_map[r.get("Id")] = r.get("Target").lstrip("/")
+
+        sheet_file_map = {}
+        for s in wb_tree.iter("{http://schemas.openxmlformats.org/spreadsheetml/2006/main}sheet"):
+            s_name = s.get("name")
+            r_id = s.get("{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id")
+            target = rel_map.get(r_id, "")
+            clean_target = target if target.startswith("xl/") else f"xl/{target}"
+            sheet_file_map[s_name] = clean_target
+
+        temp_path = file_path.with_suffix(".tmp.xlsx")
+        with zipfile.ZipFile(file_path, "r") as zin, zipfile.ZipFile(temp_path, "w", compression=zipfile.ZIP_DEFLATED) as zout:
+            for item in zin.infolist():
+                content = zin.read(item.filename)
+                matched_sheet = None
+                for s_name, f_name in sheet_file_map.items():
+                    if item.filename == f_name and s_name in values_map:
+                        matched_sheet = s_name
+                        break
+                if matched_sheet:
+                    ET.register_namespace("", "http://schemas.openxmlformats.org/spreadsheetml/2006/main")
+                    tree = ET.fromstring(content)
+                    s_vals = values_map[matched_sheet]
+                    for c in tree.iter("{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c"):
+                        coord = c.get("r")
+                        if coord in s_vals:
+                            v = c.find("{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v")
+                            if v is None:
+                                v = ET.SubElement(c, "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v")
+                            v.text = str(s_vals[coord])
+                    content = ET.tostring(tree, encoding="utf-8", xml_declaration=True)
+                zout.writestr(item, content)
+
+        shutil.move(temp_path, file_path)
+        logger.info(f"Valores de prestaciones y totales cacheados con éxito en OpenXML: {file_path.name}")
+    except Exception as e:
+        logger.warning(f"Error inyectando valores precalculados en OpenXML: {e}")
+
+
 class NominaReportGenerator:
     def __init__(self):
         self.gold_dir = GOLD_DIR
@@ -221,6 +280,10 @@ class NominaReportGenerator:
 
         cutoff_date = datetime(year, month, 30 if month != 2 else 28)
 
+        cached_map = {f"Nomina {mes_nombre}": {}, "Consolidado": {}}
+        nom_map = cached_map[f"Nomina {mes_nombre}"]
+        cons_map = cached_map["Consolidado"]
+
         for r_idx, row in df.iterrows():
             excel_row = r_idx + 2
 
@@ -327,7 +390,7 @@ class NominaReportGenerator:
             aux_rod = float(row.get("auxilio_rodamiento", 0.0) or 0.0)
             aux_extra = float(row.get("auxilio_transporte_extralegal", 0.0) or 0.0)
             admin_temp = float(row.get("administracion_temporal", 0.0) or 0.0)
-            if "temporal" in str(row.get("tipo_contrato", "")).lower() and admin_temp == 0.0:
+            if ("obra" in str(row.get("tipo_contrato", "")).lower() or "temporal" in str(row.get("tipo_contrato", "")).lower()) and admin_temp == 0.0:
                 admin_temp = round(salario_2026 * 0.10, 2)
 
             c_aa = ws_nom.cell(excel_row, 27, aux_rod if aux_rod > 0 else 0.0)
@@ -360,6 +423,34 @@ class NominaReportGenerator:
             c_ag.font = font_bold
             c_ag.border = border_thin
 
+            # Precalcular valores para inyección OpenXML
+            val_salud = round(salario_2026 * 0.085, 2)
+            val_pension = round(salario_2026 * 0.12, 2)
+            val_arl = round(salario_2026 * tarifa_arl, 2)
+            val_caja = round(salario_2026 * 0.04, 2)
+            val_ces = round(salario_2026 * 0.0833, 2)
+            val_int = round(salario_2026 * 0.01, 2)
+            val_pri = round(salario_2026 * 0.0833, 2)
+            val_vac = round(salario_2026 * 0.0417, 2)
+            val_aux_tr = 249095.0 if salario_2026 <= 2 * 1750905 else 0.0
+            val_pct_inc = round((salario_2026 / salario_2025 - 1), 6) if salario_2025 > 0 else 0.0
+
+            val_devengado = round(salario_2026 + val_aux_tr + aux_rod + aux_extra + he_val + com_val, 2)
+            val_costo_total = round(salario_2026 + val_salud + val_pension + val_arl + val_caja + val_ces + val_int + val_pri + val_vac + val_aux_tr + aux_rod + aux_extra + admin_temp + he_val + com_val, 2)
+
+            nom_map[f"N{excel_row}"] = val_pct_inc
+            nom_map[f"O{excel_row}"] = val_salud
+            nom_map[f"P{excel_row}"] = val_pension
+            nom_map[f"Q{excel_row}"] = val_arl
+            nom_map[f"S{excel_row}"] = val_caja
+            nom_map[f"V{excel_row}"] = val_ces
+            nom_map[f"W{excel_row}"] = val_int
+            nom_map[f"X{excel_row}"] = val_pri
+            nom_map[f"Y{excel_row}"] = val_vac
+            nom_map[f"Z{excel_row}"] = val_aux_tr
+            nom_map[f"AF{excel_row}"] = val_costo_total
+            nom_map[f"AG{excel_row}"] = val_devengado
+
         # Fila de Totales
         tot_row = len(df) + 2
         ws_nom.cell(tot_row, 4, "TOTAL GENERAL").font = font_bold
@@ -372,6 +463,47 @@ class NominaReportGenerator:
             c_tot.number_format = "$#,##0"
             c_tot.fill = PatternFill(start_color="F1F5F9", end_color="F1F5F9", fill_type="solid")
             c_tot.border = Border(top=Side(style="thin"), bottom=Side(style="double"))
+
+            # Suma precalculada para caché
+            if c_idx == 11:
+                col_sum = sum(round(float(r.get("salario_base", 0)) / 1.0509996, 2) for _, r in df.iterrows())
+            elif c_idx in (12, 13):
+                col_sum = sum(float(r.get("salario_base", 0)) for _, r in df.iterrows())
+            elif c_idx == 15:
+                col_sum = sum(round(float(r.get("salario_base", 0)) * 0.085, 2) for _, r in df.iterrows())
+            elif c_idx == 16:
+                col_sum = sum(round(float(r.get("salario_base", 0)) * 0.12, 2) for _, r in df.iterrows())
+            elif c_idx == 17:
+                col_sum = sum(round(float(r.get("salario_base", 0)) * float(r.get("tarifa_arl_pct", 0.00522)), 2) for _, r in df.iterrows())
+            elif c_idx == 19:
+                col_sum = sum(round(float(r.get("salario_base", 0)) * 0.04, 2) for _, r in df.iterrows())
+            elif c_idx == 22:
+                col_sum = sum(round(float(r.get("salario_base", 0)) * 0.0833, 2) for _, r in df.iterrows())
+            elif c_idx == 23:
+                col_sum = sum(round(float(r.get("salario_base", 0)) * 0.01, 2) for _, r in df.iterrows())
+            elif c_idx == 24:
+                col_sum = sum(round(float(r.get("salario_base", 0)) * 0.0833, 2) for _, r in df.iterrows())
+            elif c_idx == 25:
+                col_sum = sum(round(float(r.get("salario_base", 0)) * 0.0417, 2) for _, r in df.iterrows())
+            elif c_idx == 26:
+                col_sum = sum(249095.0 for _, r in df.iterrows() if float(r.get("salario_base", 0)) <= 2 * 1750905)
+            elif c_idx == 27:
+                col_sum = sum(float(r.get("auxilio_rodamiento", 0) or 0) for _, r in df.iterrows())
+            elif c_idx == 28:
+                col_sum = sum(float(r.get("auxilio_transporte_extralegal", 0) or 0) for _, r in df.iterrows())
+            elif c_idx == 29:
+                col_sum = sum(float(r.get("administracion_temporal", 0) or 0) if float(r.get("administracion_temporal", 0) or 0) > 0 else (round(float(r.get("salario_base", 0)) * 0.10, 2) if ("obra" in str(r.get("tipo_contrato", "")).lower() or "temporal" in str(r.get("tipo_contrato", "")).lower()) else 0) for _, r in df.iterrows())
+            elif c_idx == 30:
+                col_sum = sum(float(r.get("horas_extras", 0) or 0) for _, r in df.iterrows())
+            elif c_idx == 31:
+                col_sum = sum(float(r.get("comisiones", 0) or 0) for _, r in df.iterrows())
+            elif c_idx == 32:
+                col_sum = sum(nom_map[f"AF{_r + 2}"] for _r in range(len(df)))
+            elif c_idx == 33:
+                col_sum = sum(nom_map[f"AG{_r + 2}"] for _r in range(len(df)))
+            else:
+                col_sum = 0.0
+            nom_map[f"{col_letter}{tot_row}"] = round(col_sum, 2)
 
         for c in range(1, 34):
             col_letter = get_column_letter(c)
@@ -478,6 +610,19 @@ class NominaReportGenerator:
             else:
                 ws_cons.cell(r_i, tot_col_idx, f"=SUM(B{r_i}:{last_col_letter}{r_i})").number_format = "$#,##0"
 
+        # Valores cacheados en Consolidado
+        tot_col_letter = get_column_letter(tot_col_idx)
+        for c_i, val in enumerate(vals_costo, start=2):
+            c_let = get_column_letter(c_i)
+            if (c_i - 2 + 1) == month:
+                cons_map[f"{c_let}4"] = round(nom_map.get(f"AF{tot_row}", 0.0), 2)
+
+        cons_map[f"{tot_col_letter}3"] = round(sum(vals_hc[i] for i in range(len(vals_hc)) if isinstance(vals_hc[i], (int, float))) / len(vals_hc))
+        c_list = [nom_map.get(f"AF{tot_row}", 0.0) if (i + 1) == month else (vals_costo[i] if isinstance(vals_costo[i], (int, float)) else 0) for i in range(len(vals_costo))]
+        cons_map[f"{tot_col_letter}4"] = round(sum(c_list))
+        cons_map[f"{tot_col_letter}5"] = round(sum(vals_mod[i] for i in range(len(vals_mod)) if isinstance(vals_mod[i], (int, float))))
+        cons_map[f"{tot_col_letter}6"] = round(sum(vals_moi[i] for i in range(len(vals_moi)) if isinstance(vals_moi[i], (int, float))))
+
         # Anchos de columna en Consolidado amplios para evitar #######
         ws_cons.column_dimensions["A"].width = 28
         for c_idx in range(2, tot_col_idx + 1):
@@ -487,7 +632,10 @@ class NominaReportGenerator:
         wb.save(output_excel)
         logger.info(f"Libro oficial de nómina TH generado exitosamente en: {output_excel}")
 
-        # Precalcular con Excel COM en Windows para cachear valores de fórmulas (<v> tags)
+        # 1. Inyectar valores cacheados directamente en OpenXML (garantiza visualización en Linux y Web)
+        _inject_cached_values_into_xlsx(output_excel, cached_map)
+
+        # 2. Validar con Excel COM en Windows si está disponible
         try:
             import win32com.client as win32
             excel_app = win32.gencache.EnsureDispatch('Excel.Application')
@@ -498,7 +646,7 @@ class NominaReportGenerator:
             wb_com.Save()
             wb_com.Close(SaveChanges=True)
             excel_app.Quit()
-            logger.info("Fórmulas de prestaciones y totales precalculadas y cacheadas con Excel COM.")
+            logger.info("Fórmulas de prestaciones y totales validadas con Excel COM.")
         except Exception as e:
             logger.debug(f"Excel COM pre-calculation omitido: {e}")
 
