@@ -228,23 +228,35 @@
       </div>
     </header>
 
-    <!-- ZERO-SCROLL 4-COLUMN NAVIGATION TABS -->
+    <!-- ZERO-SCROLL 4-COLUMN NAVIGATION TABS (CON LIVE EXECUTIVE BADGES) -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-white/80 backdrop-blur-md p-1.5 rounded-2xl mb-5 w-full border border-slate-200/70 shadow-xs">
-      <button onclick="setTab('nomina')" id="nav-nomina" class="tab-btn-active w-full flex items-center justify-center space-x-2 py-3 px-3 rounded-xl text-xs font-black text-center transition cursor-pointer">
-        <i class="fas fa-file-invoice-dollar"></i>
-        <span>1. Nómina Consolidada</span>
+      <button onclick="setTab('nomina')" id="nav-nomina" class="tab-btn-active w-full flex items-center justify-between sm:justify-center sm:space-x-2 py-2.5 px-3 rounded-xl text-xs font-black text-center transition cursor-pointer group">
+        <span class="flex items-center space-x-2">
+          <i class="fas fa-file-invoice-dollar"></i>
+          <span>1. Nómina</span>
+        </span>
+        <span id="nav-tab-badge-nomina" class="text-[9px] font-black bg-[#E5F973] text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">317 • 6/6 PASS</span>
       </button>
-      <button onclick="setTab('vacaciones')" id="nav-vacaciones" class="tab-btn-inactive w-full flex items-center justify-center space-x-2 py-3 px-3 rounded-xl text-xs font-bold text-center transition cursor-pointer">
-        <i class="fas fa-umbrella-beach"></i>
-        <span>2. Vacaciones & Pasivo</span>
+      <button onclick="setTab('vacaciones')" id="nav-vacaciones" class="tab-btn-inactive w-full flex items-center justify-between sm:justify-center sm:space-x-2 py-2.5 px-3 rounded-xl text-xs font-bold text-center transition cursor-pointer group">
+        <span class="flex items-center space-x-2">
+          <i class="fas fa-umbrella-beach"></i>
+          <span>2. Vacaciones</span>
+        </span>
+        <span id="nav-tab-badge-vac" class="text-[9px] font-black bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full border border-rose-200">8 críticas</span>
       </button>
-      <button onclick="setTab('ti')" id="nav-ti" class="tab-btn-inactive w-full flex items-center justify-center space-x-2 py-3 px-3 rounded-xl text-xs font-bold text-center transition cursor-pointer">
-        <i class="fas fa-laptop-code"></i>
-        <span>3. Novedades TI</span>
+      <button onclick="setTab('ti')" id="nav-ti" class="tab-btn-inactive w-full flex items-center justify-between sm:justify-center sm:space-x-2 py-2.5 px-3 rounded-xl text-xs font-bold text-center transition cursor-pointer group">
+        <span class="flex items-center space-x-2">
+          <i class="fas fa-laptop-code"></i>
+          <span>3. Novedades TI</span>
+        </span>
+        <span id="nav-tab-badge-ti" class="text-[9px] font-black bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full border border-sky-200">29 mov</span>
       </button>
-      <button onclick="setTab('dane')" id="nav-dane" class="tab-btn-inactive w-full flex items-center justify-center space-x-2 py-3 px-3 rounded-xl text-xs font-bold text-center transition cursor-pointer">
-        <i class="fas fa-chart-line text-emerald-600"></i>
-        <span>4. Informe DANE</span>
+      <button onclick="setTab('dane')" id="nav-dane" class="tab-btn-inactive w-full flex items-center justify-between sm:justify-center sm:space-x-2 py-2.5 px-3 rounded-xl text-xs font-bold text-center transition cursor-pointer group">
+        <span class="flex items-center space-x-2">
+          <i class="fas fa-chart-line text-emerald-600"></i>
+          <span>4. Informe DANE</span>
+        </span>
+        <span id="nav-tab-badge-dane" class="text-[9px] font-black bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-200">100% OK</span>
       </button>
     </div>
 
@@ -280,14 +292,14 @@
               <h1 id="hero-period-title" class="text-2xl sm:text-3xl font-black text-white tracking-tight font-display">Nómina • Septiembre 2026</h1>
             </div>
 
-            <!-- MAIN BIG NUMBER + COSTO LABORAL CONSOLIDADO + PILL -->
-            <div class="flex flex-wrap items-baseline gap-3.5">
+            <!-- MAIN BIG NUMBER + COSTO LABORAL CONSOLIDADO + LUXURY TRAJECTORY PILL -->
+            <div class="flex flex-wrap items-center gap-3.5 sm:gap-5">
               <h2 id="hero-cost-display" class="text-4xl sm:text-5xl lg:text-6xl font-black text-metallic font-display tracking-tight leading-none">$1,827.3M</h2>
               <div class="flex flex-col sm:flex-row sm:items-center gap-2">
                 <span class="text-xs text-slate-400 font-semibold tracking-wide">Costo laboral consolidado</span>
-                <span id="hero-mom-badge" class="inline-flex items-center gap-1.5 bg-emerald-950/70 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span id="hero-mom-badge-text">-3.99% vs. Agosto</span>
+                <span id="hero-mom-badge" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-500/20 to-emerald-400/10 text-emerald-300 border border-emerald-400/40 text-xs font-black px-3 py-1 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.25)] backdrop-blur-md">
+                  <i class="fas fa-arrow-trend-down text-emerald-400 text-xs"></i>
+                  <span id="hero-mom-badge-text">-3.99% MoM (-$70.9M vs Ago)</span>
                 </span>
               </div>
             </div>
@@ -609,14 +621,21 @@
             </div>
 
             <!-- CHART LEGEND -->
-            <div class="flex items-center space-x-3 text-[10px] font-bold text-slate-500 mb-2">
-              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-slate-900"></span> Costo Mensual</span>
-              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-[#E5F973] border border-slate-900"></span> Mes Activo</span>
+            <div class="flex items-center justify-between text-[10px] font-bold text-slate-500 mb-2">
+              <div class="flex items-center space-x-2.5">
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-slate-800"></span> Costo</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-[#E5F973] border border-slate-900"></span> Activo</span>
+                <span class="flex items-center gap-1"><span class="w-3 border-t-2 border-dashed border-amber-500"></span> Media</span>
+              </div>
+              <span id="bento-trend-mean-stat" class="font-mono text-[9px] text-amber-900 bg-amber-50 border border-amber-300/80 px-1.5 py-0.2 rounded font-black tracking-tight" title="Promedio presupuestal cuatrimestral">Media: $1,768.1M</span>
             </div>
 
             <!-- DYNAMIC MULTI-MONTH BARS CONTAINER -->
-            <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-200/80">
-              <div id="bento-trend-bars-container" class="grid grid-cols-4 gap-2 items-end h-32 pt-3 pb-1 text-center">
+            <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-200/80 relative overflow-hidden">
+              <!-- Dashed reference baseline across the 4 months -->
+              <div id="bento-trend-baseline" class="absolute inset-x-3 border-b-2 border-dashed border-amber-400/80 z-0 pointer-events-none transition-all duration-500" style="bottom: 78%;" title="Media Cuatrimestral: $1,768.1M"></div>
+              
+              <div id="bento-trend-bars-container" class="grid grid-cols-4 gap-2 items-end h-32 pt-3 pb-1 text-center relative z-10">
                 <!-- Dynamically populated via renderPreflightBento -->
                 <div class="flex flex-col items-center h-full justify-end group cursor-pointer" onclick="switchPeriod('2026-06')">
                   <span class="text-[9px] font-bold text-slate-400 font-mono">$1,790M</span>
@@ -666,65 +685,83 @@
             <p class="text-[11px] text-slate-500 mb-2">Auditoría en caliente para <strong id="bento-preflight-period-label" class="text-slate-900">Septiembre 2026</strong>:</p>
 
             <ul id="bento-preflight-list" class="space-y-1.5 text-xs text-slate-700 font-medium max-h-[160px] overflow-y-auto pr-1 dropdown-scrollbar">
-              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
-                <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
-                  <div>
-                    <p class="font-bold text-slate-900 text-[11px]">1. Auxilio Transporte ($249,095)</p>
-                    <p class="text-[9px] text-slate-500">Cifra legal exacta sin redondeos.</p>
+              <li class="group/chk flex items-start justify-between p-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200/60 hover:border-emerald-300 transition-all cursor-help" title="CST Art. 1 & Ley 15/1959: Tarifa legal fija sin redondeo bancario">
+                <div class="flex items-start space-x-2 min-w-0 pr-1">
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0 group-hover/chk:scale-110 transition-transform"></i>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <p class="font-bold text-slate-900 text-[11px] truncate">1. Auxilio Transporte ($249,095)</p>
+                      <span class="text-[8px] font-mono font-bold px-1 py-0.2 rounded bg-slate-200/70 text-slate-700 border border-slate-300/60 flex-shrink-0">Ley 15/59</span>
+                    </div>
+                    <p class="text-[9px] text-slate-500 leading-tight">Cifra legal exacta sin redondeos.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">$249,095</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap ml-1 flex-shrink-0">$249,095</span>
               </li>
-              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
-                <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
-                  <div>
-                    <p class="font-bold text-slate-900 text-[11px]">2. Temporales (EST) + Fee 10%</p>
-                    <p class="text-[9px] text-slate-500">Contrato 'Obra o Labor' con fee.</p>
+              <li class="group/chk flex items-start justify-between p-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200/60 hover:border-emerald-300 transition-all cursor-help" title="Ley 50/1990 Art. 71: EST en Misión + 10% Fee de administración">
+                <div class="flex items-start space-x-2 min-w-0 pr-1">
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0 group-hover/chk:scale-110 transition-transform"></i>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <p class="font-bold text-slate-900 text-[11px] truncate">2. Temporales (EST) + Fee 10%</p>
+                      <span class="text-[8px] font-mono font-bold px-1 py-0.2 rounded bg-slate-200/70 text-slate-700 border border-slate-300/60 flex-shrink-0">Ley 50/90</span>
+                    </div>
+                    <p class="text-[9px] text-slate-500 leading-tight">Contrato 'Obra o Labor' con fee.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">EST OK</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap ml-1 flex-shrink-0">EST OK</span>
               </li>
-              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
-                <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
-                  <div>
-                    <p class="font-bold text-slate-900 text-[11px]">3. Prestaciones Sociales OpenXML</p>
-                    <p class="text-[9px] text-slate-500">100% formuladas y cacheadas.</p>
+              <li class="group/chk flex items-start justify-between p-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200/60 hover:border-emerald-300 transition-all cursor-help" title="CST Arts. 186, 249, 306: Provisiones OpenXML 100% formuladas">
+                <div class="flex items-start space-x-2 min-w-0 pr-1">
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0 group-hover/chk:scale-110 transition-transform"></i>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <p class="font-bold text-slate-900 text-[11px] truncate">3. Prestaciones OpenXML</p>
+                      <span class="text-[8px] font-mono font-bold px-1 py-0.2 rounded bg-slate-200/70 text-slate-700 border border-slate-300/60 flex-shrink-0">CST 186/249</span>
+                    </div>
+                    <p class="text-[9px] text-slate-500 leading-tight">100% formuladas y cacheadas.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">100% Fórmulas</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap ml-1 flex-shrink-0">100% Fórmulas</span>
               </li>
-              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
-                <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
-                  <div>
-                    <p class="font-bold text-slate-900 text-[11px]">4. Comisiones Comerciales</p>
-                    <p class="text-[9px] text-slate-500">Conciliadas desde Buk Sábana.</p>
+              <li class="group/chk flex items-start justify-between p-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200/60 hover:border-emerald-300 transition-all cursor-help" title="CST Art. 127/128: Comisiones retail y auxilios no prestacionales">
+                <div class="flex items-start space-x-2 min-w-0 pr-1">
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0 group-hover/chk:scale-110 transition-transform"></i>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <p class="font-bold text-slate-900 text-[11px] truncate">4. Comisiones Comerciales</p>
+                      <span class="text-[8px] font-mono font-bold px-1 py-0.2 rounded bg-slate-200/70 text-slate-700 border border-slate-300/60 flex-shrink-0">CST 127</span>
+                    </div>
+                    <p class="text-[9px] text-slate-500 leading-tight">Conciliadas desde Buk Sábana.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">Comisiones OK</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap ml-1 flex-shrink-0">Comisiones OK</span>
               </li>
-              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
-                <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
-                  <div>
-                    <p class="font-bold text-slate-900 text-[11px]">5. Universo Completo & Retiros</p>
-                    <p class="text-[9px] text-slate-500">Todo el personal con vinculación.</p>
+              <li class="group/chk flex items-start justify-between p-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200/60 hover:border-emerald-300 transition-all cursor-help" title="CST Art. 65: Liquidación definitiva y corte contable de bajas">
+                <div class="flex items-start space-x-2 min-w-0 pr-1">
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0 group-hover/chk:scale-110 transition-transform"></i>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <p class="font-bold text-slate-900 text-[11px] truncate">5. Personal Retirado</p>
+                      <span class="text-[8px] font-mono font-bold px-1 py-0.2 rounded bg-slate-200/70 text-slate-700 border border-slate-300/60 flex-shrink-0">CST 65</span>
+                    </div>
+                    <p class="text-[9px] text-slate-500 leading-tight">Todo el personal con vinculación.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">Activos + Retiros</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap ml-1 flex-shrink-0">Retiros OK</span>
               </li>
-              <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/60">
-                <div class="flex items-start space-x-2">
-                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
-                  <div>
-                    <p class="font-bold text-slate-900 text-[11px]">6. Plantilla Oficial 33 Columnas</p>
-                    <p class="text-[9px] text-slate-500">Estructura exacta con auxilio extralegal.</p>
+              <li class="group/chk flex items-start justify-between p-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200/60 hover:border-emerald-300 transition-all cursor-help" title="Estructura oficial consolidada de 33 columnas (Cols A-AG)">
+                <div class="flex items-start space-x-2 min-w-0 pr-1">
+                  <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0 group-hover/chk:scale-110 transition-transform"></i>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <p class="font-bold text-slate-900 text-[11px] truncate">6. Plantilla Oficial 33 Col.</p>
+                      <span class="text-[8px] font-mono font-bold px-1 py-0.2 rounded bg-slate-200/70 text-slate-700 border border-slate-300/60 flex-shrink-0">Maaji v2</span>
+                    </div>
+                    <p class="text-[9px] text-slate-500 leading-tight">Estructura exacta con auxilio extralegal.</p>
                   </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap">33 Cols OK</span>
+                <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap ml-1 flex-shrink-0">33 Cols OK</span>
               </li>
             </ul>
           </div>
@@ -4069,6 +4106,10 @@
           if (typeof renderTiSpreadsheet === 'function' && currentTiViewMode === 'spreadsheet') {
             renderTiSpreadsheet();
           }
+          const tiBadge = document.getElementById('nav-tab-badge-ti');
+          if (tiBadge && Array.isArray(rawTiData)) {
+            tiBadge.innerText = `${rawTiData.length} mov`;
+          }
         }
         const btnTi = document.getElementById('btn-download-ti-template');
         if (btnTi) btnTi.href = `/api/download/ti?year=${year}&month=${month}`;
@@ -4083,12 +4124,12 @@
         const view = document.getElementById('view-' + t);
         if (btn && view) {
           if (t === tabId) {
-            btn.className = 'tab-btn-active w-full flex items-center justify-center space-x-2 py-3 px-3 rounded-xl text-xs font-extrabold text-center transition cursor-pointer';
+            btn.className = 'tab-btn-active w-full flex items-center justify-between sm:justify-center sm:space-x-2 py-2.5 px-3 rounded-xl text-xs font-black text-center transition cursor-pointer group';
             view.classList.remove('hidden');
             if (t === 'dane') loadDaneData(currentPeriodMonth);
             if (t === 'ti') loadTiData(currentPeriodYear, currentPeriodMonth);
           } else {
-            btn.className = 'tab-btn-inactive w-full flex items-center justify-center space-x-2 py-3 px-3 rounded-xl text-xs font-extrabold text-center transition cursor-pointer';
+            btn.className = 'tab-btn-inactive w-full flex items-center justify-between sm:justify-center sm:space-x-2 py-2.5 px-3 rounded-xl text-xs font-bold text-center transition cursor-pointer group';
             view.classList.add('hidden');
           }
         }
@@ -5461,14 +5502,32 @@
       if (heroCost) heroCost.innerText = `$${(data.resumen_financiero.costo_total_empleador / 1e6).toFixed(1)}M`;
 
       const momBadgeText = document.getElementById('hero-mom-badge-text');
+      const momBadgeContainer = document.getElementById('hero-mom-badge');
       if (momBadgeText) {
         if (data.has_prior) {
-          const sign = data.variacion_mom.delta_costo_pct >= 0 ? '+' : '';
-          const prevLabel = (data.prev_periodo_label || '').split(' ')[0];
-          momBadgeText.innerText = `${sign}${data.variacion_mom.delta_costo_pct}% vs. ${prevLabel}`;
+          const pct = data.variacion_mom.delta_costo_pct;
+          const sign = pct >= 0 ? '+' : '';
+          const deltaM = (data.variacion_mom.delta_costo / 1e6).toFixed(1);
+          const deltaSign = data.variacion_mom.delta_costo >= 0 ? '+' : '';
+          const prevLabel = (data.prev_periodo_label || '').split(' ')[0].substring(0, 3);
+          momBadgeText.innerText = `${sign}${pct}% MoM (${deltaSign}$${deltaM}M vs ${prevLabel})`;
+          if (momBadgeContainer) {
+            momBadgeContainer.className = pct <= 0
+              ? 'inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-500/20 to-emerald-400/10 text-emerald-300 border border-emerald-400/40 text-xs font-black px-3 py-1 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.25)] backdrop-blur-md'
+              : 'inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-amber-400/10 text-amber-300 border border-amber-400/40 text-xs font-black px-3 py-1 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.25)] backdrop-blur-md';
+          }
         } else {
-          momBadgeText.innerText = 'Línea Base';
+          momBadgeText.innerText = 'Línea Base Histórica';
+          if (momBadgeContainer) {
+            momBadgeContainer.className = 'inline-flex items-center gap-1.5 bg-white/10 text-slate-300 border border-white/20 text-xs font-bold px-3 py-1 rounded-full backdrop-blur-md';
+          }
         }
+      }
+
+      // Sincronizar badge de la pestaña Nómina
+      const navBadgeNom = document.getElementById('nav-tab-badge-nomina');
+      if (navBadgeNom) {
+        navBadgeNom.innerText = `${data.headcount.total} • ${data.checkpoints_preflight.passed_checks}/${data.checkpoints_preflight.total_checks} PASS`;
       }
 
       const heroColab = document.getElementById('hero-colab-count');
@@ -5499,34 +5558,67 @@
 
       const bentoList = document.getElementById('bento-preflight-list');
       if (bentoList && data.checkpoints_preflight?.checks) {
-        bentoList.innerHTML = data.checkpoints_preflight.checks.map(c => `
-          <li class="flex items-start justify-between p-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50/70 border border-slate-200/60 hover:border-emerald-200 transition">
-            <div class="flex items-start space-x-2">
-              <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
-              <div>
-                <p class="font-bold text-slate-900 text-[11px]">${c.titulo}</p>
-                <p class="text-[9px] text-slate-500 leading-tight">${c.descripcion}</p>
+        const legalMeta = {
+          1: { norm: 'Ley 15/59', tip: 'CST Art. 1 & Ley 15/1959: Tarifa legal fija $249,095 sin redondeos' },
+          2: { norm: 'Ley 50/90', tip: 'Ley 50/1990 Art. 71: EST en Misión + 10% Fee de administración' },
+          3: { norm: 'CST 186/249', tip: 'CST Arts. 186, 249, 306: Provisiones OpenXML 100% formuladas' },
+          4: { norm: 'CST 127', tip: 'CST Art. 127/128: Comisiones retail y auxilios no prestacionales' },
+          5: { norm: 'CST 65', tip: 'CST Art. 65: Liquidación definitiva y corte contable de bajas' },
+          6: { norm: 'Maaji v2', tip: 'Estructura oficial consolidada de 33 columnas (Cols A-AG)' }
+        };
+
+        bentoList.innerHTML = data.checkpoints_preflight.checks.map(c => {
+          const meta = legalMeta[c.id] || { norm: 'CST', tip: c.descripcion };
+          return `
+            <li class="group/chk flex items-start justify-between p-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200/60 hover:border-emerald-300 transition-all cursor-help" title="${meta.tip}">
+              <div class="flex items-start space-x-2 min-w-0 pr-1">
+                <i class="fas fa-circle-check text-emerald-500 text-xs mt-0.5 flex-shrink-0 group-hover/chk:scale-110 transition-transform"></i>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <p class="font-bold text-slate-900 text-[11px] truncate">${c.titulo}</p>
+                    <span class="text-[8px] font-mono font-bold px-1 py-0.2 rounded bg-slate-200/70 text-slate-700 border border-slate-300/60 flex-shrink-0">${meta.norm}</span>
+                  </div>
+                  <p class="text-[9px] text-slate-500 leading-tight mt-0.5 line-clamp-2">${c.descripcion}</p>
+                </div>
               </div>
-            </div>
-            <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap ml-1.5">
-              ${c.badge}
-            </span>
-          </li>
-        `).join('');
+              <span class="bg-emerald-100 text-emerald-800 text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap ml-1 flex-shrink-0 border border-emerald-200/70 shadow-xs">
+                ${c.badge}
+              </span>
+            </li>
+          `;
+        }).join('');
       }
 
       // 1. Dinamizar barras intermensuales de tendencia (Jun, Jul, Ago, Sep...)
       const barsContainer = document.getElementById('bento-trend-bars-container');
+      const baselineEl = document.getElementById('bento-trend-baseline');
+      const meanStatEl = document.getElementById('bento-trend-mean-stat');
+
       if (barsContainer && Array.isArray(data.tendencia_historica) && data.tendencia_historica.length > 0) {
-        const maxCost = Math.max(...data.tendencia_historica.map(t => t.costo_total || 0));
+        const costs = data.tendencia_historica.map(t => t.costo_total || 0);
+        const maxCost = Math.max(...costs);
+        const avgCost = costs.reduce((a, b) => a + b, 0) / (costs.length || 1);
+
+        // Posicionar baseline de media presupuestal
+        if (baselineEl && maxCost > 0) {
+          const baselinePct = Math.max(25, Math.min(90, Math.round((avgCost / maxCost) * 90)));
+          baselineEl.style.bottom = `${baselinePct}%`;
+          baselineEl.title = `Media Cuatrimestral: $${(avgCost / 1e6).toFixed(1)}M`;
+        }
+        if (meanStatEl && avgCost > 0) {
+          meanStatEl.innerText = `Media: $${(avgCost / 1e6).toFixed(1)}M`;
+        }
+
         barsContainer.innerHTML = data.tendencia_historica.map(t => {
           const isCurrent = t.is_current || (t.periodo === data.periodo);
           const heightPct = maxCost > 0 ? Math.max(30, Math.min(95, Math.round((t.costo_total / maxCost) * 90))) : 60;
           const shortMonth = t.label ? t.label.split(' ')[0].substring(0, 3) : t.periodo;
+          const diffVsAvg = avgCost > 0 ? (((t.costo_total - avgCost) / avgCost) * 100).toFixed(1) : 0;
+          const diffSign = diffVsAvg > 0 ? `+${diffVsAvg}% vs media` : `${diffVsAvg}% vs media`;
           
           if (isCurrent) {
             return `
-              <div class="flex flex-col items-center h-full justify-end group cursor-pointer" onclick="switchPeriod('${t.periodo}')" title="${t.label}: ${t.costo_formateado} (${t.headcount} colab.)">
+              <div class="flex flex-col items-center h-full justify-end group cursor-pointer" onclick="switchPeriod('${t.periodo}')" title="${t.label}: ${t.costo_formateado} (${t.headcount} colab. | ${diffSign})">
                 <span class="text-[9px] font-black text-emerald-800 font-mono">${t.costo_formateado}</span>
                 <div class="w-full max-w-[26px] bg-gradient-to-t from-slate-950 to-indigo-900 rounded-t-lg border-2 border-[#E5F973] shadow-md transition-all group-hover:scale-105" style="height: ${heightPct}%;"></div>
                 <span class="text-[10px] font-black text-slate-950 mt-1 bg-[#E5F973] px-1.5 rounded">${shortMonth}</span>
@@ -5534,7 +5626,7 @@
             `;
           } else {
             return `
-              <div class="flex flex-col items-center h-full justify-end group cursor-pointer" onclick="switchPeriod('${t.periodo}')" title="${t.label}: ${t.costo_formateado} (${t.headcount} colab.)">
+              <div class="flex flex-col items-center h-full justify-end group cursor-pointer" onclick="switchPeriod('${t.periodo}')" title="${t.label}: ${t.costo_formateado} (${t.headcount} colab. | ${diffSign})">
                 <span class="text-[9px] font-bold text-slate-400 font-mono group-hover:text-slate-700 transition">${t.costo_formateado}</span>
                 <div class="w-full max-w-[26px] bg-slate-700 hover:bg-slate-900 rounded-t-lg transition-all group-hover:scale-105" style="height: ${heightPct}%;"></div>
                 <span class="text-[10px] font-bold text-slate-600 mt-1 group-hover:text-slate-950 transition">${shortMonth}</span>
@@ -7294,6 +7386,8 @@
         return;
       }
 
+      const maxCost = Math.max(...data.map(r => r.costo_total_empleador || 0), 1);
+
       tbody.innerHTML = data.map((r, idx) => {
         const initials = getInitials(r.nombre_completo);
         const avatarHtml = r.picture_url && r.picture_url.trim() !== ''
@@ -7301,6 +7395,16 @@
           : `<div class="w-8 h-8 rounded-full bg-slate-900 text-[#E5F973] font-bold text-xs flex items-center justify-center flex-shrink-0">${initials}</div>`;
 
         const tipoContrato = r.tipo_contrato || (r.fecha_retiro ? 'Término Fijo' : 'Indefinido');
+        const costPct = Math.min(100, Math.max(10, Math.round(((r.costo_total_empleador || 0) / maxCost) * 100)));
+        const isMod = (r.clasificacion_mano_obra || '').includes('MOD');
+        const badgeMo = isMod
+          ? `<span class="bg-slate-950 text-[#E5F973] border border-slate-800 text-[9px] font-black px-1.5 py-0.5 rounded shadow-2xs">MOD</span>`
+          : `<span class="bg-indigo-50 text-indigo-700 border border-indigo-200 text-[9px] font-black px-1.5 py-0.5 rounded shadow-2xs">MOI</span>`;
+
+        const isRetiro = !!r.fecha_retiro;
+        const badgeEstado = isRetiro
+          ? `<span class="inline-flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-black px-2 py-0.5 rounded-full"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Retirado</span>`
+          : `<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-full"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Activo</span>`;
 
         return `
           <tr onclick="openEmployeeDrawer('${r.documento}')" class="hover:bg-indigo-50/60 transition cursor-pointer group">
@@ -7318,7 +7422,7 @@
             <td class="py-3 px-3.5 text-slate-700 font-semibold">
               <div class="flex items-center space-x-1.5 truncate max-w-[160px]">
                 <span class="truncate">${r.cargo_nombre}</span>
-                <span class="${r.clasificacion_mano_obra.includes('MOD') ? 'bg-slate-900 text-white' : 'bg-sky-100 text-sky-800'} text-[9px] font-extrabold px-1.5 py-0.2 rounded-sm flex-shrink-0">${r.clasificacion_mano_obra.includes('MOD') ? 'MOD' : 'MOI'}</span>
+                ${badgeMo}
               </div>
             </td>
             <td class="py-3 px-3.5 text-slate-600 font-medium truncate max-w-[130px]">
@@ -7328,11 +7432,14 @@
               <span class="text-[11px] bg-slate-100 px-2 py-0.5 rounded-md font-semibold text-slate-700">${tipoContrato}</span>
             </td>
             <td class="py-3 px-3.5 text-right font-mono font-bold text-slate-800">$${(r.salario_base || 0).toLocaleString()}</td>
-            <td class="py-3 px-3.5 text-right font-mono font-black text-indigo-900">$${(r.costo_total_empleador || 0).toLocaleString()}</td>
+            <td class="py-3 px-3.5 text-right font-mono">
+              <span class="font-black text-slate-950 text-xs block leading-tight">$${(r.costo_total_empleador || 0).toLocaleString()}</span>
+              <div class="w-20 ml-auto h-1 bg-slate-100 rounded-full overflow-hidden mt-1 flex" title="Proporción sobre costo máximo: ${costPct}%">
+                <div class="h-full bg-gradient-to-r from-emerald-500 to-indigo-600 rounded-full" style="width: ${costPct}%;"></div>
+              </div>
+            </td>
             <td class="py-3 px-3.5 text-center">
-              <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Activo
-              </span>
+              ${badgeEstado}
             </td>
             <td class="py-3 px-3 text-center">
               <button type="button" onclick="openEmployeeDrawer('${r.documento}')" title="Ver Ficha 360°" class="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-indigo-600 text-slate-500 group-hover:text-white flex items-center justify-center transition shadow-2xs cursor-pointer">
