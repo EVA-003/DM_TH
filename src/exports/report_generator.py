@@ -265,7 +265,8 @@ class NominaReportGenerator:
             "Total Hora Extra ",                     # Col AD (30)
             "Total Comisiones ",                     # Col AE (31)
             "Total 2026 Costo Maaji",                # Col AF (32)
-            "Total 2026 Devengado"                   # Col AG (33)
+            "Total 2026 Devengado",                  # Col AG (33)
+            "Tipo de Obra "                          # Col AH (34) - Categoría Mano de Obra Directa vs Indirecta
         ]
 
         header_fill = PatternFill(start_color="1E293B", end_color="1E293B", fill_type="solid")
@@ -423,6 +424,21 @@ class NominaReportGenerator:
             c_ag.font = font_bold
             c_ag.border = border_thin
 
+            # Col AH (34): Tipo de Obra (Categoría / Atributo: Mano de obra Directa vs Indirecta)
+            c_mo_raw = str(row.get("clasificacion_mano_obra", ""))
+            if "Directa" in c_mo_raw and "Indirecta" not in c_mo_raw:
+                val_tipo_obra = "Mano de obra Directa"
+            elif "Indirecta" in c_mo_raw:
+                val_tipo_obra = "Mano de obra Indirecta"
+            else:
+                from config.mapping_rules import clasificar_mod_moi
+                mo_calc = clasificar_mod_moi(row.get("cargo_nombre", ""), row.get("area_nombre", ""), row.get("centro_costos", ""))
+                val_tipo_obra = "Mano de obra Directa" if "Directa" in mo_calc else "Mano de obra Indirecta"
+
+            c_ah = ws_nom.cell(excel_row, 34, val_tipo_obra)
+            c_ah.border = border_thin
+            c_ah.alignment = Alignment(horizontal="center", vertical="center")
+
             # Precalcular valores para inyección OpenXML
             val_salud = round(salario_2026 * 0.085, 2)
             val_pension = round(salario_2026 * 0.12, 2)
@@ -450,6 +466,7 @@ class NominaReportGenerator:
             nom_map[f"Z{excel_row}"] = val_aux_tr
             nom_map[f"AF{excel_row}"] = val_costo_total
             nom_map[f"AG{excel_row}"] = val_devengado
+            nom_map[f"AH{excel_row}"] = val_tipo_obra
 
         # Fila de Totales
         tot_row = len(df) + 2
@@ -505,7 +522,10 @@ class NominaReportGenerator:
                 col_sum = 0.0
             nom_map[f"{col_letter}{tot_row}"] = round(col_sum, 2)
 
-        for c in range(1, 34):
+        # Borde para celda total Col AH (sin valor numérico por ser atributo)
+        ws_nom.cell(tot_row, 34, None).border = Border(top=Side(style="thin"), bottom=Side(style="double"))
+
+        for c in range(1, 35):
             col_letter = get_column_letter(c)
             ws_nom.column_dimensions[col_letter].width = 16
         ws_nom.column_dimensions["B"].width = 15
@@ -519,6 +539,7 @@ class NominaReportGenerator:
         ws_nom.column_dimensions["AC"].width = 22
         ws_nom.column_dimensions["AF"].width = 22
         ws_nom.column_dimensions["AG"].width = 20
+        ws_nom.column_dimensions["AH"].width = 26
 
         # -------------------------------------------------------------------------
         # 3. HOJA: Consolidado (Evolución Headcount y Costos Dinámica)
@@ -541,11 +562,11 @@ class NominaReportGenerator:
             c.font = font_bold
             c.fill = PatternFill(start_color="E2E8F0", end_color="E2E8F0", fill_type="solid")
 
-        # Históricos base de meses anteriores
-        hist_hc = {1: 344, 2: 342, 3: 353, 4: 371, 5: 359, 6: 353, 7: 327}
-        hist_costo = {1: 1873414812, 2: 1889237257, 3: 1981171857, 4: 2097912389, 5: 1968619505, 6: 1973046587, 7: 1973046587}
-        hist_mod = {1: 350456321, 2: 344105198, 3: 376152765, 4: 397337000, 5: 360190720, 6: 327982503, 7: 348794280}
-        hist_moi = {1: 1522958491, 2: 1545132060, 3: 1606143092, 4: 1700575389, 5: 1608428785, 6: 1542365845, 7: 1446208429}
+        # Históricos base de meses anteriores (alineados 100% con Consolidado Oficial Maaji)
+        hist_hc = {1: 344, 2: 342, 3: 353, 4: 371, 5: 359, 6: 327, 7: 327, 8: 331, 9: 317}
+        hist_costo = {1: 1873414812, 2: 1889237257, 3: 1981171857, 4: 2097912389, 5: 1968619505, 6: 1790080609, 7: 1800586920, 8: 1776252171, 9: 1705348161}
+        hist_mod = {1: 350456321, 2: 344105198, 3: 376152765, 4: 397337000, 5: 360190720, 6: 269864158, 7: 349052356, 8: 332975962, 9: 318552256}
+        hist_moi = {1: 1522958491, 2: 1545132060, 3: 1606143092, 4: 1700575389, 5: 1608428785, 6: 1520216451, 7: 1451534564, 8: 1443276209, 9: 1386795904}
 
         # Cargar métricas reales de Parquets Gold existentes para meses previos
         for m_prev in range(1, 13):
@@ -557,20 +578,18 @@ class NominaReportGenerator:
                         hist_hc[m_prev] = len(df_prev)
                         c_prev = float(df_prev["costo_total_empleador"].sum())
                         hist_costo[m_prev] = round(c_prev)
-                        m_direct = float(df_prev[df_prev.get("clasificacion_mano_obra", pd.Series(dtype=str)) == "Directa"]["costo_total_empleador"].sum())
+                        is_mod_prev = df_prev.get("clasificacion_mano_obra", pd.Series(dtype=str)).astype(str).str.contains(r"\bDirecta\b|MOD", case=False) & ~df_prev.get("clasificacion_mano_obra", pd.Series(dtype=str)).astype(str).str.contains("Indirecta", case=False)
+                        m_direct = float(df_prev[is_mod_prev]["costo_total_empleador"].sum())
                         if m_direct == 0:
-                            m_direct = float(df_prev[df_prev["cargo_nombre"].astype(str).str.contains("Confecci|Corte|Planta|Costura", case=False, na=False)]["costo_total_empleador"].sum())
+                            m_direct = float(df_prev[df_prev["cargo_nombre"].astype(str).str.contains("Confecci|Corte|Planta|Costura|Muestra|Patronist", case=False, na=False)]["costo_total_empleador"].sum())
                         hist_mod[m_prev] = round(m_direct)
                         hist_moi[m_prev] = round(c_prev - m_direct)
                     except Exception as e:
                         logger.warning(f"Error leyendo histórico para mes {m_prev}: {e}")
 
-        # Calcular valores reales de MOD y MOI para el mes activo
-        mod_val = int(df[df.get("clasificacion_mano_obra", pd.Series(dtype=str)) == "Directa"]["costo_total_empleador"].sum()) if "costo_total_empleador" in df.columns else 348794280
-        if mod_val == 0:
-            mod_val = int(df[df["cargo_nombre"].astype(str).str.contains("Confecci|Corte|Planta|Costura", case=False, na=False)]["costo_total_empleador"].sum()) if "costo_total_empleador" in df.columns else 348794280
-
-        moi_val = int(df["costo_total_empleador"].sum() - mod_val) if "costo_total_empleador" in df.columns else 1446208429
+        # Calcular valores reales de MOD y MOI a partir de Col AF y Col AH de la hoja de Nómina
+        mod_val = round(sum(nom_map[f"AF{_r + 2}"] for _r in range(len(df)) if "Directa" in str(nom_map.get(f"AH{_r + 2}", "")) and "Indirecta" not in str(nom_map.get(f"AH{_r + 2}", ""))), 2)
+        moi_val = round(nom_map.get(f"AF{tot_row}", 0.0) - mod_val, 2)
 
         vals_hc = []
         vals_costo = []
@@ -581,8 +600,8 @@ class NominaReportGenerator:
             if m_num == month:
                 vals_hc.append(len(df))
                 vals_costo.append(f"=SUM('Nomina {mes_nombre}'!AF2:AF{len(df)+1})")
-                vals_mod.append(mod_val)
-                vals_moi.append(moi_val)
+                vals_mod.append(f"=SUMIF('Nomina {mes_nombre}'!$AH$2:$AH${len(df)+1}, \"Mano de obra Directa\", 'Nomina {mes_nombre}'!$AF$2:$AF${len(df)+1})")
+                vals_moi.append(f"=SUMIF('Nomina {mes_nombre}'!$AH$2:$AH${len(df)+1}, \"Mano de obra Indirecta\", 'Nomina {mes_nombre}'!$AF$2:$AF${len(df)+1})")
             else:
                 vals_hc.append(hist_hc.get(m_num, 327))
                 vals_costo.append(hist_costo.get(m_num, 1973046587))
@@ -616,12 +635,16 @@ class NominaReportGenerator:
             c_let = get_column_letter(c_i)
             if (c_i - 2 + 1) == month:
                 cons_map[f"{c_let}4"] = round(nom_map.get(f"AF{tot_row}", 0.0), 2)
+                cons_map[f"{c_let}5"] = round(mod_val, 2)
+                cons_map[f"{c_let}6"] = round(moi_val, 2)
 
         cons_map[f"{tot_col_letter}3"] = round(sum(vals_hc[i] for i in range(len(vals_hc)) if isinstance(vals_hc[i], (int, float))) / len(vals_hc))
         c_list = [nom_map.get(f"AF{tot_row}", 0.0) if (i + 1) == month else (vals_costo[i] if isinstance(vals_costo[i], (int, float)) else 0) for i in range(len(vals_costo))]
         cons_map[f"{tot_col_letter}4"] = round(sum(c_list))
-        cons_map[f"{tot_col_letter}5"] = round(sum(vals_mod[i] for i in range(len(vals_mod)) if isinstance(vals_mod[i], (int, float))))
-        cons_map[f"{tot_col_letter}6"] = round(sum(vals_moi[i] for i in range(len(vals_moi)) if isinstance(vals_moi[i], (int, float))))
+        m_list = [mod_val if (i + 1) == month else (vals_mod[i] if isinstance(vals_mod[i], (int, float)) else 0) for i in range(len(vals_mod))]
+        cons_map[f"{tot_col_letter}5"] = round(sum(m_list))
+        moi_list = [moi_val if (i + 1) == month else (vals_moi[i] if isinstance(vals_moi[i], (int, float)) else 0) for i in range(len(vals_moi))]
+        cons_map[f"{tot_col_letter}6"] = round(sum(moi_list))
 
         # Anchos de columna en Consolidado amplios para evitar #######
         ws_cons.column_dimensions["A"].width = 28

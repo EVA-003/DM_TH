@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Reglas de homologación, tarifas ARL, carga prestacional y clasificación MOD/MOI.
 """
@@ -52,9 +52,10 @@ def clasificar_mod_moi(cargo: str, area: str = "", centro_costos: str = "") -> s
     mod_keywords = [
         "confecci", "costura", "operari", "corte", "patronist", "tallad",
         "estampad", "muestra", "trazo", "maquinista", "filetead", "plancha",
-        "rematad", "revisad", "taller", "producci"
+        "rematad", "revisad", "taller", "producci", "loteo", "fusionad",
+        "prototipo"
     ]
     
-    if any(k in cargo_clean for k in mod_keywords) or any(k in area_clean for k in ["planta", "taller", "corte", "confeccion"]):
+    if any(k in cargo_clean for k in mod_keywords) or any(k in area_clean for k in ["planta", "taller", "corte", "confeccion", "produccion"]):
         return "Mano de Obra Directa (MOD)"
     return "Mano de Obra Indirecta (MOI)"

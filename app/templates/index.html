@@ -7336,8 +7336,10 @@
 
     function applyFiltersAndSort() {
       let filtered = rawNominaData.filter(r => {
-        if (activeChip === 'MOD' && !r.clasificacion_mano_obra.includes('MOD')) return false;
-        if (activeChip === 'MOI' && !r.clasificacion_mano_obra.includes('MOI')) return false;
+        const moText = (r.clasificacion_mano_obra || '');
+        const isMod = (moText.includes('MOD') || moText.includes('Directa')) && !moText.includes('Indirecta');
+        if (activeChip === 'MOD' && !isMod) return false;
+        if (activeChip === 'MOI' && isMod) return false;
         if (activeChip === 'MAS' && !r.empresa_nombre.includes('MAS')) return false;
         if (activeChip === 'ARMO' && !r.empresa_nombre.includes('ART MODE')) return false;
 

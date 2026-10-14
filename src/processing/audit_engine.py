@@ -458,8 +458,9 @@ class NominaAuditEngine:
         df_armo = df[df["empresa_nombre"].astype(str).str.contains("ART MODE", case=False, na=False)]
 
         # Desglose MOD vs MOI
-        df_mod = df[df["clasificacion_mano_obra"].astype(str).str.contains("MOD|Directa", case=False, na=False)]
-        df_moi = df[df["clasificacion_mano_obra"].astype(str).str.contains("MOI|Indirecta", case=False, na=False)]
+        is_mod = df["clasificacion_mano_obra"].astype(str).str.contains(r"\bDirecta\b|MOD", case=False, na=False) & ~df["clasificacion_mano_obra"].astype(str).str.contains("Indirecta", case=False)
+        df_mod = df[is_mod]
+        df_moi = df[~is_mod]
 
         # 5. Tendencia Multimes disponible
         trend = []

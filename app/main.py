@@ -215,8 +215,9 @@ async def sync_buk_api(payload: dict = None):
 async def get_kpis(year: int = 2026, month: int = 7):
     df = load_gold_data(year, month)
     
-    df_mod = df[df["clasificacion_mano_obra"].astype(str).str.contains("MOD", na=False)]
-    df_moi = df[df["clasificacion_mano_obra"].astype(str).str.contains("MOI", na=False)]
+    is_mod = df["clasificacion_mano_obra"].astype(str).str.contains(r"\bDirecta\b|MOD", case=False, na=False) & ~df["clasificacion_mano_obra"].astype(str).str.contains("Indirecta", case=False)
+    df_mod = df[is_mod]
+    df_moi = df[~is_mod]
     
     df_mas = df[df["empresa_nombre"].astype(str).str.contains("MAS", na=False)]
     df_armo = df[df["empresa_nombre"].astype(str).str.contains("ART MODE", na=False)]
