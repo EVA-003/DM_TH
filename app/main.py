@@ -1686,7 +1686,8 @@ def build_report_preview_payload(year: int = 2026, month: int = 9, custom_column
         
         antig_anios = r.get("antiguedad_anios", 0.0)
         try:
-            antig_anios = round(float(antig_anios), 2)
+            val_f = float(antig_anios)
+            antig_anios = 0.0 if (pd.isna(val_f) or val_f != val_f) else round(val_f, 2)
         except Exception:
             antig_anios = 0.0
             
