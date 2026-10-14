@@ -651,14 +651,11 @@ class NominaReportGenerator:
         for c_idx in range(2, tot_col_idx + 1):
             ws_cons.column_dimensions[get_column_letter(c_idx)].width = 22
 
-        # Guardar en outputs
+        # Guardar en outputs con openpyxl estándar y fullCalcOnLoad
         wb.save(output_excel)
         logger.info(f"Libro oficial de nómina TH generado exitosamente en: {output_excel}")
 
-        # 1. Inyectar valores cacheados directamente en OpenXML (garantiza visualización en Linux y Web)
-        _inject_cached_values_into_xlsx(output_excel, cached_map)
-
-        # 2. Validar con Excel COM en Windows si está disponible
+        # Validar y calcular fórmulas con Excel COM si está en Windows
         try:
             import win32com.client as win32
             excel_app = win32.gencache.EnsureDispatch('Excel.Application')
