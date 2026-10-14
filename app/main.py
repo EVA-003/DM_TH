@@ -1585,11 +1585,218 @@ class CustomColumnConfig(BaseModel):
     values_by_doc: dict = {}
     is_constitutivo: bool = True
 
-
 class CustomReportPayload(BaseModel):
     year: int = 2026
     month: int = 7
     custom_columns: list[CustomColumnConfig] = []
+
+
+def build_report_preview_payload(year: int = 2026, month: int = 9, custom_columns: list = None):
+    df = load_gold_data(year, month)
+    if df is None or df.empty:
+        raise HTTPException(status_code=404, detail="No se encontró información para el período.")
+    
+    df_sorted = df.sort_values(by=["empresa_nombre", "primer_apellido", "nombres"]).copy().reset_index(drop=True)
+    
+    custom_cols_list = []
+    if custom_columns:
+        for cc in custom_columns:
+            if hasattr(cc, "dict"):
+                cc_dict = cc.dict()
+            elif isinstance(cc, dict):
+                cc_dict = cc
+            else:
+                continue
+            custom_cols_list.append(cc_dict)
+            c_id = cc_dict["column_id"]
+            vals = cc_dict.get("values_by_doc", {})
+            df_sorted[c_id] = df_sorted["documento"].astype(str).map(vals).fillna(0.0)
+
+    meses_nombres = {
+        1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril",
+        5: "Mayo", 6: "Junio", 7: "Julio", 8: "Agosto",
+        9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
+    }
+    mes_nombre = meses_nombres.get(month, f"Mes{month}")
+
+    nomina_records = []
+    tot_salario_2026 = 0.0
+    tot_devengado = 0.0
+    tot_costo = 0.0
+    tot_mod = 0.0
+    tot_moi = 0.0
+
+    for idx, r in df_sorted.iterrows():
+        sal_26 = float(r.get("salario_base", 0.0) or 0.0)
+        sal_25 = round(sal_26 / 1.09, 2)
+        he = float(r.get("horas_extras", 0.0) or 0.0)
+        com = float(r.get("comisiones", 0.0) or 0.0)
+        tarifa_arl = float(r.get("tarifa_arl_pct", 0.00522) or 0.00522)
+        aux_rod = float(r.get("auxilio_rodamiento", 0.0) or 0.0)
+        aux_extra = float(r.get("auxilio_transporte_extralegal", 0.0) or 0.0)
+        admin_temp = float(r.get("administracion_temporal", 0.0) or 0.0)
+        if ("obra" in str(r.get("tipo_contrato", "")).lower() or "temporal" in str(r.get("tipo_contrato", "")).lower()) and admin_temp == 0.0:
+            admin_temp = round(sal_26 * 0.10, 2)
+            
+        salud = round(sal_26 * 0.085, 2)
+        pension = round(sal_26 * 0.12, 2)
+        arl = round(sal_26 * tarifa_arl, 2)
+        caja = round(sal_26 * 0.04, 2)
+        ces = round(sal_26 * 0.0833, 2)
+        intereses = round(sal_26 * 0.01, 2)
+        prima = round(sal_26 * 0.0833, 2)
+        vac = round(sal_26 * 0.0417, 2)
+        aux_tr = 249095.0 if sal_26 <= 2 * 1750905 else 0.0
+        
+        extra_dev = 0.0
+        extra_cost = 0.0
+        custom_vals = {}
+        for cc_dict in custom_cols_list:
+            c_id = cc_dict["column_id"]
+            c_val = float(r.get(c_id, 0.0) or 0.0)
+            custom_vals[c_id] = c_val
+            if cc_dict.get("is_constitutivo", False):
+                extra_dev += c_val
+                extra_cost += (c_val * 1.5183)
+            else:
+                extra_cost += c_val
+
+        dev = round(sal_26 + aux_tr + aux_rod + aux_extra + he + com + extra_dev, 2)
+        costo = round(sal_26 + salud + pension + arl + caja + ces + intereses + prima + vac + aux_tr + aux_rod + aux_extra + admin_temp + he + com + extra_cost, 2)
+        
+        c_mo_raw = str(r.get("clasificacion_mano_obra", ""))
+        if "Directa" in c_mo_raw and "Indirecta" not in c_mo_raw:
+            tipo_obra = "Mano de obra Directa"
+            tot_mod += costo
+        elif "Indirecta" in c_mo_raw:
+            tipo_obra = "Mano de obra Indirecta"
+            tot_moi += costo
+        else:
+            from config.mapping_rules import clasificar_mod_moi
+            mo_c = clasificar_mod_moi(r.get("cargo_nombre", ""), r.get("area_nombre", ""), r.get("centro_costos", ""))
+            tipo_obra = "Mano de obra Directa" if "Directa" in mo_c else "Mano de obra Indirecta"
+            if "Directa" in tipo_obra:
+                tot_mod += costo
+            else:
+                tot_moi += costo
+                
+        tot_salario_2026 += sal_26
+        tot_devengado += dev
+        tot_costo += costo
+        
+        antig_anios = r.get("antiguedad_anios", 0.0)
+        try:
+            antig_anios = round(float(antig_anios), 2)
+        except Exception:
+            antig_anios = 0.0
+            
+        record = {
+            "id_empleado": str(r.get("documento", "")),
+            "empresa": str(r.get("empresa_nombre", "")),
+            "nombre_completo": str(r.get("nombre_completo", "")),
+            "cargo": str(r.get("cargo_nombre", "")),
+            "area": str(r.get("area_nombre", "")),
+            "fecha_ingreso": str(r.get("fecha_ingreso", ""))[:10],
+            "fecha_corte": f"{year}-{month:02d}-30",
+            "antiguedad_anios": antig_anios,
+            "tipo_contrato": str(r.get("tipo_contrato", "Indefinido")),
+            "sueldo_base_2025": sal_25,
+            "sueldo_base_2026": sal_26,
+            "sueldo_base_2026_prop": sal_26,
+            "porcentaje_aumento": 0.09,
+            "salud_empleador": salud,
+            "pension_empleador": pension,
+            "riesgos_laborales": arl,
+            "tasa_riesgos_laborales": tarifa_arl,
+            "caja_compensacion": caja,
+            "icbf": 0.0,
+            "sena": 0.0,
+            "cesantias": ces,
+            "intereses_cesantias": intereses,
+            "prima_legal": prima,
+            "vacaciones": vac,
+            "auxilio_transporte": aux_tr,
+            "auxilio_rodamiento": aux_rod,
+            "auxilio_transporte_extralegal": aux_extra,
+            "administracion_temporal": admin_temp,
+            "horas_extras": he,
+            "comisiones": com,
+            "costo_total_maaji": costo,
+            "total_devengado": dev,
+            "tipo_obra": tipo_obra,
+            "custom_values": custom_vals
+        }
+        nomina_records.append(record)
+        
+    meses_keys = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+    hist_hc = {1: 344, 2: 342, 3: 353, 4: 371, 5: 359, 6: 327, 7: 327, 8: 331, 9: len(df_sorted)}
+    hist_costo = {1: 1873414812, 2: 1889237257, 3: 1981171857, 4: 2097912389, 5: 1968619505, 6: 1790080609, 7: 1800586920, 8: 1776252171, 9: round(tot_costo)}
+    hist_mod = {1: 350456321, 2: 344105198, 3: 376152765, 4: 397337000, 5: 360190720, 6: 269864158, 7: 349052356, 8: 332975962, 9: round(tot_mod)}
+    hist_moi = {1: 1522958491, 2: 1545132060, 3: 1606143092, 4: 1700575389, 5: 1608428785, 6: 1520216451, 7: 1451534564, 8: 1443276209, 9: round(tot_moi)}
+    
+    active_months_slice = meses_keys[:month]
+    consolidado_cols = ["Métrica / Concepto"] + active_months_slice + ["Total Acumulado"]
+    
+    row_hc = ["Head Count Total"] + [hist_hc.get(m, 327) for m in range(1, month + 1)]
+    row_hc.append(round(sum(hist_hc.get(m, 327) for m in range(1, month + 1)) / month))
+    
+    row_costo = ["Costo Salarial Total"] + [hist_costo.get(m, 0) for m in range(1, month + 1)]
+    row_costo.append(sum(hist_costo.get(m, 0) for m in range(1, month + 1)))
+    
+    row_mod = ["Costo Salarial MO Directa"] + [hist_mod.get(m, 0) for m in range(1, month + 1)]
+    row_mod.append(sum(hist_mod.get(m, 0) for m in range(1, month + 1)))
+    
+    row_moi = ["Costo Salarial MO Indirecta"] + [hist_moi.get(m, 0) for m in range(1, month + 1)]
+    row_moi.append(sum(hist_moi.get(m, 0) for m in range(1, month + 1)))
+    
+    consolidado_data = {
+        "headers": consolidado_cols,
+        "active_month_index": month,
+        "rows": [row_hc, row_costo, row_mod, row_moi]
+    }
+    
+    datos_data = [
+        {"categoria": "Seguridad Social", "concepto": "Salud Empleador", "empleado": "4.0%", "empleador": "8.5%", "total": "12.5%"},
+        {"categoria": "Seguridad Social", "concepto": "Pensión Empleador", "empleado": "4.0%", "empleador": "12.0%", "total": "16.0%"},
+        {"categoria": "Riesgos Laborales", "concepto": "ARL Riesgo I", "empleado": "0.0%", "empleador": "0.522%", "total": "0.522%"},
+        {"categoria": "Riesgos Laborales", "concepto": "ARL Riesgo II", "empleado": "0.0%", "empleador": "1.044%", "total": "1.044%"},
+        {"categoria": "Riesgos Laborales", "concepto": "ARL Riesgo IV", "empleado": "0.0%", "empleador": "4.350%", "total": "4.350%"},
+        {"categoria": "Parafiscales", "concepto": "Caja Compensación Familiar", "empleado": "0.0%", "empleador": "4.0%", "total": "4.0%"},
+        {"categoria": "Parafiscales", "concepto": "ICBF / SENA", "empleado": "0.0%", "empleador": "Exonerado Art. 114-1 E.T.", "total": "0.0%"},
+        {"categoria": "Prestaciones Sociales", "concepto": "Cesantías", "empleado": "0.0%", "empleador": "8.33%", "total": "8.33%"},
+        {"categoria": "Prestaciones Sociales", "concepto": "Intereses a las Cesantías", "empleado": "0.0%", "empleador": "1.0% mensual", "total": "1.0%"},
+        {"categoria": "Prestaciones Sociales", "concepto": "Prima Legal", "empleado": "0.0%", "empleador": "8.33%", "total": "8.33%"},
+        {"categoria": "Prestaciones Sociales", "concepto": "Vacaciones", "empleado": "0.0%", "empleador": "4.17%", "total": "4.17%"},
+        {"categoria": "Parámetros Salariales", "concepto": "SMMLV 2026", "empleado": "-", "empleador": "$1.750.905", "total": "$1.750.905"},
+        {"categoria": "Parámetros Salariales", "concepto": "Auxilio de Transporte Legal", "empleado": "-", "empleador": "$249.095", "total": "$249.095"}
+    ]
+    
+    return {
+        "period": f"{year}-{month:02d}",
+        "mes_nombre": mes_nombre,
+        "custom_columns": custom_cols_list,
+        "totales": {
+            "head_count": len(nomina_records),
+            "salario_base": round(tot_salario_2026, 2),
+            "total_devengado": round(tot_devengado, 2),
+            "costo_total": round(tot_costo, 2),
+            "mo_directa": round(tot_mod, 2),
+            "mo_indirecta": round(tot_moi, 2)
+        },
+        "nomina": nomina_records,
+        "consolidado": consolidado_data,
+        "datos": datos_data
+    }
+
+
+@app.get("/api/report/preview-sheets")
+async def get_report_preview(year: int = 2026, month: int = 9):
+    return build_report_preview_payload(year, month)
+
+
+@app.post("/api/report/preview-sheets")
+async def post_report_preview(payload: CustomReportPayload):
+    return build_report_preview_payload(payload.year, payload.month, payload.custom_columns)
 
 
 @app.post("/api/nomina/generate-custom")

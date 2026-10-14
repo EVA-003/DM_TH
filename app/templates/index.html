@@ -1808,7 +1808,7 @@
   <!-- MODAL: ASISTENTE DE CIERRE Y PARAMETRIZACIÓN              -->
   <!-- ========================================================= -->
   <div id="modal-nomina-closing" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md overflow-y-auto">
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-4xl w-full overflow-hidden animate-in fade-in zoom-in duration-200 my-8">
+    <div id="modal-nomina-closing-dialog" class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-4xl w-full overflow-hidden animate-in fade-in zoom-in duration-200 my-8 transition-all duration-300">
       
       <!-- MODAL HEADER (LIGHT EXECUTIVE) -->
       <div class="px-6 py-4 bg-white text-slate-900 flex items-center justify-between border-b border-slate-200/90">
@@ -1825,9 +1825,14 @@
           </div>
         </div>
 
-        <button onclick="closeNominaClosingModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition cursor-pointer">
-          <i class="fas fa-times text-xs"></i>
-        </button>
+        <div class="flex items-center space-x-2">
+          <button type="button" onclick="toggleNominaModalFullscreen()" id="btn-toggle-modal-fs" title="Maximizar / Expandir Vista" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-indigo-50 text-slate-500 hover:text-indigo-600 flex items-center justify-center transition cursor-pointer">
+            <i id="icon-toggle-modal-fs" class="fas fa-expand text-xs"></i>
+          </button>
+          <button onclick="closeNominaClosingModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition cursor-pointer">
+            <i class="fas fa-times text-xs"></i>
+          </button>
+        </div>
       </div>
 
       <!-- MODAL WIZARD TABS -->
@@ -2303,50 +2308,145 @@
         <!-- MODAL TAB 3: PREVISUALIZACIÓN EN VIVO DEL EXCEL           -->
         <!-- ========================================================= -->
         <div id="mtab-preview" class="hidden space-y-4">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <span class="text-xs font-black text-slate-950 uppercase tracking-wide">
-                📊 Previsualización en Vivo de la Hoja de Cálculo
-              </span>
-              <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full">Fórmulas Conciliadas</span>
+          <!-- SHEET TABS BAR (STYLE EXCEL OFICIAL) -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-2 bg-slate-100 rounded-2xl border border-slate-200">
+            <!-- Sheet Selector Tabs -->
+            <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0">
+              <button type="button" onclick="switchPreviewSheetTab('nomina')" id="btn-sheet-tab-nomina" class="px-3 py-1.5 rounded-xl text-xs font-black transition flex items-center space-x-2 bg-white text-slate-900 shadow-2xs border border-slate-200">
+                <i class="fas fa-table-list text-indigo-600"></i>
+                <span>1. Nómina Detallada</span>
+                <span class="bg-indigo-100 text-indigo-800 text-[10px] px-1.5 py-0.2 rounded-full font-mono" id="preview-badge-hc">317</span>
+              </button>
+              <button type="button" onclick="switchPreviewSheetTab('consolidado')" id="btn-sheet-tab-consolidado" class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 text-slate-600 hover:text-slate-900 hover:bg-white/60">
+                <i class="fas fa-chart-line text-emerald-600"></i>
+                <span>2. Consolidado (Head Count & MOD/MOI)</span>
+              </button>
+              <button type="button" onclick="switchPreviewSheetTab('datos')" id="btn-sheet-tab-datos" class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 text-slate-600 hover:text-slate-900 hover:bg-white/60">
+                <i class="fas fa-scale-balanced text-amber-600"></i>
+                <span>3. Datos (Parámetros y Ley)</span>
+              </button>
             </div>
-            <span class="text-[11px] font-bold text-slate-500">Muestra las primeras filas con columnas dinámicas integradas</span>
+
+            <!-- Right utility controls: Fullscreen button -->
+            <div class="flex items-center space-x-2 self-end sm:self-auto">
+              <button type="button" onclick="toggleNominaModalFullscreen()" class="px-2.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-[11px] font-bold text-slate-700 flex items-center space-x-1.5 shadow-2xs transition cursor-pointer">
+                <i id="btn-fs-icon-text" class="fas fa-expand text-indigo-600"></i>
+                <span id="btn-fs-label">Pantalla Completa</span>
+              </button>
+            </div>
           </div>
 
-          <!-- EXCEL LIVE PREVIEW TABLE -->
-          <div class="table-container border border-slate-300 shadow-sm bg-white rounded-2xl overflow-hidden" style="max-height: 380px; overflow-x: auto;">
-            <table class="w-full text-left text-xs border-collapse font-sans" id="excel-preview-table">
-              <thead class="bg-[#1E293B] text-white">
-                <tr class="text-[10px] uppercase font-extrabold tracking-wider" id="excel-preview-thead-tr">
-                  <th class="py-2.5 px-3 border-r border-slate-700">Cédula</th>
-                  <th class="py-2.5 px-3 border-r border-slate-700">Colaborador</th>
-                  <th class="py-2.5 px-3 border-r border-slate-700">Cargo</th>
-                  <th class="py-2.5 px-3 text-right border-r border-slate-700">Salario Base</th>
-                  <th class="py-2.5 px-3 text-right border-r border-slate-700">Comisiones</th>
-                  <th class="py-2.5 px-3 text-right border-r border-slate-700">Horas Extras</th>
-                  <th class="py-2.5 px-3 text-right border-r border-slate-700 text-[#E5F973]">Total Devengado</th>
-                  <th class="py-2.5 px-3 text-right text-emerald-400">Costo Total</th>
-                </tr>
-              </thead>
-              <tbody id="excel-preview-tbody" class="divide-y divide-slate-100 text-slate-700 font-medium">
-                <!-- Dynamically populated -->
-              </tbody>
-            </table>
+          <!-- ==================== SHEET 1: NOMINA DETALLADA ==================== -->
+          <div id="preview-sheet-view-nomina" class="space-y-3">
+            <!-- Filter, Search and View Toolbar -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 bg-slate-50 p-2.5 rounded-2xl border border-slate-200 text-xs">
+              <!-- Search & Chips -->
+              <div class="flex items-center space-x-2 flex-wrap gap-y-2">
+                <div class="relative">
+                  <i class="fas fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                  <input type="text" id="preview-search-input" oninput="filterPreviewSheetRows()" placeholder="Buscar colaborador, cédula, cargo..." class="pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-56 sm:w-64" />
+                </div>
+                <!-- Filter chips -->
+                <div class="inline-flex rounded-xl p-0.5 bg-slate-200/70 text-[11px] font-bold">
+                  <button type="button" onclick="setPreviewFilterChip('ALL')" id="pchip-ALL" class="px-2.5 py-1 rounded-lg bg-white text-slate-900 shadow-2xs font-black">Todos</button>
+                  <button type="button" onclick="setPreviewFilterChip('MOD')" id="pchip-MOD" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900">MOD (Directa)</button>
+                  <button type="button" onclick="setPreviewFilterChip('MOI')" id="pchip-MOI" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900">MOI (Indirecta)</button>
+                  <button type="button" onclick="setPreviewFilterChip('MAS')" id="pchip-MAS" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900">MAS</button>
+                  <button type="button" onclick="setPreviewFilterChip('ARMO')" id="pchip-ARMO" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900">ART MODE</button>
+                </div>
+              </div>
+
+              <!-- View mode & Row limit -->
+              <div class="flex items-center space-x-2 self-end lg:self-auto">
+                <div class="inline-flex rounded-xl p-0.5 bg-slate-200/70 text-[11px] font-bold">
+                  <button type="button" onclick="setPreviewColumnsMode('full')" id="btn-colmode-full" class="px-2.5 py-1 rounded-lg bg-slate-900 text-[#E5F973] font-black shadow-2xs">34 Cols Oficiales</button>
+                  <button type="button" onclick="setPreviewColumnsMode('summary')" id="btn-colmode-summary" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900">Resumen (8 Cols)</button>
+                </div>
+                <select id="preview-row-limit" onchange="renderPreviewSheetTable()" class="bg-white border border-slate-200 text-slate-700 text-[11px] font-bold rounded-xl px-2.5 py-1 focus:ring-2 focus:ring-indigo-500">
+                  <option value="25">Ver 25</option>
+                  <option value="50">Ver 50</option>
+                  <option value="100">Ver 100</option>
+                  <option value="ALL" selected>Ver Todos (317)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- TABLE CONTAINER (SCROLLABLE & STICKY HEADERS) -->
+            <div class="table-container border border-slate-300 shadow-sm bg-white rounded-2xl overflow-hidden relative" style="max-height: 440px; overflow-x: auto; overflow-y: auto;">
+              <table class="w-full text-left text-xs border-collapse font-sans whitespace-nowrap" id="excel-full-preview-table">
+                <thead class="bg-[#1E293B] text-white sticky top-0 z-20 shadow-sm" id="excel-full-preview-thead">
+                  <!-- Dynamic headers populated via JS -->
+                </thead>
+                <tbody id="excel-full-preview-tbody" class="divide-y divide-slate-100 text-slate-700 font-medium">
+                  <!-- Dynamic rows populated via JS -->
+                </tbody>
+                <tfoot class="bg-slate-900 text-white font-mono text-xs font-black sticky bottom-0 z-10" id="excel-full-preview-tfoot">
+                  <!-- Dynamic totals populated via JS -->
+                </tfoot>
+              </table>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] text-slate-500 font-medium px-1">
+              <span id="preview-rows-counter">Cargando datos completos...</span>
+              <span>💡 Desplaza la barra horizontal para ver las 34 columnas oficiales y el Tipo de Obra</span>
+            </div>
+          </div>
+
+          <!-- ==================== SHEET 2: CONSOLIDADO ==================== -->
+          <div id="preview-sheet-view-consolidado" class="hidden space-y-4">
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h4 class="text-xs font-black text-slate-900 uppercase tracking-wide">Evolución Head Count & Costo Salarial (Maaji Oficial)</h4>
+                  <p class="text-[11px] text-slate-500">Matriz histórica multimes y fórmulas dinámicas de Mano de Obra Directa vs Indirecta</p>
+                </div>
+                <span class="bg-indigo-100 text-indigo-800 text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Pestaña Oficial Consolidado</span>
+              </div>
+
+              <div class="table-container border border-slate-300 shadow-sm bg-white rounded-2xl overflow-hidden" style="overflow-x: auto;">
+                <table class="w-full text-left text-xs border-collapse font-sans whitespace-nowrap" id="consolidado-preview-table">
+                  <!-- Populated dynamically -->
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== SHEET 3: DATOS ==================== -->
+          <div id="preview-sheet-view-datos" class="hidden space-y-4">
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h4 class="text-xs font-black text-slate-900 uppercase tracking-wide">Parámetros Legales, ARL y Carga Prestacional 2026</h4>
+                  <p class="text-[11px] text-slate-500">Tarifas homologadas con la pestaña "Datos " del libro oficial de Talento Humano</p>
+                </div>
+                <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Pestaña Datos</span>
+              </div>
+
+              <div class="table-container border border-slate-300 shadow-sm bg-white rounded-2xl overflow-hidden" style="overflow-x: auto;">
+                <table class="w-full text-left text-xs border-collapse font-sans whitespace-nowrap" id="datos-preview-table">
+                  <!-- Populated dynamically -->
+                </table>
+              </div>
+            </div>
           </div>
 
           <!-- IMPACT SUMMARY -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-slate-900 text-white rounded-2xl">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 bg-slate-900 text-white rounded-2xl">
             <div>
               <span class="text-[10px] text-slate-400 font-bold uppercase block">Masa Salarial Base</span>
-              <p class="text-sm font-black text-white font-mono" id="preview-total-salario">$1,209.7M COP</p>
+              <p class="text-sm font-black text-white font-mono" id="preview-total-salario">$1,154.6M COP</p>
             </div>
             <div>
-              <span class="text-[10px] text-amber-400 font-bold uppercase block">Ajustes / Columnas Custom</span>
-              <p class="text-sm font-black text-amber-300 font-mono" id="preview-total-custom">$0 COP</p>
+              <span class="text-[10px] text-sky-400 font-bold uppercase block">Devengado Nómina</span>
+              <p class="text-sm font-black text-sky-300 font-mono" id="preview-total-devengado">$1,280.6M COP</p>
+            </div>
+            <div>
+              <span class="text-[10px] text-amber-400 font-bold uppercase block">Costo MO Directa</span>
+              <p class="text-sm font-black text-amber-300 font-mono" id="preview-total-mod">$354.1M COP</p>
             </div>
             <div>
               <span class="text-[10px] text-[#E5F973] font-bold uppercase block">Nuevo Costo Total Compañía</span>
-              <p class="text-sm font-black text-[#E5F973] font-mono" id="preview-total-costo">$1,793.8M COP</p>
+              <p class="text-sm font-black text-[#E5F973] font-mono" id="preview-total-costo">$1,827.3M COP</p>
             </div>
           </div>
 
@@ -6765,104 +6865,433 @@
       `).join('');
     }
 
-    function renderExcelLivePreview() {
-      const theadTr = document.getElementById('excel-preview-thead-tr');
-      const tbody = document.getElementById('excel-preview-tbody');
-      if (!theadTr || !tbody) return;
+    let previewSheetData = null;
+    let currentPreviewSheetTab = 'nomina';
+    let previewColumnsMode = 'full'; // 'full' (34 cols) or 'summary' (8 cols)
+    let previewFilterChip = 'ALL';
+    let previewSearchQuery = '';
+    let isNominaModalFullscreen = false;
 
-      // Build Headers
-      let headersHtml = `
-        <th class="py-2.5 px-3 border-r border-slate-700">Cédula</th>
-        <th class="py-2.5 px-3 border-r border-slate-700">Colaborador</th>
-        <th class="py-2.5 px-3 border-r border-slate-700">Cargo</th>
-        <th class="py-2.5 px-3 text-right border-r border-slate-700">Salario Base</th>
-      `;
+    function toggleNominaModalFullscreen() {
+      const dialog = document.getElementById('modal-nomina-closing-dialog');
+      const btnIcon = document.getElementById('btn-fs-icon-text');
+      const btnLabel = document.getElementById('btn-fs-label');
+      const headerIcon = document.getElementById('icon-toggle-modal-fs');
+      if (!dialog) return;
 
-      if (activeCustomColumns.some(c => c.after === 'salario_base')) {
-        activeCustomColumns.filter(c => c.after === 'salario_base').forEach(c => {
-          headersHtml += `<th class="py-2.5 px-3 text-right border-r border-sky-600 bg-sky-800 text-sky-200 font-black"><span class="bg-sky-500 text-white text-[8px] px-1 py-0.2 rounded mr-1">⭐ AJUSTE</span>${c.column_name}</th>`;
-        });
+      isNominaModalFullscreen = !isNominaModalFullscreen;
+      if (isNominaModalFullscreen) {
+        dialog.classList.remove('max-w-4xl', 'my-8');
+        dialog.classList.add('max-w-[96vw]', 'w-full', 'h-[92vh]', 'my-2', 'flex', 'flex-col');
+        const body = dialog.querySelector('.overflow-y-auto');
+        if (body) {
+          body.classList.remove('max-h-[72vh]');
+          body.classList.add('flex-1');
+        }
+        const tableContainer = document.querySelector('#preview-sheet-view-nomina .table-container');
+        if (tableContainer) {
+          tableContainer.style.maxHeight = '56vh';
+        }
+        if (btnIcon) btnIcon.className = 'fas fa-compress text-indigo-600';
+        if (btnLabel) btnLabel.innerText = 'Restaurar';
+        if (headerIcon) headerIcon.className = 'fas fa-compress text-xs';
+      } else {
+        dialog.classList.remove('max-w-[96vw]', 'h-[92vh]', 'my-2', 'flex', 'flex-col');
+        dialog.classList.add('max-w-4xl', 'my-8');
+        const body = dialog.querySelector('.overflow-y-auto');
+        if (body) {
+          body.classList.remove('flex-1');
+          body.classList.add('max-h-[72vh]');
+        }
+        const tableContainer = document.querySelector('#preview-sheet-view-nomina .table-container');
+        if (tableContainer) {
+          tableContainer.style.maxHeight = '440px';
+        }
+        if (btnIcon) btnIcon.className = 'fas fa-expand text-indigo-600';
+        if (btnLabel) btnLabel.innerText = 'Pantalla Completa';
+        if (headerIcon) headerIcon.className = 'fas fa-expand text-xs';
+      }
+    }
+
+    function switchPreviewSheetTab(tab) {
+      currentPreviewSheetTab = tab;
+      ['nomina', 'consolidado', 'datos'].forEach(t => {
+        const pane = document.getElementById('preview-sheet-view-' + t);
+        const btn = document.getElementById('btn-sheet-tab-' + t);
+        if (pane && btn) {
+          if (t === tab) {
+            pane.classList.remove('hidden');
+            btn.className = 'px-3 py-1.5 rounded-xl text-xs font-black transition flex items-center space-x-2 bg-white text-slate-900 shadow-2xs border border-slate-200';
+          } else {
+            pane.classList.add('hidden');
+            btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 text-slate-600 hover:text-slate-900 hover:bg-white/60';
+          }
+        }
+      });
+    }
+
+    function setPreviewColumnsMode(mode) {
+      previewColumnsMode = mode;
+      const btnFull = document.getElementById('btn-colmode-full');
+      const btnSum = document.getElementById('btn-colmode-summary');
+      if (mode === 'full') {
+        if (btnFull) btnFull.className = 'px-2.5 py-1 rounded-lg bg-slate-900 text-[#E5F973] font-black shadow-2xs';
+        if (btnSum) btnSum.className = 'px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900';
+      } else {
+        if (btnFull) btnFull.className = 'px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900';
+        if (btnSum) btnSum.className = 'px-2.5 py-1 rounded-lg bg-slate-900 text-[#E5F973] font-black shadow-2xs';
+      }
+      renderPreviewSheetTable();
+    }
+
+    function setPreviewFilterChip(chip) {
+      previewFilterChip = chip;
+      ['ALL', 'MOD', 'MOI', 'MAS', 'ARMO'].forEach(c => {
+        const btn = document.getElementById('pchip-' + c);
+        if (btn) {
+          if (c === chip) {
+            btn.className = 'px-2.5 py-1 rounded-lg bg-white text-slate-900 shadow-2xs font-black';
+          } else {
+            btn.className = 'px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900';
+          }
+        }
+      });
+      renderPreviewSheetTable();
+    }
+
+    function filterPreviewSheetRows() {
+      const input = document.getElementById('preview-search-input');
+      previewSearchQuery = input ? input.value.toLowerCase().trim() : '';
+      renderPreviewSheetTable();
+    }
+
+    async function renderExcelLivePreview() {
+      const thead = document.getElementById('excel-full-preview-thead');
+      const tbody = document.getElementById('excel-full-preview-tbody');
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="15" class="py-12 text-center text-slate-400 font-sans"><i class="fas fa-spinner fa-spin text-indigo-600 text-xl mb-2"></i><br>Cargando informe completo de nómina y fórmulas conciliadas...</td></tr>`;
       }
 
-      headersHtml += `<th class="py-2.5 px-3 text-right border-r border-slate-700">Comisiones</th>`;
-      if (activeCustomColumns.some(c => c.after === 'comisiones')) {
-        activeCustomColumns.filter(c => c.after === 'comisiones').forEach(c => {
-          headersHtml += `<th class="py-2.5 px-3 text-right border-r border-sky-600 bg-sky-800 text-sky-200 font-black"><span class="bg-sky-500 text-white text-[8px] px-1 py-0.2 rounded mr-1">⭐ AJUSTE</span>${c.column_name}</th>`;
+      const mes = parseInt(document.getElementById('modal-select-mes') ? document.getElementById('modal-select-mes').value : currentPeriodMonth) || 9;
+      const ano = parseInt(document.getElementById('modal-select-ano') ? document.getElementById('modal-select-ano').value : currentPeriodYear) || 2026;
+
+      try {
+        const payload = {
+          year: ano,
+          month: mes,
+          custom_columns: activeCustomColumns || []
+        };
+        const res = await fetch('/api/report/preview-sheets', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
         });
+
+        if (res.ok) {
+          previewSheetData = await res.json();
+          renderAllPreviewSheets();
+        } else {
+          // Fallback to GET
+          const resGet = await fetch(`/api/report/preview-sheets?year=${ano}&month=${mes}`);
+          if (resGet.ok) {
+            previewSheetData = await resGet.json();
+            renderAllPreviewSheets();
+          }
+        }
+      } catch(err) {
+        console.error('Error cargando preview de nómina:', err);
+      }
+    }
+
+    function renderAllPreviewSheets() {
+      if (!previewSheetData) return;
+
+      // Update Impact Metrics
+      const tot = previewSheetData.totales || {};
+      const elSal = document.getElementById('preview-total-salario');
+      if (elSal) elSal.innerText = '$' + (Math.round(tot.salario_base || 0) / 1e6).toFixed(1) + 'M COP';
+      const elDev = document.getElementById('preview-total-devengado');
+      if (elDev) elDev.innerText = '$' + (Math.round(tot.total_devengado || 0) / 1e6).toFixed(1) + 'M COP';
+      const elMod = document.getElementById('preview-total-mod');
+      if (elMod) elMod.innerText = '$' + (Math.round(tot.mo_directa || 0) / 1e6).toFixed(1) + 'M COP';
+      const elCos = document.getElementById('preview-total-costo');
+      if (elCos) elCos.innerText = '$' + (Math.round(tot.costo_total || 0) / 1e6).toFixed(1) + 'M COP';
+
+      const badgeHc = document.getElementById('preview-badge-hc');
+      if (badgeHc) badgeHc.innerText = tot.head_count || previewSheetData.nomina.length;
+
+      // Render Sheet 1 (Nomina)
+      renderPreviewSheetTable();
+
+      // Render Sheet 2 (Consolidado)
+      renderConsolidadoPreviewTable();
+
+      // Render Sheet 3 (Datos)
+      renderDatosPreviewTable();
+    }
+
+    function renderPreviewSheetTable() {
+      if (!previewSheetData || !previewSheetData.nomina) return;
+      const thead = document.getElementById('excel-full-preview-thead');
+      const tbody = document.getElementById('excel-full-preview-tbody');
+      const tfoot = document.getElementById('excel-full-preview-tfoot');
+      const counter = document.getElementById('preview-rows-counter');
+      if (!thead || !tbody) return;
+
+      // Filter rows
+      let rows = previewSheetData.nomina.filter(r => {
+        // Chip filter
+        if (previewFilterChip === 'MOD' && !r.tipo_obra.includes('Directa')) return false;
+        if (previewFilterChip === 'MOI' && !r.tipo_obra.includes('Indirecta')) return false;
+        if (previewFilterChip === 'MAS' && !r.empresa.includes('MAS')) return false;
+        if (previewFilterChip === 'ARMO' && !r.empresa.includes('ART MODE')) return false;
+
+        // Search query
+        if (previewSearchQuery) {
+          const matchStr = `${r.id_empleado} ${r.nombre_completo} ${r.cargo} ${r.area} ${r.tipo_obra}`.toLowerCase();
+          if (!matchStr.includes(previewSearchQuery)) return false;
+        }
+        return true;
+      });
+
+      const totalMatching = rows.length;
+      const limitVal = document.getElementById('preview-row-limit') ? document.getElementById('preview-row-limit').value : 'ALL';
+      const displayRows = limitVal === 'ALL' ? rows : rows.slice(0, parseInt(limitVal));
+
+      if (counter) {
+        counter.innerText = `Mostrando ${displayRows.length} de ${totalMatching} colaboradores filtrados (Total Nómina: ${previewSheetData.nomina.length})`;
       }
 
-      headersHtml += `<th class="py-2.5 px-3 text-right border-r border-slate-700">Horas Extras</th>`;
-      if (activeCustomColumns.some(c => c.after === 'horas_extras')) {
-        activeCustomColumns.filter(c => c.after === 'horas_extras').forEach(c => {
-          headersHtml += `<th class="py-2.5 px-3 text-right border-r border-sky-600 bg-sky-800 text-sky-200 font-black"><span class="bg-sky-500 text-white text-[8px] px-1 py-0.2 rounded mr-1">⭐ AJUSTE</span>${c.column_name}</th>`;
-        });
-      }
-
-      headersHtml += `
-        <th class="py-2.5 px-3 text-right border-r border-slate-700 text-[#E5F973]">Total Devengado</th>
-        <th class="py-2.5 px-3 text-right text-emerald-400">Costo Total</th>
-      `;
-      theadTr.innerHTML = headersHtml;
-
-      // Populate preview rows (top 8 rows)
-      const previewRows = rawNominaData.slice(0, 8);
-      let totalCustomSum = 0;
-
-      tbody.innerHTML = previewRows.map(r => {
-        let devengado = (r.salario_base || 0) + (r.comisiones || 0) + (r.horas_extras || 0);
-        let costoTotal = r.costo_total_empleador || 0;
-
-        let rowHtml = `
-          <tr class="hover:bg-slate-50 font-mono text-xs">
-            <td class="py-2 px-3 font-bold text-slate-500 border-r border-slate-100">${r.documento}</td>
-            <td class="py-2 px-3 font-sans font-bold text-slate-900 border-r border-slate-100">${r.nombre_completo}</td>
-            <td class="py-2 px-3 font-sans text-slate-600 border-r border-slate-100">${r.cargo_nombre}</td>
-            <td class="py-2 px-3 text-right border-r border-slate-100 font-black">$${(r.salario_base || 0).toLocaleString()}</td>
-        `;
-
-        if (activeCustomColumns.some(c => c.after === 'salario_base')) {
-          activeCustomColumns.filter(c => c.after === 'salario_base').forEach(c => {
-            const val = c.values_by_doc[String(r.documento)] || 0;
-            totalCustomSum += val;
-            if (c.is_constitutivo) devengado += val;
-            rowHtml += `<td class="py-2 px-3 text-right border-r border-sky-100 bg-sky-50 font-black text-sky-800">$${val.toLocaleString()}</td>`;
-          });
-        }
-
-        rowHtml += `<td class="py-2 px-3 text-right border-r border-slate-100 font-semibold text-slate-700">$${(r.comisiones || 0).toLocaleString()}</td>`;
-        if (activeCustomColumns.some(c => c.after === 'comisiones')) {
-          activeCustomColumns.filter(c => c.after === 'comisiones').forEach(c => {
-            const val = c.values_by_doc[String(r.documento)] || 0;
-            totalCustomSum += val;
-            if (c.is_constitutivo) devengado += val;
-            rowHtml += `<td class="py-2 px-3 text-right border-r border-sky-100 bg-sky-50 font-black text-sky-800">$${val.toLocaleString()}</td>`;
-          });
-        }
-
-        rowHtml += `<td class="py-2 px-3 text-right border-r border-slate-100 font-semibold text-slate-700">$${(r.horas_extras || 0).toLocaleString()}</td>`;
-        if (activeCustomColumns.some(c => c.after === 'horas_extras')) {
-          activeCustomColumns.filter(c => c.after === 'horas_extras').forEach(c => {
-            const val = c.values_by_doc[String(r.documento)] || 0;
-            totalCustomSum += val;
-            if (c.is_constitutivo) devengado += val;
-            rowHtml += `<td class="py-2 px-3 text-right border-r border-sky-100 bg-sky-50 font-black text-sky-800">$${val.toLocaleString()}</td>`;
-          });
-        }
-
-        rowHtml += `
-            <td class="py-2 px-3 text-right border-r border-slate-100 font-black text-slate-900">$${devengado.toLocaleString()}</td>
-            <td class="py-2 px-3 text-right font-black text-emerald-700">$${costoTotal.toLocaleString()}</td>
+      // 1. HEADERS
+      if (previewColumnsMode === 'full') {
+        thead.innerHTML = `
+          <tr class="text-[10px] uppercase font-extrabold tracking-wider border-b border-slate-700">
+            <th class="py-2.5 px-3 sticky left-0 z-30 bg-[#1E293B] border-r border-slate-700 shadow-sm">Cédula</th>
+            <th class="py-2.5 px-3 border-r border-slate-700">Empresa</th>
+            <th class="py-2.5 px-3 sticky left-24 sm:left-28 z-30 bg-[#1E293B] border-r border-slate-700 shadow-sm">Colaborador</th>
+            <th class="py-2.5 px-3 border-r border-slate-700">Cargo</th>
+            <th class="py-2.5 px-3 border-r border-slate-700">Área</th>
+            <th class="py-2.5 px-3 text-center border-r border-slate-700">Ingreso</th>
+            <th class="py-2.5 px-3 text-center border-r border-slate-700">Corte</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Antigüedad (Años)</th>
+            <th class="py-2.5 px-3 border-r border-slate-700">Tipo Contrato</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Sueldo Base 2025</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Sueldo Base 2026</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">% Aumento</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Salud (8.5%)</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Pensión (12%)</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">ARL</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Tasa ARL</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Caja Comp. (4%)</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Cesantías (8.33%)</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Int. Cesantías (1%)</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Prima Legal (8.33%)</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Vacaciones (4.17%)</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Aux. Transporte</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Aux. Rodamiento</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Aux. Extralegal</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Admin. Temporal</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Horas Extras</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Comisiones</th>
+            ${(activeCustomColumns || []).map(c => `<th class="py-2.5 px-3 text-right border-r border-sky-600 bg-sky-900 text-sky-200 font-black"><span class="bg-sky-500 text-white text-[8px] px-1 py-0.2 rounded mr-1">⭐ AJUSTE</span>${c.column_name}</th>`).join('')}
+            <th class="py-2.5 px-3 text-right border-r border-slate-700 text-[#E5F973] font-black bg-slate-950">Total 2026 Devengado</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700 text-emerald-400 font-black bg-slate-950">Total 2026 Costo Maaji</th>
+            <th class="py-2.5 px-4 text-center bg-indigo-950 text-indigo-200 font-black">Tipo de Obra (MOD/MOI)</th>
           </tr>
         `;
-        return rowHtml;
+      } else {
+        // Summary mode
+        thead.innerHTML = `
+          <tr class="text-[10px] uppercase font-extrabold tracking-wider border-b border-slate-700">
+            <th class="py-2.5 px-3 sticky left-0 z-30 bg-[#1E293B] border-r border-slate-700 shadow-sm">Cédula</th>
+            <th class="py-2.5 px-3 sticky left-24 sm:left-28 z-30 bg-[#1E293B] border-r border-slate-700 shadow-sm">Colaborador</th>
+            <th class="py-2.5 px-3 border-r border-slate-700">Cargo</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Salario Base</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Comisiones</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700">Horas Extras</th>
+            ${(activeCustomColumns || []).map(c => `<th class="py-2.5 px-3 text-right border-r border-sky-600 bg-sky-900 text-sky-200 font-black"><span class="bg-sky-500 text-white text-[8px] px-1 py-0.2 rounded mr-1">⭐</span>${c.column_name}</th>`).join('')}
+            <th class="py-2.5 px-3 text-right border-r border-slate-700 text-[#E5F973] font-black bg-slate-950">Total Devengado</th>
+            <th class="py-2.5 px-3 text-right border-r border-slate-700 text-emerald-400 font-black bg-slate-950">Costo Total</th>
+            <th class="py-2.5 px-4 text-center bg-indigo-950 text-indigo-200 font-black">Tipo de Obra</th>
+          </tr>
+        `;
+      }
+
+      // 2. ROWS
+      let sumSal = 0, sumDev = 0, sumCosto = 0;
+
+      tbody.innerHTML = displayRows.map(r => {
+        sumSal += (r.sueldo_base_2026 || 0);
+        sumDev += (r.total_devengado || 0);
+        sumCosto += (r.costo_total_maaji || 0);
+
+        const isDirecta = r.tipo_obra.includes('Directa');
+        const badgeMo = isDirecta
+          ? `<span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full border border-emerald-300"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Mano de obra Directa</span>`
+          : `<span class="inline-flex items-center gap-1 bg-indigo-50 text-indigo-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-indigo-200"><span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span> Mano de obra Indirecta</span>`;
+
+        if (previewColumnsMode === 'full') {
+          return `
+            <tr class="hover:bg-indigo-50/40 font-mono text-xs transition border-b border-slate-100">
+              <td class="py-2 px-3 sticky left-0 z-10 bg-white font-bold text-slate-700 border-r border-slate-200 shadow-sm">${r.id_empleado}</td>
+              <td class="py-2 px-3 font-sans text-slate-600 border-r border-slate-100 text-[11px]">${r.empresa}</td>
+              <td class="py-2 px-3 sticky left-24 sm:left-28 z-10 bg-white font-sans font-bold text-slate-900 border-r border-slate-200 shadow-sm whitespace-nowrap">${r.nombre_completo}</td>
+              <td class="py-2 px-3 font-sans text-slate-700 border-r border-slate-100 whitespace-nowrap">${r.cargo}</td>
+              <td class="py-2 px-3 font-sans text-slate-500 border-r border-slate-100 text-[11px] whitespace-nowrap">${r.area}</td>
+              <td class="py-2 px-3 text-center border-r border-slate-100 text-[11px] text-slate-500">${r.fecha_ingreso}</td>
+              <td class="py-2 px-3 text-center border-r border-slate-100 text-[11px] text-slate-500">${r.fecha_corte}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 font-bold text-slate-700">${Number(r.antiguedad_anios).toFixed(2)}</td>
+              <td class="py-2 px-3 font-sans border-r border-slate-100 text-[11px] text-slate-600">${r.tipo_contrato}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 font-medium text-slate-500">$${Math.round(r.sueldo_base_2025 || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 font-black text-slate-900">$${Math.round(r.sueldo_base_2026 || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 font-bold text-slate-600">${(Number(r.porcentaje_aumento || 0.09) * 100).toFixed(1)}%</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">$${Math.round(r.salud_empleador || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">$${Math.round(r.pension_empleador || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">$${Math.round(r.riesgos_laborales || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 font-mono text-slate-500">${(Number(r.tasa_riesgos_laborales || 0.00522) * 100).toFixed(3)}%</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">$${Math.round(r.caja_compensacion || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">$${Math.round(r.cesantias || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">$${Math.round(r.intereses_cesantias || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">$${Math.round(r.prima_legal || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">$${Math.round(r.vacaciones || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">${r.auxilio_transporte > 0 ? '$' + Math.round(r.auxilio_transporte).toLocaleString() : '-'}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">${r.auxilio_rodamiento > 0 ? '$' + Math.round(r.auxilio_rodamiento).toLocaleString() : '-'}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">${r.auxilio_transporte_extralegal > 0 ? '$' + Math.round(r.auxilio_transporte_extralegal).toLocaleString() : '-'}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 text-slate-700">${r.administracion_temporal > 0 ? '$' + Math.round(r.administracion_temporal).toLocaleString() : '-'}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 font-bold text-amber-700">${r.horas_extras > 0 ? '$' + Math.round(r.horas_extras).toLocaleString() : '-'}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 font-bold text-sky-700">${r.comisiones > 0 ? '$' + Math.round(r.comisiones).toLocaleString() : '-'}</td>
+              ${(activeCustomColumns || []).map(c => {
+                const cv = (r.custom_values && r.custom_values[c.column_id]) || 0;
+                return `<td class="py-2 px-3 text-right border-r border-sky-100 bg-sky-50 font-black text-sky-900">$${Math.round(cv).toLocaleString()}</td>`;
+              }).join('')}
+              <td class="py-2 px-3 text-right border-r border-slate-200 font-black text-slate-950 bg-slate-50/80">$${Math.round(r.total_devengado || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-200 font-black text-emerald-800 bg-emerald-50/50">$${Number(r.costo_total_maaji || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+              <td class="py-2 px-4 text-center whitespace-nowrap bg-indigo-50/30">${badgeMo}</td>
+            </tr>
+          `;
+        } else {
+          // Summary mode
+          return `
+            <tr class="hover:bg-indigo-50/40 font-mono text-xs transition border-b border-slate-100">
+              <td class="py-2 px-3 sticky left-0 z-10 bg-white font-bold text-slate-700 border-r border-slate-200 shadow-sm">${r.id_empleado}</td>
+              <td class="py-2 px-3 sticky left-24 sm:left-28 z-10 bg-white font-sans font-bold text-slate-900 border-r border-slate-200 shadow-sm whitespace-nowrap">${r.nombre_completo}</td>
+              <td class="py-2 px-3 font-sans text-slate-700 border-r border-slate-100 whitespace-nowrap">${r.cargo}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 font-black text-slate-900">$${Math.round(r.sueldo_base_2026 || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 font-bold text-sky-700">${r.comisiones > 0 ? '$' + Math.round(r.comisiones).toLocaleString() : '$0'}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-100 font-bold text-amber-700">${r.horas_extras > 0 ? '$' + Math.round(r.horas_extras).toLocaleString() : '$0'}</td>
+              ${(activeCustomColumns || []).map(c => {
+                const cv = (r.custom_values && r.custom_values[c.column_id]) || 0;
+                return `<td class="py-2 px-3 text-right border-r border-sky-100 bg-sky-50 font-black text-sky-900">$${Math.round(cv).toLocaleString()}</td>`;
+              }).join('')}
+              <td class="py-2 px-3 text-right border-r border-slate-200 font-black text-slate-950 bg-slate-50/80">$${Math.round(r.total_devengado || 0).toLocaleString()}</td>
+              <td class="py-2 px-3 text-right border-r border-slate-200 font-black text-emerald-800 bg-emerald-50/50">$${Number(r.costo_total_maaji || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+              <td class="py-2 px-4 text-center whitespace-nowrap bg-indigo-50/30">${badgeMo}</td>
+            </tr>
+          `;
+        }
       }).join('');
 
-      // Update Summary metrics
-      const totalCustomGrand = activeCustomColumns.reduce((acc, c) => acc + c.total_amount, 0);
-      document.getElementById('preview-total-custom').innerText = '$' + Math.round(totalCustomGrand).toLocaleString() + ' COP';
-      const baseCost = 1793796798;
-      const newTotalCost = baseCost + (totalCustomGrand * 1.5183);
-      document.getElementById('preview-total-costo').innerText = '$' + (newTotalCost / 1e6).toFixed(1) + 'M COP';
+      // 3. FOOTER TOTALS
+      if (tfoot) {
+        if (previewColumnsMode === 'full') {
+          tfoot.innerHTML = `
+            <tr class="text-xs bg-slate-950 text-white font-mono">
+              <td colspan="10" class="py-2.5 px-3 text-left font-sans uppercase font-black text-slate-400">TOTALES REGISTROS EN PANTALLA (${displayRows.length})</td>
+              <td class="py-2.5 px-3 text-right font-black text-white">$${Math.round(sumSal).toLocaleString()}</td>
+              <td colspan="15" class="py-2.5 px-3"></td>
+              <td class="py-2.5 px-3 text-right font-black text-[#E5F973]">$${Math.round(sumDev).toLocaleString()}</td>
+              <td class="py-2.5 px-3 text-right font-black text-emerald-400">$${Number(sumCosto).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+              <td class="py-2.5 px-4 text-center text-[10px] text-slate-400 font-sans">Cuadrado 100%</td>
+            </tr>
+          `;
+        } else {
+          tfoot.innerHTML = `
+            <tr class="text-xs bg-slate-950 text-white font-mono">
+              <td colspan="3" class="py-2.5 px-3 text-left font-sans uppercase font-black text-slate-400">TOTALES (${displayRows.length})</td>
+              <td class="py-2.5 px-3 text-right font-black text-white">$${Math.round(sumSal).toLocaleString()}</td>
+              <td colspan="2" class="py-2.5 px-3"></td>
+              <td class="py-2.5 px-3 text-right font-black text-[#E5F973]">$${Math.round(sumDev).toLocaleString()}</td>
+              <td class="py-2.5 px-3 text-right font-black text-emerald-400">$${Number(sumCosto).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+              <td class="py-2.5 px-4 text-center text-[10px] text-slate-400 font-sans">Cuadrado 100%</td>
+            </tr>
+          `;
+        }
+      }
+    }
+
+    function renderConsolidadoPreviewTable() {
+      const table = document.getElementById('consolidado-preview-table');
+      if (!table || !previewSheetData || !previewSheetData.consolidado) return;
+      const cons = previewSheetData.consolidado;
+
+      let theadHtml = `
+        <thead class="bg-[#1E293B] text-white">
+          <tr class="text-[10px] uppercase font-extrabold tracking-wider border-b border-slate-700">
+            ${cons.headers.map((h, idx) => {
+              const isMesActivo = (idx === cons.active_month_index);
+              const extraClass = isMesActivo ? 'bg-indigo-900 text-[#E5F973] font-black' : (idx === cons.headers.length - 1 ? 'bg-slate-950 font-black' : '');
+              return `<th class="py-2.5 px-3.5 border-r border-slate-700 ${extraClass}">${h} ${isMesActivo ? '<span class="bg-[#E5F973] text-slate-950 text-[8px] px-1 py-0.2 rounded ml-1 font-black">ACTIVO</span>' : ''}</th>`;
+            }).join('')}
+          </tr>
+        </thead>
+      `;
+
+      let tbodyHtml = `
+        <tbody class="divide-y divide-slate-100 font-mono text-xs">
+          ${cons.rows.map((rowArr, rIdx) => {
+            const label = rowArr[0];
+            const isCost = label.includes('Costo');
+            const rowClass = rIdx === 1 ? 'bg-slate-50/70 font-black' : (rIdx === 2 ? 'text-emerald-950 font-bold bg-emerald-50/20' : (rIdx === 3 ? 'text-indigo-950 font-bold' : ''));
+            return `
+              <tr class="${rowClass} hover:bg-indigo-50/40 transition">
+                <td class="py-3 px-3.5 font-sans font-bold text-slate-900 border-r border-slate-200">${label}</td>
+                ${rowArr.slice(1).map((val, cIdx) => {
+                  const isMesActivo = (cIdx + 1 === cons.active_month_index);
+                  const isTotalCol = (cIdx === rowArr.length - 2);
+                  const cellClass = isMesActivo ? 'bg-indigo-50 font-black text-indigo-900 border-indigo-200' : (isTotalCol ? 'bg-slate-100 font-black text-slate-950' : 'text-slate-700');
+                  const formattedVal = isCost ? '$' + Math.round(val).toLocaleString() : Number(val).toLocaleString();
+                  return `<td class="py-3 px-3.5 text-right border-r border-slate-200 ${cellClass}">${formattedVal}</td>`;
+                }).join('')}
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      `;
+
+      table.innerHTML = theadHtml + tbodyHtml;
+    }
+
+    function renderDatosPreviewTable() {
+      const table = document.getElementById('datos-preview-table');
+      if (!table || !previewSheetData || !previewSheetData.datos) return;
+
+      let theadHtml = `
+        <thead class="bg-[#1E293B] text-white">
+          <tr class="text-[10px] uppercase font-extrabold tracking-wider border-b border-slate-700">
+            <th class="py-2.5 px-3.5 border-r border-slate-700">Categoría</th>
+            <th class="py-2.5 px-3.5 border-r border-slate-700">Concepto Legal</th>
+            <th class="py-2.5 px-3.5 text-center border-r border-slate-700">Aporte Empleado</th>
+            <th class="py-2.5 px-3.5 text-center border-r border-slate-700 font-black text-[#E5F973]">Aporte Empleador</th>
+            <th class="py-2.5 px-3.5 text-center">Tarifa Total</th>
+          </tr>
+        </thead>
+      `;
+
+      let tbodyHtml = `
+        <tbody class="divide-y divide-slate-100 text-xs">
+          ${previewSheetData.datos.map(d => `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="py-2.5 px-3.5 font-bold text-slate-800 border-r border-slate-200 text-[11px]">${d.categoria}</td>
+              <td class="py-2.5 px-3.5 font-medium text-slate-900 border-r border-slate-200">${d.concepto}</td>
+              <td class="py-2.5 px-3.5 text-center border-r border-slate-200 font-mono text-slate-500">${d.empleado}</td>
+              <td class="py-2.5 px-3.5 text-center border-r border-slate-200 font-mono font-black text-indigo-900 bg-indigo-50/40">${d.empleador}</td>
+              <td class="py-2.5 px-3.5 text-center font-mono font-bold text-slate-700">${d.total}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `;
+
+      table.innerHTML = theadHtml + tbodyHtml;
     }
 
     async function downloadCustomOfficialExcel() {
