@@ -212,7 +212,7 @@ async def sync_buk_api(payload: dict = None):
 
 
 @app.get("/api/kpis")
-async def get_kpis(year: int = 2026, month: int = 7):
+async def get_kpis(year: int = 2026, month: int = 9):
     df = load_gold_data(year, month)
     
     is_mod = df["clasificacion_mano_obra"].astype(str).str.contains(r"\bDirecta\b|MOD", case=False, na=False) & ~df["clasificacion_mano_obra"].astype(str).str.contains("Indirecta", case=False)
@@ -266,13 +266,13 @@ async def get_kpis(year: int = 2026, month: int = 7):
 
 
 @app.get("/api/auditoria")
-async def get_auditoria(year: int = 2026, month: int = 7):
+async def get_auditoria(year: int = 2026, month: int = 9):
     engine = NominaAuditEngine()
     return engine.run_audit(year, month)
 
 
 @app.get("/api/nomina/anomalies")
-async def get_nomina_anomalies(year: int = 2026, month: int = 7):
+async def get_nomina_anomalies(year: int = 2026, month: int = 9):
     engine = NominaAuditEngine()
     return engine.scan_anomalies(year, month)
 
@@ -288,7 +288,7 @@ async def get_preflight_audit(year: int = 2026, month: int = 9):
 
 
 @app.get("/api/nomina")
-async def get_nomina(search: str = "", year: int = 2026, month: int = 7):
+async def get_nomina(search: str = "", year: int = 2026, month: int = 9):
     df = load_gold_data(year, month)
     df_vac = load_vacations_data()
 
@@ -1813,7 +1813,7 @@ async def generate_custom_report(payload: CustomReportPayload):
 
 
 @app.get("/api/download/nomina")
-async def download_nomina(year: int = 2026, month: int = 7):
+async def download_nomina(year: int = 2026, month: int = 9):
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     excel_path = NominaReportGenerator().generate_excel_report(year, month)
     return FileResponse(
@@ -1824,7 +1824,7 @@ async def download_nomina(year: int = 2026, month: int = 7):
 
 
 @app.get("/api/download/ti")
-async def download_ti(year: int = 2026, month: int = 7):
+async def download_ti(year: int = 2026, month: int = 9):
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     excel_path = OUTPUTS_DIR / f"TI_Novedades_Estructura_Creacion_Emplea_{year}_{month:02d}.xlsx"
     if not excel_path.exists():
